@@ -6,7 +6,7 @@
         ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
  version: v0.3.7
- compilation date: (Sep  6 2019, 17:13:46)
+ compilation date: (Oct  4 2019, 16:07:12)
 
     -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     -d               6                        number of digit for file names[0;0;0m

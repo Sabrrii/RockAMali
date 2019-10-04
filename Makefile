@@ -15,14 +15,14 @@ LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-#DO_GPU=
+DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
 
-all: process_sequential process send receive doc
-#all: process process_sequential
+#all: process_sequential process send receive doc
+all: process process_sequential doc
 
 #all: time_copy
 time_copy: time_copy.cpp
