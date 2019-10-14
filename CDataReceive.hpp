@@ -118,7 +118,9 @@ public:
     //check
     if(do_check)
     {
-      if(images[n]==(i+1)) NULL; else {++check_error;std::cout<<"receive error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<images[n](0)<<")."<<std::endl<<"test: fail."<<std::flush;if(do_check_exit) exit(4);}
+      //if(images[n]==(i+1)) //slow check, but entire frame
+      if(images[n](0)==(i+1)) //fast check
+      NULL; else {++check_error;std::cout<<"receive error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<images[n](0)<<")."<<std::endl<<"test: fail."<<std::flush;if(do_check_exit) exit(4);}
     }
 
     this->laccess.set_status(access[n],this->STATE_RECEIVING,this->STATUS_RECEIVED, this->class_name[5],i,n,c);//receiving, received
