@@ -23,7 +23,7 @@ using boost::asio::ip::udp;
 **/
 boost::asio::io_service io_service(1);
 
-#define TIMER_DELAY 543
+#define TIMER_DELAY 12
 
 boost::posix_time::time_duration interval(boost::posix_time::milliseconds(TIMER_DELAY));
 boost::asio::deadline_timer timer_(io_service,interval);
