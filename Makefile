@@ -15,7 +15,7 @@ LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-DO_GPU=
+#DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -66,17 +66,17 @@ process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 258 --do-check --use-GPU
 
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 256 -w 65432109
+	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 1235 -w 65432109
 
-receive_run:
-	mkdir -p $(DATA)$(DIN)  $(DATA)$(DOUT)
-	rm -f    $(DATA)$(DIN)* $(DATA)$(DOUT)*
-	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 254 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --use-GPU
+receive_run: clear
+	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 1234 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT)
+#	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 1234 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --use-GPU
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
 	mkdir  $(DATA)/samples/ $(DATA)/results/
 	rm -f sample_??????.cimg
+	sync
 
 clean: clear
 	rm -f send.X    send

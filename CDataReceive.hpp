@@ -63,8 +63,6 @@ public:
 
   bool do_check;unsigned int check_error;bool do_check_exit;
 
-#define TIMER_DELAY 543
-
   CDataReceive(std::vector<omp_lock_t*> &lock, unsigned short port, int buf_size, boost::asio::io_service *io_service, bool do_check=false, bool do_check_exit=false) : CDataBuffer<Tdata, Taccess>(lock)
    , s(new udp_server<Tdata>(*io_service, port, buf_size))
    , io_service(io_service)
