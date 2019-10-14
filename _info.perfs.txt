@@ -19,7 +19,7 @@ make clear; ./process -s 16384 ... &>/dev/null  #230MB/s (8.1GB/35s)
 
 receive
 PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND     
- 1692 rock64    20   0  334296  32056   8668 R 107.0  0.8   0:37.02 receive     
+ 2039 rock64    20   0  343188  39196   8616 R 124.5  1.0   0:45.79 receive     
 
 sudo iotop
   TID  PRIO  USER     DISK READ DISK WRITE>  SWAPIN      IO    COMMAND          

@@ -20,6 +20,7 @@ class CDataStore: public CDataBuffer<Tdata, Taccess>
 public:
   std::string file_name;
   unsigned int file_name_digit;
+  unsigned int lsleep;
 
   CDataStore(std::vector<omp_lock_t*> &lock
   , std::string imagefilename, unsigned int digit
@@ -32,6 +33,7 @@ public:
     this->class_name="CDataStore";
     file_name=imagefilename;
     file_name_digit=digit;
+    lsleep=12;//us
     this->check_locks(lock);
   }//constructor
 
@@ -48,7 +50,7 @@ public:
 
     //wait lock
     unsigned int c=0;
-    this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_STORING, c);//processed,storing
+    this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_STORING, c, lsleep);//processed,storing
     //save image
     CImg<char> nfilename(1024);
     cimg::number_filename(file_name.c_str(),i,file_name_digit,nfilename);
