@@ -75,7 +75,16 @@ public:
     //! \todo [high] need print lock and move after "omp_unset_lock(p_access_lock);"
     if(debug)
     {
-      printf("%c%d/%d 4 B%02d #%04d wait=%d, local sleep=%dus, global sleep=%dus\n",me,id,tn,n,i,c,lsleep,lsleep*c);fflush(stdout);
+      printf("%c%d/%d 4 B%02d #%04d wait=%d",me,id,tn,n,i,c);
+      if(lsleep>0)
+      {
+        unsigned int gsleep=lsleep*c;
+        std::string lu("us"),gu("us");
+        if(lsleep>999) {lsleep/=1000;lu="ms";}
+        if(gsleep>999) {gsleep/=1000;gu="ms";}
+        printf(", local sleep=%d%s, global sleep=%d%s",lsleep,lu.c_str(),gsleep,gu.c_str());
+      }
+      std::cout<<std::endl<<std::flush;
     }//debug
 
     omp_unset_lock(p_access_lock);
