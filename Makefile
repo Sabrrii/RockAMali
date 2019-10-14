@@ -66,7 +66,7 @@ process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 258 --do-check --use-GPU
 
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 12346 -w 6543210
+	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 12346 -w 76543210
 
 receive_run: clear
 	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E

@@ -75,7 +75,7 @@ public:
     //! \todo [high] need print lock and move after "omp_unset_lock(p_access_lock);"
     if(debug)
     {
-      printf("%c%d/%d 4 B%02d #%04d wait=%d, local sleep=%dus\n",me,id,tn,n,i,c,lsleep);fflush(stdout);
+      printf("%c%d/%d 4 B%02d #%04d wait=%d, local sleep=%dus, global sleep=%dus\n",me,id,tn,n,i,c,lsleep,lsleep*c);fflush(stdout);
     }//debug
 
     omp_unset_lock(p_access_lock);
