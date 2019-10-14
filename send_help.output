@@ -6,7 +6,7 @@
         ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
  version: v0.3.1
- compilation date: (Oct 14 2019, 11:18:50)
+ compilation date: (Oct 14 2019, 12:04:43)
 
     [1m-s              [0;0;0m 1024                     [0;32;59msize   of udp buffer[0;0;0m
     [1m-n              [0;0;0m 256                      [0;32;59mnumber of frames[0;0;0m

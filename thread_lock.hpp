@@ -65,7 +65,7 @@ public:
   }//wait_for_status
 
 
-  virtual void set_status(unsigned char &what, int old_status, int status, /*info:*/ char me, unsigned int i, unsigned int n, unsigned int c)
+  virtual void set_status(unsigned char &what, int old_status, int status, /*info:*/ char me, unsigned int i, unsigned int n, unsigned int c, int lsleep=-1)
   {//locked section
     omp_set_lock(p_access_lock);
     //debug
@@ -75,7 +75,7 @@ public:
     //! \todo [high] need print lock and move after "omp_unset_lock(p_access_lock);"
     if(debug)
     {
-      printf("%c%d/%d 4 B%02d #%04d wait=%d\n",me,id,tn,n,i,c);fflush(stdout);
+      printf("%c%d/%d 4 B%02d #%04d wait=%d, local sleep=%dus\n",me,id,tn,n,i,c,lsleep);fflush(stdout);
     }//debug
 
     omp_unset_lock(p_access_lock);

@@ -58,7 +58,7 @@ public:
     images[n].save(nfilename);
  
     //set filled
-    this->laccess.set_status(access[n],this->STATE_STORING,this->set_status, this->class_name[5],i,n,c);//storing,free
+    this->laccess.set_status(access[n],this->STATE_STORING,this->set_status, this->class_name[5],i,n,c,la_sleep);//storing,free
 
     //adjust wait (load average)
     if(c>10) la_sleep*=2;
