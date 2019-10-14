@@ -49,9 +49,11 @@ int main(int argc,char **argv)
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"show GUI (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
-        bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do_check or -C option
+        bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do-check or -C option
   const bool do_check_CE=cimg_option("-E",false,NULL);//-E hidden option
-        bool do_check_exit=cimg_option("--do-check-exit",do_check_CE,"do data check exit on first error (or -E option)");do_check_exit=do_check_CE|do_check_exit;//same --do_check_exit or -E option
+        bool do_check_exit=cimg_option("--do-check-exit",do_check_CE,"do data check exit on first error (or -E option)");do_check_exit=do_check_CE|do_check_exit;//same --do-check_exit or -E option
+  const bool do_warmup_W=cimg_option("-W",false,NULL);//-G hidden option
+        bool do_warmup=cimg_option("--do-warmup",do_check_C,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 
   ///standard options
   #if cimg_display!=0
@@ -102,6 +104,15 @@ int main(int argc,char **argv)
   //! receive data
   std::vector<omp_lock_t*> locks;locks.push_back(&print_lock);locks.push_back(&lck);locks.push_back(&lckR);
   std::vector<omp_lock_t*> locksR;locksR.push_back(&print_lock);locksR.push_back(&lckR);
+
+  if(do_warmup)
+  {
+    std::cout<<"information: warming up";
+    cimglist_for(images,i)  images[i].fill(nbuffer-i);
+    std::cout<<".";
+    cimglist_for(results,i) results[i].fill(nbuffer-i);
+    std::cout<<".\n";
+  }
 
 #ifdef DO_GPU
   //Choosing the target for OpenCL computing
