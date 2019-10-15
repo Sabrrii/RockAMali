@@ -72,7 +72,7 @@ public:
   )
   : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataGenerator_Random";
     this->check_locks(lock);
   }//constructor

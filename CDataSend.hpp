@@ -31,7 +31,7 @@ public:
     , target(boost::asio::ip::address::from_string(ip), port)
     , wait(wait)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataSender";
     udp::socket::non_blocking_io nbio(true);
     socket.io_control(nbio);

@@ -68,7 +68,7 @@ public:
    , io_service(io_service)
    , do_check(do_check), do_check_exit(do_check_exit)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataReceiver";
     servers.push_back(s);
     this->check_locks(lock);
