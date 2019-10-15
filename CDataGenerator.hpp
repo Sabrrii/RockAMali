@@ -31,6 +31,9 @@ public:
   }//constructor
 
   //! one iteration for any loop
+  /**
+   * entirely filled with the frame count value
+  **/
   virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int i)
   {
     if(this->debug)
@@ -52,6 +55,56 @@ public:
   }//iteration
 
 };//CDataGenerator
+
+//! generate random data into a shared circular buffer
+/**
+ * random data except first one that is frame count value
+**/
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataGenerator_Random: public CDataGenerator<Tdata, Taccess>
+{
+
+public:
+
+  CDataGenerator_Random(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+  )
+  : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status)
+  {
+    this->debug=true;
+    this->class_name="CDataGenerator_Random";
+    this->check_locks(lock);
+  }//constructor
+
+  //! one iteration for any loop
+  /**
+   * entirely filled with the frame count value
+  **/
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int i)
+  {
+    if(this->debug)
+    {
+      this->lprint.print("",false);
+      printf("4 B%02d #%04d: ",n,i);fflush(stdout);
+      access.print("access",false);fflush(stderr);
+      this->lprint.unset_lock();
+    }
+    //wait lock
+    unsigned int c=0;
+    this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
+
+    //fill image with random numbers
+//! \todo [high] setup random limits depending on data type, i.e. Tdata
+    images[n].rand(0,65535);
+    //set frame count value as first array value
+    images[n](0)=i;
+
+    //set filled
+    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],i,n,c);//filling,filled
+  }//iteration
+
+};//CDataGenerator_Random
 
 #endif //_DATA_GENERATOR_
 

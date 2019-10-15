@@ -19,12 +19,12 @@ make clear; ./process -s 16384 ... &>/dev/null  #230MB/s (8.1GB/35s)
 
 receive
 PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND     
-11895 rock64    20   0  433864 133164   8696 R 102.6  3.4   1:32.10 receive     
+14331 rock64    20   0  322188  21400   8624 R 102.6  0.5   0:08.66 receive     
 
 sudo iotop
   TID  PRIO  USER     DISK READ DISK WRITE>  SWAPIN      IO    COMMAND          
-11983 ?sys rock64      0.00 B/s 1102.27 K/s  0.00 %  0.00 % ./receive~g -C -E -W
+14421 ?sys rock64      0.00 B/s  739.91 K/s  0.00 %  0.00 % ./receive~g -C -E -W
 
 sudo iftop -i enp1s0
-RX:                    31.2MB           5.90Mb                            5.87Mb  5.88Mb  5.88Mb
+RX:                     445MB           2.95Mb                            2.94Mb  2.94Mb   966Kb
 

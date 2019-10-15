@@ -46,6 +46,10 @@ public:
   omp_lock_t *p_access_lock;
   CAccessOMPLock(omp_lock_t* lock):CBaseOMPLock(lock){debug=true;class_name="CAccessOMPLock"; p_access_lock=lock;}
   virtual void unset_lock(){omp_unset_lock(p_access_lock);}
+  //! wait for a specific user status, then set new status (, i.e. might lock several times)
+  /**
+   * \note: for first lock, no sleeping time.
+  **/
   virtual void wait_for_status(unsigned char &what, const int status, const int new_status, unsigned int &c, unsigned int sleep=1234)
   {
     unsigned char a=99;
@@ -64,7 +68,7 @@ public:
     }while(a!=status);//waiting for status
   }//wait_for_status
 
-
+  //! wait lock and set new status (lock once only) and print message on debug mode
   virtual void set_status(unsigned char &what, int old_status, int status, /*info:*/ char me, unsigned int i, unsigned int n, unsigned int c, int lsleep=-1)
   {//locked section
     omp_set_lock(p_access_lock);

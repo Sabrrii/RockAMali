@@ -119,7 +119,8 @@ public:
     if(do_check)
     {
       //if(images[n]==(i+1)) //slow check, but entire frame
-      if(images[n](0)==(i+1)) //fast check
+      //if(images[n](0)==(i+1)) //fast check
+      if(images[n](0)==i) //fast random check
       NULL; else {++check_error;std::cout<<"receive error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<images[n](0)<<")."<<std::endl<<"test: fail."<<std::flush;if(do_check_exit) exit(4);}
     }
 

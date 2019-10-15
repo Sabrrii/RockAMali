@@ -100,7 +100,7 @@ int main(int argc,char **argv)
   {
     case 0:
     {//generate
-      CDataGenerator<Tdata,Taccess> generate(locks);
+      CDataGenerator_Random<Tdata,Taccess> generate(locks);
       generate.run(access,images, count);
       break;
     }//generate
