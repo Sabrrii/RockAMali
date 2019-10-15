@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.3.2"
+#define VERSION "v0.3.3"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -23,8 +23,8 @@ using namespace cimg_library;
 using boost::asio::ip::udp;
 
 //types
-typedef unsigned char Taccess;
-typedef unsigned int  Tdata;
+typedef unsigned char  Taccess;
+typedef unsigned short Tdata;
 
 int main(int argc,char **argv)
 {

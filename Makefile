@@ -1,5 +1,5 @@
 #run
-## uint = 4uchar: 2048*4 = 8192BoF
+## ushort = 2uchar: 4096*2 = 8192BoF
 FRAME_SIZE=2048
 
 DATA=./
