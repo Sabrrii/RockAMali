@@ -1,5 +1,5 @@
 #run
-FRAME_SIZE=4096
+FRAME_SIZE=8192
 
 DATA=./
 DATA=/media/temp/

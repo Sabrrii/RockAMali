@@ -108,10 +108,11 @@ int main(int argc,char **argv)
   if(do_warmup)
   {
     std::cout<<"information: warming up";
+    std::cout<<" ~"<<2*nbuffer*width*sizeof(Tdata)/1024/1024<<" MB of RAM ";
     cimglist_for(images,i)  images[i].fill(nbuffer-i);
-    std::cout<<".";
+    std::cout<<"v";
     cimglist_for(results,i) results[i].fill(nbuffer-i);
-    std::cout<<".\n";
+    std::cout<<"v\n";
   }
 
 #ifdef DO_GPU
