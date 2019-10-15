@@ -96,7 +96,8 @@ public:
 
     //fill image with random numbers
 //! \todo [high] setup random limits depending on data type, i.e. Tdata
-    images[n].rand(0,65535);
+//    if(i>n)//fast generation
+      images[n].rand(0,65535);
     //set frame count value as first array value
     images[n](0)=i;
 
