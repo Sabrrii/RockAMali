@@ -1,5 +1,6 @@
 #run
-FRAME_SIZE=8192
+## uint = 4uchar: 2048*4 = 8192BoF
+FRAME_SIZE=2048
 
 DATA=./
 DATA=/media/temp/

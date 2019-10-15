@@ -7,8 +7,11 @@ cat send_help.output
 ##receiving
 make process
 make receive
+git reset --hard SHA && git pull && make receive && make receive_run 
+
 ##sending
 make send_run
+sync ; make send && make send_run
 
 #run
 ##receiving
