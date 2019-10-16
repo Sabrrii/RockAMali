@@ -103,7 +103,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     //check
     if(do_check)
     {
-std::cout<<__FILE__<<"::"<<__func__<<"(...) do check data"<<std::endl;
+//std::cout<<__FILE__<<"::"<<__func__<<"(...) do check data"<<std::endl;
       if(!check_data(images[n],i)) {++check_error;std::cout<<"compution error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<image(0)<<")."<<std::endl<<std::flush;}
     }
 

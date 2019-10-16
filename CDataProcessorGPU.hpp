@@ -103,21 +103,12 @@ public:
 
   virtual bool check_data(CImg<Tdata> &img, int i)
   {
-std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+//std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     if(this->do_check)
     {
       CImg<Tdata> imgt(img);
       imgt=img+img;//*img;
-
-            imgt.print("imgt");
-      this->image.print("image");
-
-//      return (this->image==imgt);
-      bool ret=true;
-      int loop=-1;
-      cimg_forX(imgt,x) {if((this->image(x))!=imgt(x)) {ret=false;loop=x;break;}}
-      std::cout<<"loop="<<loop<<", return="<<std::boolalpha<<ret<<std::endl;
-      return ret;
+      return (this->image==imgt);
     }//do_check
     return true;
   }//check_data
