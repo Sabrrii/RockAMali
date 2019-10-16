@@ -204,11 +204,13 @@ int main(int argc,char **argv)
 #endif
         store.iteration(accessR,results, 0,i);
         //check
+/*
         if(do_check)
         {
           if(images[0] ==i) NULL; else {++check_error;std::cout<<"compution error: bad main generate class for this test."<<std::endl<<std::flush;}
           if(results[0]==i) NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
         }
+*/
       }//vector loop
       break;
     }//sequential
