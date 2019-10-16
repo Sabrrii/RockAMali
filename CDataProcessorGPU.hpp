@@ -106,9 +106,13 @@ public:
 //std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     if(this->do_check)
     {
+/*
       CImg<Tdata> imgt(img);
       imgt=img+img;//*img;
       return (this->image==imgt);
+*/
+      //fast check
+      return (this->image(0)==i*2);
     }//do_check
     return true;
   }//check_data
