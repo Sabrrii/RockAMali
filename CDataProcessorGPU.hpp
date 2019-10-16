@@ -78,5 +78,39 @@ public:
 
 };//CDataProcessorGPU
 
+//! complex operation with lambda for GPU process
+/**
+ * 
+**/
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataProcessorGPU_lambda : public CDataProcessorGPU<Tdata, Taccess>
+{
+public:
+  CDataProcessorGPU_lambda(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessorGPU_lambda";
+    this->check_locks(lock);
+  }//constructor
+
+  //! compution kernel for an iteration (compution=copy, here)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  {
+    //compute with lambda
+    using compute::lambda::_1;
+    compute::transform(in.begin(), in.end(), out.begin(),
+      _1+_1*_1 , this->queue);
+  };//kernelGPU
+
+};//CDataProcessorGPU_lambda
+
 #endif //_DATA_PROCESSOR_GPU_
 
