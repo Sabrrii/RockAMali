@@ -57,7 +57,7 @@ public:
   {
     if(do_check)
     {
-std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+//std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //      return (image==img);
       return (image==i);
     }//do_check
@@ -105,7 +105,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     {
 //std::cout<<__FILE__<<"::"<<__func__<<"(...) do check data"<<std::endl;
       if(!check_data(images[n],i)) {++check_error;std::cout<<"compution error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<image(0)<<")."<<std::endl<<std::flush;}
-    }
+    }//do_check
 
     //wait lock
     c=0;
