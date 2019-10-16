@@ -107,8 +107,10 @@ public:
     {
       CImg<Tdata> imgt(img);
       imgt=img+img;//*img;
-      imgt.print("imgt");
+
+            imgt.print("imgt");
       this->image.print("image");
+
       return (this->image==imgt);
     }//do_check
     return true;

@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.3.6"
+#define VERSION "v0.3.8d"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -147,7 +147,7 @@ int main(int argc,char **argv)
       {//GPU
      #ifdef DO_GPU_NO_QUEUE
       std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
-      process=new CDataProcessorGPU<Tdata, Taccess>(locks, gpu,width
+      process=new CDataProcessorGPU_lambda<Tdata, Taccess>(locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
