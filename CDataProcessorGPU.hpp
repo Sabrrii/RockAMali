@@ -111,7 +111,10 @@ public:
             imgt.print("imgt");
       this->image.print("image");
 
-      return (this->image==imgt);
+//      return (this->image==imgt);
+      bool ret=true;
+      cimg_forX(imgt,x) if((this->image(x))!=imgt(x)) {ret=false;break;}
+      return ret;
     }//do_check
     return true;
   }//check_data
