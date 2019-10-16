@@ -52,6 +52,17 @@ public:
     out=in;
   };//kernel
 
+  //! check data operation (test only, as very long compution function)
+  virtual bool check_data(CImg<Tdata> &img, int i)
+  {
+    if(do_check)
+    {
+//      return (image==img);
+      return (image==i);
+    }//do_check
+    return true;
+  }//check_data
+
   //! one iteration for any loop
   virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, CImg<Taccess> &accessR,CImgList<Tdata> &results, int n, int i)
   {
@@ -73,7 +84,7 @@ public:
         //check
         if(do_check)
         {
-          if(images[n] ==i) NULL; else {++check_error;std::cout<<"compution error: bad generate class for this test."<<std::endl<<std::flush;}
+          if(images[n]==i) NULL; else {++check_error;std::cout<<"compution error: bad generate class for this test."<<std::endl<<std::flush;}
         }
 
     //unlock
@@ -88,11 +99,11 @@ public:
       this->lprint.unset_lock();
     }
 
-        //check
-        if(do_check)
-        {
-          if(image==i) NULL; else {++check_error;std::cout<<"compution error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<image(0)<<")."<<std::endl<<std::flush;}
-        }
+    //check
+    if(do_check)
+    {
+      if(!check_data(images[n],i)) {++check_error;std::cout<<"compution error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<image(0)<<")."<<std::endl<<std::flush;}
+    }
 
     //wait lock
     c=0;

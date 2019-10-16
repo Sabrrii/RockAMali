@@ -101,13 +101,26 @@ public:
     this->check_locks(lock);
   }//constructor
 
+  virtual bool check_data(CImg<Tdata> &img, int i)
+  {
+    if(this->do_check)
+    {
+      CImg<Tdata> imgt(img);
+      imgt=img+img;//*img;
+      imgt.print("imgt");
+      this->image.print("image");
+      return (this->image==imgt);
+    }//do_check
+    return true;
+  }//check_data
+
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
     //compute with lambda
     using compute::lambda::_1;
     compute::transform(in.begin(), in.end(), out.begin(),
-      _1+_1*_1 , this->queue);
+      _1+_1/**_1*/ , this->queue);
   };//kernelGPU
 
 };//CDataProcessorGPU_lambda
