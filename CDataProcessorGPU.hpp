@@ -107,11 +107,8 @@ public:
     if(this->do_check)
     {
       CImg<Tdata> imgt(img);
-      cimg_forX(imgt,x) imgt(x)=img(x)+img(x)*img(x);
-//      imgt=img+img;
+      CDataProcessor_vPvMv<Tdata, Taccess>::kernelCPU(img,imgt);
       return (this->image==imgt);
-      //fast check
-//      return (this->image(0)==i*2);
     }//do_check
     return true;
   }//check_data
@@ -123,7 +120,6 @@ public:
     using compute::lambda::_1;
     compute::transform(in.begin(), in.end(), out.begin(),
       _1+_1*_1 , this->queue);
-//      _1+_1 , this->queue);
   };//kernelGPU
 
 };//CDataProcessorGPU_lambda

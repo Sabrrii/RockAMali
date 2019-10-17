@@ -171,7 +171,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
   {
     out=in;
     cimg_forX(in,x) out(x)+=in(x)*in(x);
-  };//kernel
+  };//kernelCPU
 
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
