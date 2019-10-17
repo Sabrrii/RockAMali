@@ -156,8 +156,8 @@ int main(int argc,char **argv)
 #endif
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
-      CDataProcessor<Tdata,Taccess> process(locks
-//      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
+//      CDataProcessor<Tdata,Taccess> process(locks
+      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check

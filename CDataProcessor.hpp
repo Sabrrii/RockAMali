@@ -172,8 +172,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
   {
-std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
-    cimg_forX(in,x) out(x)=in(x)+in(x)*in(x);
+    out=in;
+    cimg_forX(in,x) out(x)+=in(x)*in(x);
   };//kernel
 
 };//CDataProcessor_vPvMv
