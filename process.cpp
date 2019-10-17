@@ -199,8 +199,8 @@ int main(int argc,char **argv)
   access.print("access (free state)",false);fflush(stderr);
   images.print("CImgList",false);
 
-  access.print("accessR (free state)",false);fflush(stderr);
-  images.print("CImgListR",false);
+  accessR.print("accessR (free state)",false);fflush(stderr);
+  results.print("CImgListR",false);
 
   return 0;
 }//main
