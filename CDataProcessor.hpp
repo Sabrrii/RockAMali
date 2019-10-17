@@ -131,10 +131,16 @@ public:
 
 };//CDataProcessor
 
-//! complex operation with lambda for GPU process
+//! complex operation for GPU process (intended for GPU lambda)
 /**
  * 
 **/
+template<typename Tdata>
+void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tdata> &out)
+{
+  out=in;
+  cimg_forX(in,x) out(x)+=in(x)*in(x);
+};//kernelCPU
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor_vPvMv : public CDataProcessor<Tdata, Taccess>
 {
@@ -169,8 +175,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
   //! compution kernel for an iteration
   virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
   {
-    out=in;
-    cimg_forX(in,x) out(x)+=in(x)*in(x);
+    kernelCPU_vPvMv(in,out);
   };//kernelCPU
 
   //! compution kernel for an iteration
