@@ -58,7 +58,7 @@ doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.
 NP=4
 NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*4   | bc`
-NS=`echo $(NP)*32  | bc`
+NS=`echo $(NP)*48  | bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
 #	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --use-GPU --do-check 2>&1 | grep -e info -e test -e failed -e double -e fault --color

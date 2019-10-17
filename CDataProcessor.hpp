@@ -166,7 +166,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
   virtual bool check_data(CImg<Tdata> &img, int i)
   {
-std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
+//std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
       CImg<Tdata> imgt(img);
