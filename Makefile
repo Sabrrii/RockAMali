@@ -16,7 +16,7 @@ LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-DO_GPU=
+#DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -61,8 +61,8 @@ NB=`echo $(NP)*4   | bc`
 NS=`echo $(NP)*96  | bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
-#	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --use-GPU --do-check 2>&1 | grep -e info -e test -e failed -e double -e fault --color
-	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --do-check 2>&1 | grep -e info -e test -e failed -e double -e fault --color
+	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --use-GPU --do-check 2>&1 | grep -e info -e test -e failed -e double -e fault --color
+#	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --do-check 2>&1 | grep -e info -e test -e failed -e double -e fault --color
 
 process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 --do-check --use-GPU
