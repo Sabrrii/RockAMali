@@ -80,7 +80,7 @@ public:
 
 //! complex operation with lambda for GPU process
 /**
- * val+val*val
+ *  _1 * 2 + 123
 **/
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_lambda : public CDataProcessorGPU<Tdata, Taccess>
@@ -123,6 +123,60 @@ public:
   };//kernelGPU
 
 };//CDataProcessorGPU_lambda
+
+//! complex operation with closure for GPU process
+/**
+ *  _1 * 2 + 123
+**/
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataProcessorGPU_closure : public CDataProcessorGPU<Tdata, Taccess>
+{
+public:
+  CDataProcessorGPU_closure(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessorGPU_vMcPc_closure";
+    this->check_locks(lock);
+  }//constructor
+
+  virtual bool check_data(CImg<Tdata> &img, int i)
+  {
+//std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
+    if(this->do_check)
+    {
+      CImg<Tdata> imgt;
+      kernelCPU_vMcPc(img,imgt);
+      return (this->image==imgt);
+    }//do_check
+    return true;
+  }//check_data
+
+  //! compution kernel for an iteration (compution=copy, here)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  {
+    //compute with closure
+    int two = 2;
+    float cst = 123;
+    BOOST_COMPUTE_CLOSURE(float, add_two_and_pi, (float x), (two, cst),
+    {
+        return x * two + cst;
+    });
+
+    compute::transform(in.begin(), in.end(), out.begin(),
+      in.begin(), in.end(), out.begin(), add_two_and_pi,
+      , this->queue);
+
+  };//kernelGPU
+
+};//CDataProcessorGPU_closure
 
 #endif //_DATA_PROCESSOR_GPU_
 
