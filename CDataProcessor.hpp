@@ -140,7 +140,7 @@ void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tdata> &out)
 {
   out=in;
   cimg_forX(in,x) out(x)+=in(x)*in(x);
-};//kernelCPU_vPvMv
+}//kernelCPU_vPvMv
 //! complex operation for CPU process (intended for GPU lambda)
 /**
  * val+val*val
