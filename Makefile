@@ -64,7 +64,7 @@ process_run:
 	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --use-GPU --do-check #2>&1 | grep -e info -e test -e failed -e double -e fault --color
 
 process_sequential_run:
-	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 258 --do-check --use-GPU
+	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 --do-check --use-GPU
 
 send_run:
 	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 12345 -w 12345678
