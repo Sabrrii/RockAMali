@@ -59,7 +59,7 @@ receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp CDataProcessor.hpp CDat
 doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp CDataProcessor.hpp CDataProcessorGPU.hpp CDataStore.hpp
 	./doxygen.sh
 
-NP=4
+NP=6
 NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*16  | bc`
 NS=`echo $(NP)*8192| bc`

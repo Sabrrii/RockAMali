@@ -17,13 +17,13 @@ make clear; ./process -s 16384 ... &>/dev/null  #230MB/s (8.1GB/35s)
 
 
 
-receive
+process
 PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND     
- 2109 rock64    20   0  606828  10820   8476 S 309.3  0.3   0:11.13 process     
+ 2275 rock64    20   0  754816  11448   8628 S 151.6  0.3   0:23.58 process     
 
 sudo iotop
   TID  PRIO  USER     DISK READ DISK WRITE>  SWAPIN      IO    COMMAND          
- 2179 ?sys rock64      0.00 B/s   34.85 M/s  0.00 %  0.00 % ./process~--do-check
+ 2296 ?sys rock64      0.00 B/s   10.02 M/s  0.00 %  1.01 % ./process~--do-check
 
 
 
