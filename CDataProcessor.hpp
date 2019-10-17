@@ -52,7 +52,12 @@ public:
     out=in;
   };//kernel
 
-  //! check data operation (test only, as very long compution function)
+  //! check data operation (test only, as very long compution function, and might lock data access for other threads)
+  /**
+   * check local result data (i.e. \c image member of this class) regarding to processed input data (i.e. \c img e.g. \c images[n]).
+   * processing of input data to result one is on CPU and takes lot of time regarding to normal processing: test only !
+   * \warning input data should be locked during this function, e.g. data not available for other threads
+  **/
   virtual bool check_data(CImg<Tdata> &img, int i)
   {
     if(do_check)
@@ -82,11 +87,15 @@ public:
     //compution in local
     kernel(images[n],image);
 
-        //check
-        if(do_check)
-        {
-          if(images[n]==i) NULL; else {++check_error;std::cout<<"compution error: bad generate class for this test."<<std::endl<<std::flush;}
-        }
+    //check
+    if(do_check)
+    {
+//std::cout<<__FILE__<<"::"<<__func__<<"(...) do check data"<<std::endl;
+      //check input
+      if(images[n]==i) NULL; else {++check_error;std::cout<<"compution error: bad generate class for this test."<<std::endl<<std::flush;}
+      //check output
+      if(!check_data(images[n],i)) {++check_error;std::cout<<"compution error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<image(0)<<")."<<std::endl<<std::flush;}
+    }//do_check
 
     //unlock
     this->laccess.set_status(access[n],this->STATE_PROCESSING,this->set_status, this->class_name[5],i,n,c);//processing, processed
@@ -99,13 +108,6 @@ public:
       accessR.print("accessR",false);fflush(stderr);
       this->lprint.unset_lock();
     }
-
-    //check
-    if(do_check)
-    {
-//std::cout<<__FILE__<<"::"<<__func__<<"(...) do check data"<<std::endl;
-      if(!check_data(images[n],i)) {++check_error;std::cout<<"compution error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<image(0)<<")."<<std::endl<<std::flush;}
-    }//do_check
 
     //wait lock
     c=0;
