@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.3.9d"
+#define VERSION "v0.3.9"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -207,7 +207,7 @@ int main(int argc,char **argv)
         if(do_check)
         {
           if(images[0] ==i) NULL; else {++check_error;std::cout<<"compution error: bad main generate class for this test."<<std::endl<<std::flush;}
-          if(results[0]==i*2) NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
+          if(results[0]==i+i*i) NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
         }
       }//vector loop
       break;

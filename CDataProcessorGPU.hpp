@@ -107,8 +107,8 @@ public:
     if(this->do_check)
     {
       CImg<Tdata> imgt(img);
-//      cimg_forX(imgt,x) imgt(x)=img(x)+img(x)*img(x);
-      imgt=img+img;
+      cimg_forX(imgt,x) imgt(x)=img(x)+img(x)*img(x);
+//      imgt=img+img;
       return (this->image==imgt);
       //fast check
 //      return (this->image(0)==i*2);
@@ -122,8 +122,8 @@ public:
     //compute with lambda
     using compute::lambda::_1;
     compute::transform(in.begin(), in.end(), out.begin(),
-//      _1+_1*_1 , this->queue);
-      _1+_1 , this->queue);
+      _1+_1*_1 , this->queue);
+//      _1+_1 , this->queue);
   };//kernelGPU
 
 };//CDataProcessorGPU_lambda
