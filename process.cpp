@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.3.9"
+#define VERSION "v0.4.0d"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -131,34 +131,6 @@ int main(int argc,char **argv)
       break;
     }//generate
     case 1:
-    {//process
-#ifdef DO_GPU
-      if(use_GPU)
-      {//GPU
-      std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
-      CDataProcessorGPU_lambda<Tdata, Taccess> process(locks, gpu,width
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
-      , do_check
-      );
-      process.run(access,images, accessR,results, count, stride,start);
-      process.show_checking();
-      }//GPU
-      else
-#endif
-      {//CPU
-      std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
-      CDataProcessor<Tdata,Taccess> process(locks
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
-      , do_check
-      );
-      process.run(access,images, accessR,results, count, stride,start);
-      process.show_checking();
-      }//CPU
-      break;
-    }//process
-    case 2:
     {//store
       CDataStore<Tdata,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
       store.run(accessR,results, count);
@@ -171,7 +143,8 @@ int main(int argc,char **argv)
       if(use_GPU)
       {//GPU
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
-      CDataProcessorGPU<Tdata, Taccess> process(locks, gpu,width
+//      CDataProcessorGPU<Tdata, Taccess> process(locks, gpu,width
+      CDataProcessorGPU_lambda<Tdata, Taccess> process(locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
@@ -183,7 +156,8 @@ int main(int argc,char **argv)
 #endif
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
-      CDataProcessor<Tdata,Taccess> process(locks
+//      CDataProcessor<Tdata,Taccess> process(locks
+      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check

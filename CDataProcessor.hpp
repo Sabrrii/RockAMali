@@ -131,5 +131,52 @@ public:
 
 };//CDataProcessor
 
+//! complex operation with lambda for GPU process
+/**
+ * 
+**/
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataProcessor_vPvMv : public CDataProcessor<Tdata, Taccess>
+{
+public:
+  CDataProcessor_vPvMv(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessor_vPvMv";
+std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+    this->check_locks(lock);
+  }//constructor
+
+  virtual bool check_data(CImg<Tdata> &img, int i)
+  {
+std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
+    if(this->do_check)
+    {
+      CImg<Tdata> imgt(img);
+      cimg_forX(imgt,x) imgt(x)=img(x)+img(x)*img(x);
+//      imgt=img+img;
+      return (this->image==imgt);
+      //fast check
+//      return (this->image(0)==i+i*i);
+    }//do_check
+    return true;
+  }//check_data
+
+  //! compution kernel for an iteration
+  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  {
+std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
+    cimg_forX(in,x) out(x)=in(x)+in(x)*in(x);
+  };//kernel
+
+};//CDataProcessor_vPvMv
+
 #endif //_DATA_PROCESSOR_
 
