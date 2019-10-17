@@ -160,20 +160,23 @@ std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
       CImg<Tdata> imgt(img);
-      cimg_forX(imgt,x) imgt(x)=img(x)+img(x)*img(x);
-//      imgt=img+img;
+      kernelCPU(img,imgt);
       return (this->image==imgt);
-      //fast check
-//      return (this->image(0)==i+i*i);
     }//do_check
     return true;
   }//check_data
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
   {
     out=in;
     cimg_forX(in,x) out(x)+=in(x)*in(x);
+  };//kernel
+
+  //! compution kernel for an iteration
+  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  {
+    kernelCPU(in,out);
   };//kernel
 
 };//CDataProcessor_vPvMv
