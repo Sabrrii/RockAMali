@@ -1,8 +1,8 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 FRAME_SIZE=2048
-USE_GPU=--use-GPU
-#USE_GPU=
+#USE_GPU=--use-GPU
+USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
 
@@ -20,7 +20,7 @@ LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-#DO_GPU=
+DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp

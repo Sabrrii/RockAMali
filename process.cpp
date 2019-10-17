@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.0"
+#define VERSION "v0.4.1d"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -144,7 +144,8 @@ int main(int argc,char **argv)
       {//GPU
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
 //      CDataProcessorGPU<Tdata, Taccess> process(locks, gpu,width
-      CDataProcessorGPU_vPvMv_lambda<Tdata, Taccess> process(locks, gpu,width
+//      CDataProcessorGPU_vPvMv_lambda<Tdata, Taccess> process(locks, gpu,width
+      CDataProcessorGPU_lambda<Tdata, Taccess> process(locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
@@ -157,7 +158,8 @@ int main(int argc,char **argv)
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
 //      CDataProcessor<Tdata,Taccess> process(locks
-      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
+//      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
+      CDataProcessor_kernel<Tdata,Taccess> process(locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check

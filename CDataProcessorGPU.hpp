@@ -83,10 +83,10 @@ public:
  * val+val*val
 **/
 template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU_vPvMv_lambda : public CDataProcessorGPU<Tdata, Taccess>
+class CDataProcessorGPU_lambda : public CDataProcessorGPU<Tdata, Taccess>
 {
 public:
-  CDataProcessorGPU_vPvMv_lambda(std::vector<omp_lock_t*> &lock
+  CDataProcessorGPU_lambda(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
@@ -97,7 +97,7 @@ public:
   : CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
-    this->class_name="CDataProcessorGPU_vPvMv_lambda";
+    this->class_name="CDataProcessorGPU_vMcPc_lambda";
     this->check_locks(lock);
   }//constructor
 
@@ -107,7 +107,7 @@ public:
     if(this->do_check)
     {
       CImg<Tdata> imgt;
-      kernelCPU_vPvMv(img,imgt);
+      kernelCPU_vMcPc(img,imgt);
       return (this->image==imgt);
     }//do_check
     return true;
@@ -119,10 +119,10 @@ public:
     //compute with lambda
     using compute::lambda::_1;
     compute::transform(in.begin(), in.end(), out.begin(),
-      _1 + 123 , this->queue);
+      _1 * 2 + 123 , this->queue);
   };//kernelGPU
 
-};//CDataProcessorGPU_vPvMv_lambda
+};//CDataProcessorGPU_lambda
 
 #endif //_DATA_PROCESSOR_GPU_
 
