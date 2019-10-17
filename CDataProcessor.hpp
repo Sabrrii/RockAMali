@@ -131,16 +131,20 @@ public:
 
 };//CDataProcessor
 
-//! complex operation for GPU process (intended for GPU lambda)
+//! complex operation for CPU process (intended for GPU lambda)
 /**
- * 
+ * val+val*val
 **/
 template<typename Tdata>
 void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tdata> &out)
 {
   out=in;
   cimg_forX(in,x) out(x)+=in(x)*in(x);
-};//kernelCPU
+};//kernelCPU_vPvMv
+//! complex operation for CPU process (intended for GPU lambda)
+/**
+ * val+val*val
+**/
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor_vPvMv : public CDataProcessor<Tdata, Taccess>
 {

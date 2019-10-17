@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.0f"
+#define VERSION "v0.4.0h"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -110,6 +110,9 @@ int main(int argc,char **argv)
 
   //do check
   unsigned int check_error=0;
+  //info
+  std::string   process_class_name;
+  std::string deprocess_class_name;
 
 #ifdef DO_GPU
   //Choosing the target for OpenCL computing
@@ -148,7 +151,7 @@ int main(int argc,char **argv)
      #ifdef DO_GPU_NO_QUEUE
       std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
 //      process=new CDataProcessorGPU<Tdata, Taccess>(locks, gpu,width
-      process=new CDataProcessorGPU_lambda<Tdata, Taccess>(locks, gpu,width
+      process=new CDataProcessorGPU_vPvMv_lambda<Tdata, Taccess>(locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
@@ -176,6 +179,7 @@ int main(int argc,char **argv)
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
+      deprocess_class_name=deprocess->class_name;
      #endif //!DO_GPU_SEQ_QUEUE
      #endif //!DO_GPU_NO_QUEUE
       }//GPU
@@ -190,6 +194,7 @@ int main(int argc,char **argv)
       , do_check
       );
       }//CPU
+      process_class_name=process->class_name;
      //store
       CDataStore<Tdata,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
       //run
@@ -209,7 +214,8 @@ int main(int argc,char **argv)
         if(do_check)
         {
           if(images[0] ==i) NULL; else {++check_error;std::cout<<"compution error: bad main generate class for this test."<<std::endl<<std::flush;}
-          if(results[0]==i+i*i) NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
+          //if(results[0]==i+i*i) NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
+         process->show_checking();
         }
       }//vector loop
       break;
@@ -225,8 +231,17 @@ int main(int argc,char **argv)
 
   if(do_check)
   {
-    if(check_error>0) std::cout<<"test: fail ("<<check_error<<" errors over "<<count<<" iterations)."<<std::endl;
-    else std::cout<<"test: pass."<<std::endl;
+    if(check_error>0) std::cout<<"test: fail ("<<check_error<<" errors over "<<count<<" iterations)";
+    else std::cout<<"test: pass";
+    std::cout<<" (with "<<process_class_name;
+#ifdef DO_GPU
+       #ifndef DO_GPU_NO_QUEUE
+       #ifndef DO_GPU_SEQ_QUEUE
+       std::cout<<" and "<<deprocess_class_name;
+       #endif //!DO_GPU_SEQ_QUEUE
+       #endif //!DO_GPU_NO_QUEUE
+#endif
+    std::cout<<")"<<std::endl;
   }//if
   return 0;
 }//main

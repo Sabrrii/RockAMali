@@ -80,13 +80,13 @@ public:
 
 //! complex operation with lambda for GPU process
 /**
- * 
+ * val+val*val
 **/
 template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU_lambda : public CDataProcessorGPU<Tdata, Taccess>
+class CDataProcessorGPU_vPvMv_lambda : public CDataProcessorGPU<Tdata, Taccess>
 {
 public:
-  CDataProcessorGPU_lambda(std::vector<omp_lock_t*> &lock
+  CDataProcessorGPU_vPvMv_lambda(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
@@ -97,7 +97,7 @@ public:
   : CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
-    this->class_name="CDataProcessorGPU_lambda";
+    this->class_name="CDataProcessorGPU_vPvMv_lambda";
     this->check_locks(lock);
   }//constructor
 
@@ -122,7 +122,7 @@ public:
       _1+_1*_1 , this->queue);
   };//kernelGPU
 
-};//CDataProcessorGPU_lambda
+};//CDataProcessorGPU_vPvMv_lambda
 
 #endif //_DATA_PROCESSOR_GPU_
 
