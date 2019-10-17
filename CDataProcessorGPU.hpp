@@ -119,7 +119,7 @@ public:
     //compute with lambda
     using compute::lambda::_1;
     compute::transform(in.begin(), in.end(), out.begin(),
-      _1+_1*_1 , this->queue);
+      _1 + 123 , this->queue);
   };//kernelGPU
 
 };//CDataProcessorGPU_vPvMv_lambda
