@@ -1,8 +1,8 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 FRAME_SIZE=2048
-#USE_GPU=--use-GPU
-USE_GPU=
+USE_GPU=--use-GPU
+#USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
 
@@ -59,7 +59,7 @@ receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp CDataProcessor.hpp CDat
 doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp CDataProcessor.hpp CDataProcessorGPU.hpp CDataStore.hpp
 	./doxygen.sh
 
-NP=6
+NP=2
 NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*16  | bc`
 NS=`echo $(NP)*8192| bc`
