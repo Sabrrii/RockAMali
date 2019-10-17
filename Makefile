@@ -1,6 +1,10 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 FRAME_SIZE=2048
+#USE_GPU=--use-GPU
+USE_GPU=
+DO_CHECK=--do-check
+#DO_CHECK=
 
 DATA=./
 DATA=/media/temp/
@@ -15,8 +19,8 @@ LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fope
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
-DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-#DO_GPU=
+#DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
+DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -61,12 +65,10 @@ NB=`echo $(NP)*16  | bc`
 NS=`echo $(NP)*8192| bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
-	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --use-GPU --do-check 2>&1 | grep -e info -e test -e failed -e double -e fault --color
-#	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) --do-check 2>&1 | grep -e info -e test -e failed -e double -e fault --color
+	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault --color
 
 process_sequential_run:
-	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 --do-check --use-GPU
-#	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 --do-check
+	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
 
 send_run:
 	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 12345 -w 12345678
