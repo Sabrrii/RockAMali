@@ -19,8 +19,8 @@ LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fope
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
-#DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-DO_GPU=
+DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
+#DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -59,7 +59,7 @@ receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp CDataProcessor.hpp CDat
 doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp CDataProcessor.hpp CDataProcessorGPU.hpp CDataStore.hpp
 	./doxygen.sh
 
-NP=2
+NP=4
 NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*16  | bc`
 NS=`echo $(NP)*8192| bc`
