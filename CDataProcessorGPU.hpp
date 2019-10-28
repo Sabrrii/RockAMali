@@ -250,10 +250,7 @@ public:
     this->class_name="CDataProcessorGPU_function_vMcPc_uInt";
     this->check_locks(lock);
     //make OpenCL function
-    vMcPc=new compute::make_function_from_source<Tdata (Tdata)>(
-        "vMcPc",
-        "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
-    );
+//
   }//constructor
 
   virtual bool check_data(CImg<Tdata> &img, int i)
@@ -271,6 +268,11 @@ public:
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
+    compute::function<Tdata (Tdata)> tmp=compute::make_function_from_source<Tdata (Tdata)>(
+        "vMcPc",
+        "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
+    );
+    vMcPc=&tmp;
     compute::transform(in.begin(), in.end(), out.begin(),
       *vMcPc , this->queue);
   };//kernelGPU
