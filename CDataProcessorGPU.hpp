@@ -234,7 +234,7 @@ public:
 template<typename Tdata=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_function : public CDataProcessorGPU<Tdata, Taccess>
 {
-  compute::function<Tdata (Tdata)> vMcPc;
+  compute::function<Tdata (Tdata)> *vMcPc;
 public:
   CDataProcessorGPU_function(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -272,9 +272,9 @@ public:
         "vMcPc",
         "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
     );
-    vMcPc=tmp;
+    vMcPc=&tmp;
     compute::transform(in.begin(), in.end(), out.begin(),
-      vMcPc , this->queue);
+      *vMcPc , this->queue);
   };//kernelGPU
 
 };//CDataProcessorGPU_function
