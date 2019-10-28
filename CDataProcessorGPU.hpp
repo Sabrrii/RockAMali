@@ -171,7 +171,6 @@ public:
 
 };//CDataProcessorGPU_function_lambda
 
-
 //! complex operation with closure for GPU process
 /**
  *  FMA: _1 * 2 + 123
@@ -226,6 +225,56 @@ public:
   };//kernelGPU
 
 };//CDataProcessorGPU_closure
+
+//! complex operation with function for GPU process
+/**
+ *  FMA: val * 2 + 123
+ *  \warning: Tdata should be unsigned int as function from source lock type
+**/
+template<typename Tdata=unsigned int, typename Taccess=unsigned char>
+class CDataProcessorGPU_function : public CDataProcessorGPU<Tdata, Taccess>
+{
+public:
+  CDataProcessorGPU_function(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessorGPU_function_vMcPc";
+    this->check_locks(lock);
+  }//constructor
+
+  virtual bool check_data(CImg<Tdata> &img, int i)
+  {
+//std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
+    if(this->do_check)
+    {
+      CImg<Tdata> imgt;
+      kernelCPU_vMcPc(img,imgt);
+      return (this->image==imgt);
+    }//do_check
+    return true;
+  }//check_data
+
+  //! compution kernel for an iteration (compution=copy, here)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  {
+    compute::function<Tdata (Tdata)> vMcPc =
+    compute::make_function_from_source<Tdata (Tdata)>(
+        "vMcPc",
+        "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
+    );
+    compute::transform(in.begin(), in.end(), out.begin(),
+      vMcPc , this->queue);
+  };//kernelGPU
+
+};//CDataProcessorGPU_function
 
 #endif //_DATA_PROCESSOR_GPU_
 
