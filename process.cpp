@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.1d"
+#define VERSION "v0.4.1"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -145,7 +145,8 @@ int main(int argc,char **argv)
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
 //      CDataProcessorGPU<Tdata, Taccess> process(locks, gpu,width
 //      CDataProcessorGPU_vPvMv_lambda<Tdata, Taccess> process(locks, gpu,width
-      CDataProcessorGPU_lambda<Tdata, Taccess> process(locks, gpu,width
+//      CDataProcessorGPU_lambda<Tdata, Taccess> process(locks, gpu,width
+      CDataProcessorGPU_closure<Tdata, Taccess> process(locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check

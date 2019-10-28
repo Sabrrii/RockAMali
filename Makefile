@@ -1,5 +1,6 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
+## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=2048
 USE_GPU=--use-GPU
 #USE_GPU=

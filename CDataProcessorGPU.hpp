@@ -80,7 +80,7 @@ public:
 
 //! complex operation with lambda for GPU process
 /**
- *  _1 * 2 + 123
+ *  FMA: _1 * 2 + 123
 **/
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_lambda : public CDataProcessorGPU<Tdata, Taccess>
@@ -126,7 +126,7 @@ public:
 
 //! complex operation with closure for GPU process
 /**
- *  _1 * 2 + 123
+ *  FMA: _1 * 2 + 123
 **/
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_closure : public CDataProcessorGPU<Tdata, Taccess>
@@ -163,20 +163,23 @@ public:
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
     //compute with closure
-    int two = 2;
-    float cst = 123;
-    BOOST_COMPUTE_CLOSURE(float, add_two_and_pi, (float x), (two, cst),
+    Tdata mul = 2;
+    Tdata cst = 123;
+    BOOST_COMPUTE_CLOSURE(Tdata, vMcPc, (Tdata x), (mul, cst),
     {
-        return x * two + cst;
+        return x * mul + cst;
     });
 
-    compute::transform(in.begin(), in.end(), out.begin(),
-      in.begin(), in.end(), out.begin(), add_two_and_pi,
+    compute::transform(in.begin(), in.end(), out.begin()
+      , vMcPc
       , this->queue);
 
   };//kernelGPU
 
 };//CDataProcessorGPU_closure
+
+//FUNCTION
+
 
 #endif //_DATA_PROCESSOR_GPU_
 
