@@ -250,11 +250,10 @@ public:
     this->class_name="CDataProcessorGPU_function_vMcPc_uInt";
     this->check_locks(lock);
     //make OpenCL function
-    compute::function<Tdata (Tdata)> tmp=compute::make_function_from_source<Tdata (Tdata)>(
+    vMcPc=new compute::make_function_from_source<Tdata (Tdata)>(
         "vMcPc",
         "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
     );
-    vMcPc=&tmp;
   }//constructor
 
   virtual bool check_data(CImg<Tdata> &img, int i)
