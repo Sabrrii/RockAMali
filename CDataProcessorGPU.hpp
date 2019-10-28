@@ -230,6 +230,7 @@ public:
 /**
  *  FMA: val * 2 + 123
  *  \warning: Tdata should be unsigned int as function from source lock type
+ *  \note: function is static code (for compute::make_function_from_source, in constructor)
 **/
 template<typename Tdata=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_function : public CDataProcessorGPU<Tdata, Taccess>
@@ -285,6 +286,11 @@ public:
 template<typename Tdata=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_function_macro : public CDataProcessorGPU<Tdata, Taccess>
 {
+//OpenCL function for this class
+  BOOST_COMPUTE_FUNCTION(Tdata, vMcPc, (Tdata x),
+  {
+    return x *2 + 123;
+  });
 public:
   CDataProcessorGPU_function_macro(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -316,10 +322,6 @@ public:
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
-    BOOST_COMPUTE_FUNCTION(Tdata, vMcPc, (Tdata x),
-    {
-      return x *2 + 123;
-    });
     compute::transform(in.begin(), in.end(), out.begin(),
       vMcPc , this->queue);
   };//kernelGPU
