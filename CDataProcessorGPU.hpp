@@ -234,6 +234,7 @@ public:
 template<typename Tdata=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_function : public CDataProcessorGPU<Tdata, Taccess>
 {
+  compute::function<Tdata (Tdata)> *vMcPc;
 public:
   CDataProcessorGPU_function(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -248,6 +249,12 @@ public:
     this->debug=true;
     this->class_name="CDataProcessorGPU_function_vMcPc_uInt";
     this->check_locks(lock);
+    //make OpenCL function
+    compute::function<Tdata (Tdata)> tmp=compute::make_function_from_source<Tdata (Tdata)>(
+        "vMcPc",
+        "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
+    );
+    vMcPc=&tmp;
   }//constructor
 
   virtual bool check_data(CImg<Tdata> &img, int i)
@@ -265,13 +272,8 @@ public:
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
-    compute::function<Tdata (Tdata)> vMcPc =
-    compute::make_function_from_source<Tdata (Tdata)>(
-        "vMcPc",
-        "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
-    );
     compute::transform(in.begin(), in.end(), out.begin(),
-      vMcPc , this->queue);
+      *vMcPc , this->queue);
   };//kernelGPU
 
 };//CDataProcessorGPU_function
