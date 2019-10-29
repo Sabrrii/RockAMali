@@ -144,18 +144,23 @@ int main(int argc,char **argv)
       if(use_GPU)
       {//GPU
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
+      ///factory type list
       std::vector<std::string> type_list;
+      if(start==0)
+      {//show only once
+        CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU("list types",type_list, locks, gpu);
+        CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);
+      }//show only once
+      ///GPU process
 //      CDataProcessorGPU<Tdata, Taccess> *process(locks, gpu,width
       CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(
-        processing_type
+        processing_type,type_list
       , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
-      , type_list
       );
-      CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);
-      std::cout<<"information: processing type is the one of "<<process->class_name<<" class."<<std::endl<<std::flush;
+      std::cout<<"information: processing type is the one in "<<process->class_name<<" class."<<std::endl<<std::flush;
       process->run(access,images, accessR,results, count, stride,start);
       process->show_checking();
       }//GPU

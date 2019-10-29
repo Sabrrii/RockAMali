@@ -11,15 +11,15 @@ template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPUfactory
 {
 public:
-  static CDataProcessorGPU<Tdata, Taccess> *NewCDataProcessorGPU(const std::string &name
-  , std::vector<omp_lock_t*> &lock
-  , compute::device device, int VECTOR_SIZE
+  static CDataProcessorGPU<Tdata, Taccess> *NewCDataProcessorGPU(const std::string &name//="list types"
+  , std::vector<std::string> &factory_types
+  , std::vector<omp_lock_t*> &lock//=NULL
+  , compute::device device, int VECTOR_SIZE=0
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
-  , std::vector<std::string> &factory_types=NULL
   )
   {
     //reset
@@ -51,8 +51,11 @@ public:
   }//NewCDataProcessorGPU
   static void show_factory_types(std::vector<std::string> &factory_types)
   {
-    for(int i=0;i<factory_types.size();++i)
+    std::cout<<"information: GPU processing type are: ";
+    unsigned int i;
+    for(i=0;i<factory_types.size()-1;++i)
       std::cout<<factory_types[i]<<", ";
+    std::cout  <<factory_types[i]<<".";
   }
 };//CDataProcessorGPUfactory
 
