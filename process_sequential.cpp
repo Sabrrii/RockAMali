@@ -17,7 +17,7 @@
 #ifdef DO_GPU
 #ifdef DO_GPU_NO_QUEUE
 #warning "DO_GPU_NO_QUEUE active (this must be CODE TEST only)"
-#include "CDataProcessorGPU.hpp"
+#include "CDataProcessorGPUfactory.hpp"
 #else //DO_GPU_NO_QUEUE
 #ifdef DO_GPU_SEQ_QUEUE
 #warning "DO_GPU_SEQ_QUEUE active (this must be CODE TEST only)"
@@ -156,8 +156,11 @@ int main(int argc,char **argv)
 //      process=new CDataProcessorGPU_closure<Tdata, Taccess>(locks, gpu,width
 //      process=new CDataProcessorGPU_function_lambda<Tdata, Taccess>(locks, gpu,width
 //      process=new CDataProcessorGPU_function<Tdata, Taccess>(locks, gpu,width
-      process=new CDataProcessorGPU_function_macro<Tdata, Taccess>(locks, gpu,width
+//      process=new CDataProcessorGPU_function_macro<Tdata, Taccess>(locks, gpu,width
 //      process=new CDataProcessorGPU_opencl<Tdata, Taccess>(locks, gpu,width
+      process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(
+      "program"
+      , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check

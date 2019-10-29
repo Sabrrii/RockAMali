@@ -9,13 +9,13 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.7g"
+#define VERSION "v0.4.7h"
 
 //thread lock
 #include "CDataGenerator.hpp"
 #include "CDataProcessor_morphomath.hpp"
 #ifdef DO_GPU
-#include "CDataProcessorGPU.hpp"
+#include "CDataProcessorGPUfactory.hpp"
 #endif
 #include "CDataStore.hpp"
 
@@ -149,14 +149,17 @@ int main(int argc,char **argv)
 //      CDataProcessorGPU_closure<Tdata, Taccess> process(locks, gpu,width
 //      CDataProcessorGPU_function_lambda<Tdata, Taccess> process(locks, gpu,width
 //      CDataProcessorGPU_function<Tdata, Taccess> process(locks, gpu,width
-      CDataProcessorGPU_function_macro<Tdata, Taccess> process(locks, gpu,width
+//      CDataProcessorGPU_function_macro<Tdata, Taccess> process(locks, gpu,width
 //      CDataProcessorGPU_opencl<Tdata, Taccess> process(locks, gpu,width
+      CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(
+      "copy"
+      , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
-      process.run(access,images, accessR,results, count, stride,start);
-      process.show_checking();
+      process->run(access,images, accessR,results, count, stride,start);
+      process->show_checking();
       }//GPU
       else
 #endif
