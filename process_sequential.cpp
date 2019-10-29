@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.7m"
+#define VERSION "v0.4.7"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -151,9 +151,14 @@ int main(int argc,char **argv)
       {//GPU
      #ifdef DO_GPU_NO_QUEUE
       std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
+      ///factory type list
+      std::vector<std::string> type_list;
+      CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU("list types",type_list, locks, gpu);
+      CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);
+      ///GPU process from factory
 //      process=new CDataProcessorGPU<Tdata, Taccess>(locks, gpu,width
       process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(
-        processing_type
+        processing_type,type_list
       , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
