@@ -11,7 +11,6 @@ template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPUfactory
 {
 public:
-  static std::vector<std::string> factory_types;
   static CDataProcessorGPU<Tdata, Taccess> *NewCDataProcessorGPU(const std::string &name
   , std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -20,6 +19,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
+  , std::vector<std::string> &factory_types=NULL
   )
   {
     //reset
@@ -49,7 +49,7 @@ public:
     std::cerr<<"Module name is unknown, i.e. \""<<name<<"\"."<<std::endl;
     return NULL;
   }//NewCDataProcessorGPU
-  static void show_factory_types(void)
+  static void show_factory_types(std::vector<std::string> &factory_types)
   {
     for(int i=0;i<factory_types.size();++i)
       std::cout<<factory_types[i]<<", ";
