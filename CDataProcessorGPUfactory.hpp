@@ -23,9 +23,18 @@ public:
   {
     if(name == "copy")
       return new CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-//    if(name == "program")
-//      return new CDataProcessorGPU_opencl<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-//    if(name == "function")
+    if(name == "program")
+      return new CDataProcessorGPU_opencl<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    if(name == "lambda")
+      return new CDataProcessorGPU_lambda<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    if(name == "closure")
+      return new CDataProcessorGPU_closure<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    if(name == "function")
+      return new CDataProcessorGPU_function<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    if(name == "function_lambda")
+      return new CDataProcessorGPU_function_lambda<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    if(name == "function_macro")
+      return new CDataProcessorGPU_function_macro<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
 
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;
