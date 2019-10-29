@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.7j"
+#define VERSION "v0.4.7k"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -53,6 +53,7 @@ int main(int argc,char **argv)
 #ifdef DO_GPU
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
+  const std::string processing_type=cimg_option("-p","program","GPU processing type, e.g. program or function");
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
         bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do_check or -C option
@@ -152,12 +153,13 @@ int main(int argc,char **argv)
       std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
 //      process=new CDataProcessorGPU<Tdata, Taccess>(locks, gpu,width
       process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(
-      "function"
+        processing_type
       , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
+      std::cout<<"information: processing type is the one of "<<process->class_name<<" class."<<std::endl<<std::flush;
      #else //DO_GPU_NO_QUEUE
      #ifdef  DO_GPU_SEQ_QUEUE
       std::cout<<"information: use GPU for processing (sequential queue)."<<std::endl<<std::flush;
