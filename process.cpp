@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.7"
+#define VERSION "v0.5.0"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -47,6 +47,8 @@ int main(int argc,char **argv)
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("-p","program","GPU processing type, e.g. program or function");
+  //show type list in factory
+  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
         bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do_check or -C option
@@ -144,17 +146,8 @@ int main(int argc,char **argv)
       if(use_GPU)
       {//GPU
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
-      ///factory type list
-      std::vector<std::string> type_list;
-      if(start==0)
-      {//show only once
-        CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU("list types",type_list, locks, gpu);
-        CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);
-      }//show only once
-      ///GPU process from factory
-//      CDataProcessorGPU<Tdata, Taccess> *process(locks, gpu,width
-      CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(
-        processing_type,type_list
+//      CDataProcessorGPU<Tdata, Taccess> *process(
+      CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(processing_type,type_list
       , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
