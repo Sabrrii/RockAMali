@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.7k"
+#define VERSION "v0.4.7l"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -152,6 +152,7 @@ int main(int argc,char **argv)
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
+      CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types();
       std::cout<<"information: processing type is the one of "<<process->class_name<<" class."<<std::endl<<std::flush;
       process->run(access,images, accessR,results, count, stride,start);
       process->show_checking();

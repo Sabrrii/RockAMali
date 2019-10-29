@@ -36,3 +36,25 @@ sudo iftop -i enp1s0
 RX:                    32.1MB           5.54Mb                            5.51Mb  5.53Mb  5.53Mb
 RX:                    49.0MB           5.56Mb                               0b   3.30Mb  4.99Mb
 
+factory GPU: "program" (CDataProcessorGPU_opencl_vMcPc)
+
+2 GPU ( 6MB/s)
+real	0m34.211s
+user	0m30.984s
+sys	0m46.484s
+
+3 GPU ( 7MB/s)
+real	0m37.222s
+user	0m49.759s
+sys	0m53.605s
+
+4 GPU (20MB/s)
+real	0m19.455s
+user	0m39.127s
+sys	0m33.835s
+
+6 GPU ( 8MB/s)
+real	0m48.972s
+user	0m54.046s
+sys	1m22.183s
+

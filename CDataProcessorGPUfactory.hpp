@@ -11,6 +11,7 @@ template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPUfactory
 {
 public:
+  static std::vector<std::string> factory_types;
   static CDataProcessorGPU<Tdata, Taccess> *NewCDataProcessorGPU(const std::string &name
   , std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -21,26 +22,38 @@ public:
   , bool do_check=false
   )
   {
-    if(name == "copy")
+    //reset
+    factory_types.clear();
+    //if
+    factory_types.push_back      ("copy")         ;if(name == factory_types.back())
       return new CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    if(name == "program")
+    factory_types.push_back      ("program")             ;if(name == factory_types.back())
       return new CDataProcessorGPU_opencl<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    if(name == "lambda")
+    factory_types.push_back      ("lambda")              ;if(name == factory_types.back())
       return new CDataProcessorGPU_lambda<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    if(name == "closure")
+    factory_types.push_back      ("closure")              ;if(name == factory_types.back())
       return new CDataProcessorGPU_closure<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    if(name == "function")
+    factory_types.push_back      ("function")              ;if(name == factory_types.back())
       return new CDataProcessorGPU_function<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    if(name == "function_lambda")
+    factory_types.push_back      ("function_lambda")              ;if(name == factory_types.back())
       return new CDataProcessorGPU_function_lambda<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    if(name == "function_macro")
+    factory_types.push_back      ("function_macro")              ;if(name == factory_types.back())
       return new CDataProcessorGPU_function_macro<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
 
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;
+    //listing known types in factory
+    if(name=="list types")
+      return NULL;
+    //unknown
     std::cerr<<"Module name is unknown, i.e. \""<<name<<"\"."<<std::endl;
     return NULL;
   }//NewCDataProcessorGPU
+  static void show_factory_types(void)
+  {
+    for(int i=0;i<factory_types.size();++i)
+      std::cout<<factory_types[i]<<", ";
+  }
 };//CDataProcessorGPUfactory
 
 #endif //_DATA_PROCESSOR_GPU_FACTORY_
