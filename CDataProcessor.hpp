@@ -192,7 +192,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
 //! complex operation for CPU process (intended for GPU lambda)
 /**
- * FMA: val+val*val
+ * FMA: val*cst+cst
 **/
 template<typename Tdata>
 void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tdata> &out)
@@ -201,7 +201,7 @@ void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tdata> &out)
 }//kernelCPU_vMcPc
 //! complex operation for CPU process (intended for GPU lambda)
 /**
- * val+val*val
+ * FMA: val*cst+cst
 **/
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor_kernel : public CDataProcessor<Tdata, Taccess>
@@ -219,7 +219,7 @@ public:
   : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
-    this->class_name="CDataProcessor_kernel";
+    this->class_name="CDataProcessor_kernel_vMcPc";
 std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //    pKernel4CPU=kernel4CPU;
     this->check_locks(lock);
