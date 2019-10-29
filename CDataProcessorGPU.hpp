@@ -340,6 +340,8 @@ template<typename Tdata=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_opencl : public CDataProcessorGPU<Tdata, Taccess>
 {
   compute::program program;
+  compute::kernel  kernel;
+  bool kernel_loaded;
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
@@ -370,6 +372,7 @@ public:
     this->check_locks(lock);
     //OpenCL framework
     program=make_opencl_program(this->ctx);
+    kernel_loaded=false;
   }//constructor
 
   virtual bool check_data(CImg<Tdata> &img, int i)
@@ -387,11 +390,14 @@ public:
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
-    //load kernel
-    compute::kernel kernel(program, "vMcPc");
-    kernel.set_arg(0,this->device_vector1.get_buffer());
-    kernel.set_arg(1,(int)this->device_vector1.size());
-    kernel.set_arg(2,this->device_vector3.get_buffer());
+    if(!kernel_loaded)
+    {//load kernel
+      kernel=compute::kernel(program, "vMcPc");
+      kernel.set_arg(0,this->device_vector1.get_buffer());
+      kernel.set_arg(1,(int)this->device_vector1.size());
+      kernel.set_arg(2,this->device_vector3.get_buffer());
+      kernel_loaded=true;
+    }//load kernel once
     //compute
     using compute::uint_;
     uint_ tpb=16;
