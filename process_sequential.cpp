@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.4.6"
+#define VERSION "v0.4.7d"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -119,8 +119,8 @@ int main(int argc,char **argv)
   boost::compute::device gpu = boost::compute::system::default_device();
   CImgList<Tdata> limages(nbuffer,width,1,1,1);
   std::vector<compute::future<void>  > waits(nbuffer);//this may be filled in kernel
-  compute::vector<Tdata> *device_vector1;compute::vector<Tdata> *device_vector3;//need more in process
-  #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error, gpu,limages,waits,device_vector1,device_vector3)
+  compute::vector<Tdata> *device_vector_in;compute::vector<Tdata> *device_vector_out;//need more in process
+  #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error, gpu,limages,waits,device_vector_in,device_vector_out)
 #else
   #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error)
 #endif //!DO_GPU
@@ -166,7 +166,7 @@ int main(int argc,char **argv)
      #ifdef  DO_GPU_SEQ_QUEUE
       std::cout<<"information: use GPU for processing (sequential queue)."<<std::endl<<std::flush;
       process=new CDataProcessorGPUqueue<Tdata, Taccess>(locks, gpu,width
-      , limages, waits[0],device_vector1,device_vector3
+      , limages, waits[0],device_vector_in,device_vector_out
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
@@ -174,13 +174,13 @@ int main(int argc,char **argv)
      #else //!DO_GPU_SEQ_QUEUE
       std::cout<<"information: use GPU for processing (enqueue and dequeue)."<<std::endl<<std::flush;
       process=new CDataProcessorGPUenqueue<Tdata, Taccess>(locks, gpu,width
-      , limages, waits[0],device_vector1,device_vector3
+      , limages, waits[0],device_vector_in,device_vector_out
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
       deprocess=new CDataProcessorGPUdequeue<Tdata, Taccess>(locks, gpu,width
-      , limages, waits[0],device_vector1,device_vector3
+      , limages, waits[0],device_vector_in,device_vector_out
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check

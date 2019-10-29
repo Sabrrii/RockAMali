@@ -33,8 +33,8 @@ public:
   compute::command_queue queue;
 
   // create vectors on the device
-  compute::vector<Tdata> device_vector1;
-  compute::vector<Tdata> device_vector3;
+  compute::vector<Tdata> device_vector_in;
+  compute::vector<Tdata> device_vector_out;
 
   CDataProcessorGPU(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -46,7 +46,7 @@ public:
   )
   : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   , ctx(device), queue(ctx, device)
-  , device_vector1(VECTOR_SIZE, ctx), device_vector3(VECTOR_SIZE, ctx)
+  , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU";
@@ -67,11 +67,11 @@ public:
   virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
   {
     //copy CPU to GPU
-    compute::copy(in.begin(), in.end(), device_vector1.begin(), queue);
+    compute::copy(in.begin(), in.end(), device_vector_in.begin(), queue);
     //compute
-    kernelGPU(device_vector1,device_vector3);
+    kernelGPU(device_vector_in,device_vector_out);
     //copy GPU to CPU
-    compute::copy(device_vector3.begin(), device_vector3.end(), out.begin(), queue);
+    compute::copy(device_vector_out.begin(), device_vector_out.end(), out.begin(), queue);
     //wait for completion
     queue.finish();
   };//kernel
@@ -393,15 +393,15 @@ public:
     if(!kernel_loaded)
     {//load kernel
       kernel=compute::kernel(program, "vMcPc");
-      kernel.set_arg(0,this->device_vector1.get_buffer());
-      kernel.set_arg(1,(int)this->device_vector1.size());
-      kernel.set_arg(2,this->device_vector3.get_buffer());
+      kernel.set_arg(0,this->device_vector_in.get_buffer());
+      kernel.set_arg(1,(int)this->device_vector_in.size());
+      kernel.set_arg(2,this->device_vector_out.get_buffer());
       kernel_loaded=true;
     }//load kernel once
     //compute
     using compute::uint_;
     uint_ tpb=16;
-    uint_ workSize=this->device_vector1.size();
+    uint_ workSize=this->device_vector_in.size();
     this->queue.enqueue_1d_range_kernel(kernel,0,workSize,tpb);
   };//kernelGPU
 

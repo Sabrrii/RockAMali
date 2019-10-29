@@ -31,7 +31,7 @@ public:
   CDataProcessorGPUqueue(std::vector<omp_lock_t*> &lock
   , compute::device device, int vector_size
   , CImgList<Tdata> &images, compute::future<void> &lwait //out
-  , compute::vector<Tdata> *ldevice_vector1, compute::vector<Tdata> *ldevice_vector3 //out (or in)
+  , compute::vector<Tdata> *ldevice_vector_in, compute::vector<Tdata> *ldevice_vector_out //out (or in)
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
@@ -48,8 +48,8 @@ public:
     if(images(0).width()!=vector_size) {std::cout<< __FILE__<<"/"<<__func__;printf("(...) code error: bad image size"); exit(99);}
     if(do_out)
     {
-      ldevice_vector1=&(this->device_vector1);
-      ldevice_vector3=&(this->device_vector3);
+      ldevice_vector_in=&(this->device_vector_in);
+      ldevice_vector_out=&(this->device_vector_out);
     }//out
     this->check_locks(lock);
   }//constructor
@@ -69,11 +69,11 @@ public:
   {
 //! \note async op.: https://github.com/boostorg/compute/issues/303 (enqueue_nd_range_kernel() are already asynchronous: boost::compute::event e = queue.enqueue_barrier();)
     //copy CPU to GPU
-    compute::copy(in.begin(), in.end(), this->device_vector1.begin(), this->queue);
+    compute::copy(in.begin(), in.end(), this->device_vector_in.begin(), this->queue);
     //compute
-    kernelGPU(this->device_vector1,this->device_vector3,this->queue);
+    kernelGPU(this->device_vector_in,this->device_vector_out,this->queue);
     //copy GPU to CPU
-    lwait=compute::copy_async(this->device_vector3.begin(), this->device_vector3.end(), out.begin(), this->queue);
+    lwait=compute::copy_async(this->device_vector_out.begin(), this->device_vector_out.end(), out.begin(), this->queue);
   };//kernel
 
   //! one iteration for any enqueue loop
@@ -176,7 +176,7 @@ public:
   CDataProcessorGPUenqueue(std::vector<omp_lock_t*> &lock
   , compute::device device, int vector_size
   , CImgList<Tdata> &images, compute::future<void> &lwait //out
-  , compute::vector<Tdata> *ldevice_vector1, compute::vector<Tdata> *ldevice_vector3 //out
+  , compute::vector<Tdata> *ldevice_vector_in, compute::vector<Tdata> *ldevice_vector_out //out
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
@@ -184,7 +184,7 @@ public:
   , bool do_check=false
   )
   : CDataProcessorGPUqueue<Tdata, Taccess>(lock,device,vector_size
-    ,images, lwait,ldevice_vector1,ldevice_vector3
+    ,images, lwait,ldevice_vector_in,ldevice_vector_out
     ,wait_status,set_status,wait_statusR,set_statusR
     ,do_check
     )
@@ -208,7 +208,7 @@ public:
   CDataProcessorGPUdequeue(std::vector<omp_lock_t*> &lock
   , compute::device device, int vector_size
   , CImgList<Tdata> &images, compute::future<void> &lwait //in
-  , compute::vector<Tdata> *ldevice_vector1, compute::vector<Tdata> *ldevice_vector3 //in
+  , compute::vector<Tdata> *ldevice_vector_in, compute::vector<Tdata> *ldevice_vector_out //in
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
@@ -216,7 +216,7 @@ public:
   , bool do_check=false
   )
   : CDataProcessorGPUqueue<Tdata, Taccess>(lock,device,vector_size
-    ,images, lwait,ldevice_vector1,ldevice_vector3
+    ,images, lwait,ldevice_vector_in,ldevice_vector_out
     ,wait_status,set_status,wait_statusR,set_statusR
     ,do_check
     ,false
@@ -226,8 +226,8 @@ public:
     this->class_name="CDataProcessorGPUdequeue";
     //in
     this->lwait=lwait;
-    this->device_vector1=*ldevice_vector1;
-    this->device_vector3=*ldevice_vector3;
+    this->device_vector_in=*ldevice_vector_in;
+    this->device_vector_out=*ldevice_vector_out;
 
     this->check_locks(lock);
   }//constructor
