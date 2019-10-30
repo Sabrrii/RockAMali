@@ -2,6 +2,7 @@
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=2048
+NP=4
 USE_GPU=--use-GPU --GPU-factory program
 #USE_GPU=
 DO_CHECK=--do-check
@@ -61,7 +62,7 @@ receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDa
 doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
 	./doxygen.sh
 
-NP=4
+#NP=4
 NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*16  | bc`
 NS=`echo $(NP)*8192| bc`
@@ -72,12 +73,18 @@ process_run:
 process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
 
+NS=456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 123 -w 123456789
+	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 123456789
 
+#NP=4
+NT=`echo $(NP)+3   | bc`
+NB=`echo $(NP)*32  | bc`
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
-	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
+#	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
+#	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
+	./receive -c $(NT) -s $(FRAME_SIZE) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
