@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.1d"
+#define VERSION "v0.5.1e"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -24,7 +24,7 @@ using boost::asio::ip::udp;
 
 //types
 typedef unsigned char  Taccess;
-typedef unsigned short Tdata;
+typedef unsigned int   Tdata;
 
 int main(int argc,char **argv)
 {

@@ -16,7 +16,7 @@
 #include "CDataProcessor_morphomath.hpp"
 #ifdef DO_GPU
 #include "CDataProcessorGPUfactory.hpp"
-#endif
+#endif //DO_GPU
 #include "CDataStore.hpp"
 
 using namespace cimg_library;

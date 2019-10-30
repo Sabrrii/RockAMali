@@ -104,13 +104,13 @@ public:
 
   virtual bool check_data(CImg<Tdata> &img, int i)
   {
-std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
+//std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
       CImg<Tdata> imgt;
       kernelCPU_vMcPc(img,imgt);
-imgt.print("img check",false);
-this->image.print("img GPU",false);
+//imgt.print("img check",false);
+//this->image.print("img GPU",false);
       return (this->image==imgt);
     }//do_check
     return true;

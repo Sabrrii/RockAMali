@@ -62,7 +62,7 @@ public:
   {
     if(do_check)
     {
-std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+//std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //      return (image==img);
       return (image==i);
     }//do_check

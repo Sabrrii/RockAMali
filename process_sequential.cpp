@@ -215,7 +215,7 @@ int main(int argc,char **argv)
         deprocess->iteration(access,images, accessR,results, 0,i);
        #endif //!DO_GPU_SEQ_QUEUE
        #endif //!DO_GPU_NO_QUEUE
-#endif
+#endif //DO_GPU
         store.iteration(accessR,results, 0,i);
         //check
         if(do_check)
