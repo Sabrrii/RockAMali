@@ -53,7 +53,7 @@ int main(int argc,char **argv)
 #ifdef DO_GPU
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
-  const std::string processing_type=cimg_option("-p","program","GPU processing type, e.g. program or function");
+  const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
   //show type list in factory
   std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);
 #endif //DO_GPU
