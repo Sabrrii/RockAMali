@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.1e"
+#define VERSION "v0.5.1f"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -42,7 +42,7 @@ int main(int argc,char **argv)
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",123,  "number of vector");  //! \todo [high] should be NO count of the vectors with an infinite loop (to implement)
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
-  const int threadCount=cimg_option("-c",0,"thread count (2 for receiving only and 4 for processing)");
+  const int threadCount=cimg_option("-c",2,"thread count (2 for receiving only or threads above 3 are processing one)");
   const unsigned short port=cimg_option("-p", 1234, "port where the packets are sent on the receiving device");
 #ifdef DO_GPU
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
@@ -77,6 +77,7 @@ int main(int argc,char **argv)
   {//user number of thread
     omp_set_dynamic(0);
     omp_set_num_threads(threadCount);
+    if(threadCount==3) {std::cerr<<"error: 3 threads not working as there is no processing threads, e.g. -c 4 is minimum for processing.";return 2;}
   }//user
 
   //OpenMP locks
@@ -127,6 +128,8 @@ int main(int argc,char **argv)
 #endif //!DO_GPU
   {
   int id=omp_get_thread_num(),tn=omp_get_num_threads();
+  unsigned int stride=tn-3;
+  unsigned int start=0;
 
   #pragma omp single
   {
@@ -153,11 +156,18 @@ int main(int argc,char **argv)
       break;
     }//store
     case 2:
+    {//store
+      CDataStore<Tdata, Taccess> store(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);//results
+      store.run(accessR,results, count);
+      break;
+    }//store
+    default:
     {//process
+      start=id-3;//e.g. #4 -> 1
 #ifdef DO_GPU
       if(use_GPU)
       {//GPU
-      std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
+      std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
 //      CDataProcessorGPU<Tdata, Taccess> *process(
       CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(processing_type,type_list
       , locks, gpu,width
@@ -166,27 +176,25 @@ int main(int argc,char **argv)
       , do_check
       );
       std::cout<<"information: processing type is the one in "<<process->class_name<<" class."<<std::endl<<std::flush;
-      process->run(access,images, accessR,results, count);
+      process->run(access,images, accessR,results, count, stride,start);
+      process->show_checking();
       }//GPU
       else
 #endif
       {//CPU
-      std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
-      CDataProcessor<Tdata,Taccess> process(locks
+      std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
+//      CDataProcessor<Tdata,Taccess> process(locks
+//      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
+      CDataProcessor_kernel<Tdata,Taccess> process(locks
       , CDataAccess::STATUS_RECEIVED,CDataAccess::STATUS_PROCESSED //images
       , CDataAccess::STATUS_FREE,    CDataAccess::STATUS_FILLED    //results
       , do_check
       );
-      process.run(access,images, accessR,results, count);
+      process.run(access,images, accessR,results, count, stride,start);
+      process.show_checking();
       }//CPU
       break;
     }//process
-    case 3:
-    {//store
-      CDataStore<Tdata, Taccess> store(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);//results
-      store.run(accessR,results, count);
-      break;
-    }//store
   }//switch(id)
   }//parallel section
 
