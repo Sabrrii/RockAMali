@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.0"
+#define VERSION "v0.5.1d"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -129,7 +129,7 @@ int main(int argc,char **argv)
   {
     case 0:
     {//generate
-      CDataGenerator<Tdata,Taccess> generate(locks);
+      CDataGenerator_Random<Tdata,Taccess> generate(locks);
       generate.run(access,images, count);
       break;
     }//generate

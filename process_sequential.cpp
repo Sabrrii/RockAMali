@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.0"
+#define VERSION "v0.5.1d"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -143,7 +143,7 @@ int main(int argc,char **argv)
     case 0:
     {//sequential
      //generate
-      CDataGenerator<Tdata,Taccess> generate(locks);
+      CDataGenerator_Random<Tdata,Taccess> generate(locks);
      //process
       CDataProcessor<Tdata,Taccess> *process;
       CDataProcessor<Tdata,Taccess> *deprocess;
@@ -220,8 +220,12 @@ int main(int argc,char **argv)
         //check
         if(do_check)
         {
-          if(images[0] ==i) NULL; else {++check_error;std::cout<<"compution error: bad main generate class for this test."<<std::endl<<std::flush;}
-          //if(results[0]==i+i*i) NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
+          //if(images[0] ==i)
+          if(images[0][0] ==i)
+          NULL; else {++check_error;std::cout<<"compution error: bad main generate class for this test."<<std::endl<<std::flush;}
+          //if(results[0]==i+i*i)
+          if(results[0][0]==i*2+123)
+          NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
          process->show_checking();
         }
       }//vector loop
