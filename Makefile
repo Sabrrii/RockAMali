@@ -73,11 +73,11 @@ process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
 
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 1235 -w 123456789
+	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n 123 -w 123456789
 
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
-	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 1234 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
+	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/

@@ -58,3 +58,23 @@ real	0m48.972s
 user	0m54.046s
 sys	1m22.183s
 
+
+process check error on receive (./receive only, ./process* ok)
+due to: "unsigned short"
+
+./receive:
+R0/4 4 B07 #0119 wait=1
+CDataProcessorGPU.hpp::check_data/CDataProcessorGPU_opencl_vMcPc(...)
+img check: this = 0x7f8efce638, size = (2048,1,1,1) [4096 b], data = (unsigned short*)0x7f7835fa20..0x7f78360a1f (non-shared) = [ 361 14457 47041 61465 8219 24631 35743 26015 ... 12677 33293 33853 12539 54023 25693 16205 54553 ].
+img GPU: this = 0x7f78000bd8, size = (2048,1,1,1) [4096 b], data = (unsigned short*)0x7f78043520..0x7f7804451f (non-shared) =   [ 361 14334 47041 61343 8219 24509 35743 25893 ... 12677 33171 33853 12416 54023 25571 16205 54431 ].
+compution error: bad check (i.e. test failed) on iteration #119 (value=361).
+
+119*2+123=361
+but, random value are good only 1 over 2 ?! , e.g. image[1]
+
+./send:
+  [7]: this = 0x1422298, size = (2048,1,1,1) [4096 b], data = (unsigned short*)0x1429430..0x142a42f (non-shared) =              [ 119 39935 56227 30671 36816 45022 50578 45714 ... 39045 49353 16865 38976 59718 12785 40809 59983 ].
+
+39935*2+123=79993
+
+
