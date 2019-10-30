@@ -62,7 +62,7 @@ public:
   {
     if(do_check)
     {
-//std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //      return (image==img);
       return (image==i);
     }//do_check
@@ -92,7 +92,9 @@ public:
     {
 //std::cout<<__FILE__<<"::"<<__func__<<"(...) do check data"<<std::endl;
       //check input
-      if(images[n]==i) NULL; else {++check_error;std::cout<<"compution error: bad generate class for this test."<<std::endl<<std::flush;}
+      //if(images[n]==i) //slow check, but entire frame
+      if(images[n](0)==i) //fast random check
+      NULL; else {++check_error;std::cout<<"compution error: bad generate class for this test."<<std::endl<<std::flush;}
       //check output
       if(!check_data(images[n],i)) {++check_error;std::cout<<"compution error: bad check (i.e. test failed) on iteration #"<<i<<" (value="<<image(0)<<")."<<std::endl<<std::flush;}
     }//do_check

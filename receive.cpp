@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.0e"
+#define VERSION "v0.5.0f"
 
 //thread lock
 #include "CDataStore.hpp"
