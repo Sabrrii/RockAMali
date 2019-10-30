@@ -66,7 +66,7 @@ public:
   static void show_factory_types(std::vector<std::string> &factory_types)
   {
     if(factory_types.empty()) get_factory_types(factory_types);
-    std::cout<<"information: GPU processing type are: ";
+    std::cout<<"information: -factory- GPU processing types are: ";
     unsigned int i;
     for(i=0;i<factory_types.size()-1;++i)
       std::cout<<factory_types[i]<<", ";

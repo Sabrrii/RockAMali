@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.0d"
+#define VERSION "v0.5.0e"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -49,13 +49,13 @@ int main(int argc,char **argv)
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"show GUI (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
   //show type list in factory
-  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);
+  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);std::cout<<std::endl;
 #endif //DO_GPU
-  const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
+  const bool do_check_C=cimg_option("-C",false,NULL);//-C hidden option
         bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do-check or -C option
   const bool do_check_CE=cimg_option("-E",false,NULL);//-E hidden option
         bool do_check_exit=cimg_option("--do-check-exit",do_check_CE,"do data check exit on first error (or -E option)");do_check_exit=do_check_CE|do_check_exit;//same --do-check_exit or -E option
-  const bool do_warmup_W=cimg_option("-W",false,NULL);//-G hidden option
+  const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
         bool do_warmup=cimg_option("--do-warmup",do_check_C,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 
   ///standard options
@@ -163,6 +163,7 @@ int main(int argc,char **argv)
       , locks, gpu,width
       , CDataAccess::STATUS_RECEIVED,CDataAccess::STATUS_PROCESSED //images
       , CDataAccess::STATUS_FREE,    CDataAccess::STATUS_FILLED    //results
+      , do_check
       );
       std::cout<<"information: processing type is the one in "<<process->class_name<<" class."<<std::endl<<std::flush;
       process->run(access,images, accessR,results, count);
@@ -174,6 +175,7 @@ int main(int argc,char **argv)
       CDataProcessor<Tdata,Taccess> process(locks
       , CDataAccess::STATUS_RECEIVED,CDataAccess::STATUS_PROCESSED //images
       , CDataAccess::STATUS_FREE,    CDataAccess::STATUS_FILLED    //results
+      , do_check
       );
       process.run(access,images, accessR,results, count);
       }//CPU

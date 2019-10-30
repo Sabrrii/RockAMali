@@ -77,7 +77,7 @@ send_run:
 
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
-	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 1234 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) -C -E -W
+	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 1234 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
