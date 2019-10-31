@@ -64,7 +64,7 @@ doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.
 
 #NP=4
 NT=`echo $(NP)+2   | bc`
-NB=`echo $(NP)*16  | bc`
+NB=`echo $(NP)*4096| bc`
 NS=`echo $(NP)*8192| bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
@@ -73,18 +73,18 @@ process_run:
 process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
 
-NS=456
+NS=123456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 123456789
+	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 2345678
 
 #NP=4
 NT=`echo $(NP)+3   | bc`
-NB=`echo $(NP)*32  | bc`
+NB=`echo $(NP)*4096| bc`
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 #	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
-	./receive -c $(NT) -s $(FRAME_SIZE) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
+	./receive -c $(NT) -s $(FRAME_SIZE) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -W
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
