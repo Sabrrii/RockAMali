@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.1"
+#define VERSION "v0.5.2d"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -122,9 +122,9 @@ int main(int argc,char **argv)
 #ifdef DO_GPU
   //Choosing the target for OpenCL computing
   boost::compute::device gpu = boost::compute::system::default_device();
-  #pragma omp parallel shared(print_lock, access,images, accessR,results, gpu)
+  #pragma omp parallel shared(locks,print_lock, lck,access,images, lckR,accessR,results, gpu)
 #else
-  #pragma omp parallel shared(print_lock, access,images, accessR,results)
+  #pragma omp parallel shared(locks,print_lock, lck,access,images, lckR,accessR,results)
 #endif //!DO_GPU
   {
   int id=omp_get_thread_num(),tn=omp_get_num_threads();

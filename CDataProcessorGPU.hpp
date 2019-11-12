@@ -189,7 +189,7 @@ public:
   {
     //compute with lambda
     using compute::lambda::_1;
-    compute::function<int(int)> vMcPc = _1 * 2 + 123;
+    compute::function<Tdata(Tdata)> vMcPc = _1 * 2 + 123;
     compute::transform(in.begin(), in.end(), out.begin(),
       vMcPc , this->queue);
   };//kernelGPU
