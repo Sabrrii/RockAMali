@@ -3,6 +3,7 @@
 ## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=2048
 NP=4
+GEN_FCT=random
 USE_GPU=--use-GPU --GPU-factory program
 USE_GPU=
 DO_CHECK=--do-check
@@ -67,9 +68,13 @@ doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.
 NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*4096| bc`
 NS=`echo $(NP)*8192| bc`
+
+NB=`echo $(NP)*4| bc`
+NS=`echo $(NP)*8| bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
-	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault --color
+	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) -b $(NB) -n $(NS) $(USE_GPU)
+# $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault --color
 
 process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)

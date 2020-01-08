@@ -134,8 +134,12 @@ int main(int argc,char **argv)
   {
     case 0:
     {//generate
-      CDataGenerator_Random<Tdata,Taccess> generate(locks);
-      generate.run(access,images, count);
+      //CDataGenerator_Random<Tdata,Taccess> generate(locks);
+      CDataGenerator<Tdata, Taccess> *generate=CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator(generator_type,generator_type_list
+      , locks
+      );
+      std::cout<<"information: generator type is the one in "<<generate->class_name<<" class."<<std::endl<<std::flush;
+      generate->run(access,images, count);
       break;
     }//generate
     case 1:
