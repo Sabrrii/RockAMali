@@ -107,5 +107,60 @@ public:
 
 };//CDataGenerator_Random
 
+//! generate Peak data into a shared circular buffer
+/**
+ * Peak data except first one that is frame count value
+**/
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataGenerator_Peak: public CDataGenerator<Tdata, Taccess>
+{
+
+public:
+
+  CDataGenerator_Peak(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+  )
+  : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status)
+  {
+//    this->debug=true;
+    this->class_name="CDataGenerator_Peak";
+    this->check_locks(lock);
+  }//constructor
+
+  //! one iteration for any loop
+  /**
+   * entirely filled with the frame count value
+  **/
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int i)
+  {
+    if(this->debug)
+    {
+      this->lprint.print("",false);
+      printf("4 B%02d #%04d: ",n,i);fflush(stdout);
+      access.print("access",false);fflush(stderr);
+      this->lprint.unset_lock();
+    }
+    //wait lock
+    unsigned int c=0;
+    this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
+
+    //fill image with Peak
+//! \todo [high] fill images with local defined variables
+    int baseline=23;
+    int startpeak=510;
+    int endpeak = 610;
+    int peaksize = 150;
+    images[n].fill(baseline);
+    cimg_for_inX(images[n],startpeak,endpeak,i) images[n](i)=peaksize+baseline;
+    //set frame count value as first array value
+    images[n](0)=i;
+
+    //set filled
+    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],i,n,c);//filling,filled
+  }//iteration
+
+};//CDataGenerator_Peak
+
 #endif //_DATA_GENERATOR_
 

@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.1"
+#define VERSION "v0.5.2d"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -143,54 +143,9 @@ int main(int argc,char **argv)
     case 0:
     {//sequential
      //generate
-      CDataGenerator_Random<Tdata,Taccess> generate(locks);
+      CDataGenerator_Peak<Tdata,Taccess> generate(locks);
      //process
       CDataProcessor<Tdata,Taccess> *process;
-      CDataProcessor<Tdata,Taccess> *deprocess;
-#ifdef DO_GPU
-      CImgList<Tdata> limages(nbuffer,width,1,1,1);
-      if(use_GPU)
-      {//GPU
-     #ifdef DO_GPU_NO_QUEUE
-      std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
-      ///GPU process from factory
-//      process=new CDataProcessorGPU<Tdata, Taccess>(
-      process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(processing_type,type_list
-      , locks, gpu,width
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
-      , do_check
-      );
-      std::cout<<"information: processing type is the one of "<<process->class_name<<" class."<<std::endl<<std::flush;
-     #else //DO_GPU_NO_QUEUE
-     #ifdef  DO_GPU_SEQ_QUEUE
-      std::cout<<"information: use GPU for processing (sequential queue)."<<std::endl<<std::flush;
-      process=new CDataProcessorGPUqueue<Tdata, Taccess>(locks, gpu,width
-      , limages, waits[0],device_vector_in,device_vector_out
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
-      , do_check
-      );
-     #else //!DO_GPU_SEQ_QUEUE
-      std::cout<<"information: use GPU for processing (enqueue and dequeue)."<<std::endl<<std::flush;
-      process=new CDataProcessorGPUenqueue<Tdata, Taccess>(locks, gpu,width
-      , limages, waits[0],device_vector_in,device_vector_out
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
-      , do_check
-      );
-      deprocess=new CDataProcessorGPUdequeue<Tdata, Taccess>(locks, gpu,width
-      , limages, waits[0],device_vector_in,device_vector_out
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
-      , do_check
-      );
-      deprocess_class_name=deprocess->class_name;
-     #endif //!DO_GPU_SEQ_QUEUE
-     #endif //!DO_GPU_NO_QUEUE
-      }//GPU
-      else
-#endif //DO_GPU
       {//CPU
       std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
 //      process=new CDataProcessor<Tdata, Taccess>(locks
@@ -209,13 +164,6 @@ int main(int argc,char **argv)
       {
         generate.iteration(access,images,0,i);
         process->iteration(access,images, accessR,results, 0,i);
-#ifdef DO_GPU
-       #ifndef DO_GPU_NO_QUEUE
-       #ifndef DO_GPU_SEQ_QUEUE
-        deprocess->iteration(access,images, accessR,results, 0,i);
-       #endif //!DO_GPU_SEQ_QUEUE
-       #endif //!DO_GPU_NO_QUEUE
-#endif //DO_GPU
         store.iteration(accessR,results, 0,i);
         //check
         if(do_check)
@@ -236,6 +184,8 @@ int main(int argc,char **argv)
 
   access.print("access (free state)",false);fflush(stderr);
   images.print("CImgList",false);
+  images[0].print("test");
+  images[0].display_graph("test");
 
   accessR.print("accessR (free state)",false);fflush(stderr);
   results.print("CImgListR",false);

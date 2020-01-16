@@ -4,12 +4,13 @@
 FRAME_SIZE=2048
 NP=4
 USE_GPU=--use-GPU --GPU-factory program
-#USE_GPU=
+USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
 
 DATA=./
 DATA=/media/temp/
+DATA=/tmp/
 DIN=samples/
 DOUT=results/
 FIN=sample.cimg
@@ -22,15 +23,15 @@ LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-#DO_GPU=
+DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
 SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessorGPU.hpp CDataProcessorGPUfactory.hpp
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
 
-all: process_sequential process send receive doc
-#all: process process_sequential doc
+#all: process_sequential process send receive doc
+all: process process_sequential doc
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -40,15 +41,23 @@ gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
 	./generate.X -h 2> generateX_help.output
 
+#process: process.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
+#	g++ -O0 -o process   process.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) && ./process -h -I && ./process -v > VERSION
+#	./process -h 2> process_help.output
+
 process: process.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ -O0 -o process   process.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) && ./process -h -I && ./process -v > VERSION
+	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_XWINDOWS) $(DO_GPU) && ./process -h -I && ./process -v > VERSION
 	./process -h 2> process_help.output
 
 #SEQ_GPU=
 #SEQ_GPU=-DDO_GPU_SEQ_QUEUE
 SEQ_GPU=-DDO_GPU_NO_QUEUE
+#process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
+#	g++ $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
+#	./process_sequential -h 2> process_sequential_help.output
+
 process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
+	g++ $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_XWINDOWS) $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
 	./process_sequential -h 2> process_sequential_help.output
 
 send: send.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp CDataSend.hpp
