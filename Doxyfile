@@ -26,13 +26,13 @@ DOXYFILE_ENCODING      = UTF-8
 # by quotes) that should identify the project.
 
 PROJECT_NAME           = "RockAMali"
-PROJECT_LOGO           = logo.png
+#PROJECT_LOGO           = logo.png
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number.
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         = v0.5.3d
+PROJECT_NUMBER         = v0.5.3e
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute)
 # base path where the generated documentation will be put.

@@ -79,8 +79,8 @@ public:
     this->check_locks(lock);
     rand_min=0;
     rand_max=65535;
-    //! \todo [high] setup random limits depending on data type, i.e. Tdata
-    //! \todo [medium] setup parameters (e.g. rand_min, rand_max) from CDL, i.e. parameters.nc
+    //! \todo [highest] setup parameters (e.g. rand_min, rand_max) from CDL, i.e. parameters.nc
+    //! \todo [lowest] setup limits from CDL (e.g. CDL aggregation with ncgen)
  }//constructor
 
   //! one iteration for any loop
