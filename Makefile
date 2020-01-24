@@ -4,6 +4,7 @@
 FRAME_SIZE=2048
 NP=4
 GEN_FCT=random
+PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program
 USE_GPU=
 DO_CHECK=--do-check
@@ -73,8 +74,7 @@ NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
-	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) -b $(NB) -n $(NS) $(USE_GPU)
-# $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault --color
+	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
 
 process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)

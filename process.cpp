@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.4d"
+#define VERSION "v0.5.4"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -175,14 +175,15 @@ int main(int argc,char **argv)
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
 //      CDataProcessor<Tdata,Taccess> process(locks
-//      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
-      CDataProcessor_kernel<Tdata,Taccess> process(locks
+      CDataProcessor<Tdata,Taccess>  *process=CDataProcessorCPU_factory<Tdata, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+      , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
-      process.run(access,images, accessR,results, count, stride,start);
-      process.show_checking();
+      std::cout<<"information: processing type is the one in "<<process->class_name<<" class."<<std::endl<<std::flush;
+      process->run(access,images, accessR,results, count, stride,start);
+      process->show_checking();
       }//CPU
       break;
     }//process
