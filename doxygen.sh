@@ -7,7 +7,7 @@ make process && ./process --version > VERSION
 ##logo
 cp -p doc/logo.png doc/html/
 ##version
-VERSION=`cat VERSION`
+VERSION=`cat VERSION | grep 'v.\..\..'`
 cat Doxyfile.template | sed 's/##VERSION##/'$VERSION'/' > Doxyfile
 ##clean *_help.output
 for f in *_help.output
