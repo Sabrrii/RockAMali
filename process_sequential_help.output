@@ -5,8 +5,8 @@
  usage: ./process -h
         ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.3.6
- compilation date: (Oct  4 2019, 16:07:08)
+ version: v0.5.2d
+ compilation date: (Jan 24 2020, 15:22:19)
 
     -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)
     -d               6                        number of digit for file names

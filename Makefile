@@ -31,8 +31,8 @@ SRC_DATA_GENERATOR=CDataGenerator.hpp CDataGenerator_factory.hpp
 SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessorGPU.hpp CDataProcessorGPUfactory.hpp
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
 
-all: process_sequential process send receive doc
-#all: process process_sequential doc
+#all: process_sequential process send receive doc
+all: process process_sequential doc
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -66,8 +66,8 @@ doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.
 
 #NP=4
 NT=`echo $(NP)+2   | bc`
-NB=`echo $(NP)*4096| bc`
-NS=`echo $(NP)*8192| bc`
+#NB=`echo $(NP)*4096| bc`
+#NS=`echo $(NP)*8192| bc`
 
 NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
@@ -79,13 +79,13 @@ process_run:
 process_sequential_run:
 	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
 
-NS=123456
+#NS=123456
 send_run:
 	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 2345678
 
 #NP=4
-NT=`echo $(NP)+3   | bc`
-NB=`echo $(NP)*4096| bc`
+#NT=`echo $(NP)+3   | bc`
+#NB=`echo $(NP)*4096| bc`
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W

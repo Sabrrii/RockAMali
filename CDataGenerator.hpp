@@ -65,6 +65,8 @@ class CDataGenerator_Random: public CDataGenerator<Tdata, Taccess>
 {
 
 public:
+  Tdata rand_min,rand_max;
+  
 
   CDataGenerator_Random(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
@@ -75,7 +77,11 @@ public:
 //    this->debug=true;
     this->class_name="CDataGenerator_Random";
     this->check_locks(lock);
-  }//constructor
+    rand_min=0;
+    rand_max=65535;
+    //! \todo [high] setup random limits depending on data type, i.e. Tdata
+    //! \todo [medium] setup parameters (e.g. rand_min, rand_max) from CDL, i.e. parameters.nc
+ }//constructor
 
   //! one iteration for any loop
   /**
@@ -95,9 +101,8 @@ public:
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
     //fill image with random numbers
-//! \todo [high] setup random limits depending on data type, i.e. Tdata
 //    if(i>n)//fast generation
-      images[n].rand(0,65535);
+      images[n].rand(rand_min,rand_max);
     //set frame count value as first array value
     images[n](0)=i;
 
