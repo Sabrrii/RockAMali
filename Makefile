@@ -22,6 +22,7 @@ LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
 LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
+LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
 DO_GPU=
@@ -44,14 +45,14 @@ gui: main.cpp
 	./generate.X -h 2> generateX_help.output
 
 process: process.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ -O0 -o process   process.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) && ./process -h -I && ./process -v > VERSION
+	g++ -O0 -o process   process.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) $(LIB_NETCDF) && ./process -h -I && ./process -v > VERSION
 	./process -h 2> process_help.output
 
 #SEQ_GPU=
 #SEQ_GPU=-DDO_GPU_SEQ_QUEUE
 SEQ_GPU=-DDO_GPU_NO_QUEUE
 process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
+	g++ $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) $(LIB_NETCDF) && ./process_sequential -h -I && ./process_sequential -v > VERSION
 	./process_sequential -h 2> process_sequential_help.output
 
 send: send.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp CDataSend.hpp
@@ -73,11 +74,12 @@ NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
 process_run:
-#	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
-	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
+	./process -c 3 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r result.nc -b 8 -n 16 #--use-GPU --do-check #2>/dev/null | grep -e info -e test
+#	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
 
 process_sequential_run:
-	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
+#	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
+	./process_sequential -s $(FRAME_SIZE) -o sample.nc -r result.nc -n 123 $(USE_GPU) $(DO_CHECK) && ncdump -h sample.nc
 
 #NS=123456
 send_run:
