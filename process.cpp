@@ -9,11 +9,11 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.3e"
+#define VERSION "v0.5.5d"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
-#include "CDataProcessor_morphomath.hpp"
+#include "CDataProcessorCPU_factory.hpp"
 #ifdef DO_GPU
 #include "CDataProcessorGPUfactory.hpp"
 #endif //DO_GPU
@@ -45,14 +45,18 @@ int main(int argc,char **argv)
   const int threadCount=cimg_option("-c",3,"thread count (threads above 2 are processing one)");
 
   const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count or random");
-  //show type list in factory
+  //show type list in generator factory
   std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
+
+  const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
+  //show type list in CPU processor factory
+  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
 
 #ifdef DO_GPU
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
-  //show type list in factory
+  //show type list in GPU processor factory
   std::vector<std::string> gpu_type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(gpu_type_list);std::cout<<std::endl;
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
@@ -171,14 +175,15 @@ int main(int argc,char **argv)
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
 //      CDataProcessor<Tdata,Taccess> process(locks
-//      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
-      CDataProcessor_kernel<Tdata,Taccess> process(locks
+      CDataProcessor<Tdata,Taccess>  *process=CDataProcessorCPU_factory<Tdata, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+      , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
-      process.run(access,images, accessR,results, count, stride,start);
-      process.show_checking();
+      std::cout<<"information: processing type is the one in "<<process->class_name<<" class."<<std::endl<<std::flush;
+      process->run(access,images, accessR,results, count, stride,start);
+      process->show_checking();
       }//CPU
       break;
     }//process
