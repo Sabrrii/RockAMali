@@ -5,6 +5,10 @@
 #include "CImg.h"
 using namespace cimg_library;
 
+//NetCDF
+//! \todo [high] NetCDF
+//#ifdef 
+
 //thread lock
 #include "CDataBuffer.hpp"
 
@@ -19,6 +23,7 @@ class CDataStore: public CDataBuffer<Tdata, Taccess>
 {
 public:
   std::string file_name;
+  bool is_netcdf_file;
   unsigned int file_name_digit;
   unsigned int la_sleep;
 //  unsigned int la_count;
@@ -34,6 +39,8 @@ public:
     this->class_name="CDataStore";
     file_name=imagefilename;
     file_name_digit=digit;
+//! \todo [high] NetCDF
+    is_netcdf_file=false;
     la_sleep=12;//us
     this->check_locks(lock);
   }//constructor
@@ -49,12 +56,16 @@ public:
       this->lprint.unset_lock();
     }
 
+//! \todo [high] NetCDF
+    //{CImg file
+    CImg<char> nfilename(1024);
+    cimg::number_filename(file_name.c_str(),i,file_name_digit,nfilename);
+    //}CImg file
+
     //wait lock
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_STORING, c, la_sleep);//processed,storing
     //save image
-    CImg<char> nfilename(1024);
-    cimg::number_filename(file_name.c_str(),i,file_name_digit,nfilename);
     images[n].save(nfilename);
  
     //set filled
