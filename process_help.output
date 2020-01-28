@@ -5,10 +5,11 @@
  usage: ./process -h
         ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.5.5e
- compilation date: (Jan 28 2020, 10:10:04)
+ version: v0.5.5f
+          CImg_NetCDF.v0.8.2
+ compilation date: (Jan 28 2020, 11:45:20)
 
-    -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)
+    -o               sample.cimg              output file name (e.g. data.nc or "-o data.cimg -d 3" gives data_???.cimg)
     -d               6                        number of digit for file names
     -s               1024                     size   of udp buffer
     -n               256                      number of frames

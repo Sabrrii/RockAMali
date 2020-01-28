@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #get version
-make process && ./process --version > VERSION
+make process && ./process --version | grep 'v.\..\..' | head -n 1 > VERSION
 
 #documentation
 ##logo

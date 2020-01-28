@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.5e"
+#define VERSION "v0.5.5f"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -42,7 +42,9 @@ int main(int argc,char **argv)
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./process -h\n" \
   "        ./process -s 1024 -n 123 -o result.nc\n" \
-  "\n version: "+std::string(VERSION)+"\n compilation date:" \
+  "\n version: "+std::string(VERSION) + \
+  "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + \
+  "\n compilation date:" \
   ).c_str());//cimg_usage
 
   const char* imagefilename = cimg_option("-o","result.cimg","output file name (e.g. data.nc or \"-o data.cimg -d 3\" gives data_???.cimg)");
@@ -70,7 +72,14 @@ int main(int argc,char **argv)
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   bool show_version=cimg_option("-v",false,NULL);//-v hidden option
-  if( cimg_option("--version",show_version,"show version (or -v option)") ) {show_version=true;std::cout<<VERSION<<std::endl;return 0;}//same --version or -v option
+  if( cimg_option("--version",show_version,"show version (or -v option)") )
+  {
+    show_version=true;
+    std::cout<<VERSION<<std::endl;
+    std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION;
+    std::cout<<std::endl;return 0;
+  }//same --version or -v option
+
   if(show_help) {/*print_help(std::cerr);*/return 0;}
   //}CLI option
 
