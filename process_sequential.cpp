@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.5d"
+#define VERSION "v0.5.5e"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -41,11 +41,11 @@ int main(int argc,char **argv)
   cimg_usage(std::string("generate, process and store data sequentialy.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./process -h\n" \
-  "        ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657\n" \
+  "        ./process -s 1024 -n 123 -o result.nc\n" \
   "\n version: "+std::string(VERSION)+"\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const char* imagefilename = cimg_option("-o","sample.cimg","output file name (e.g. \"-o data.cimg -d 3\" gives data_???.cimg)");
+  const char* imagefilename = cimg_option("-o","result.cimg","output file name (e.g. data.nc or \"-o data.cimg -d 3\" gives data_???.cimg)");
   const int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");

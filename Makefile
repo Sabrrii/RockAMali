@@ -79,7 +79,7 @@ process_run:
 
 process_sequential_run:
 #	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
-	./process_sequential -s $(FRAME_SIZE) -o sample.nc -r result.nc -n 123 $(USE_GPU) $(DO_CHECK) && ncdump -h sample.nc
+	./process_sequential -s $(FRAME_SIZE) -o result.nc -n 1234 $(USE_GPU) $(DO_CHECK) && ncdump -h result.nc
 
 #NS=123456
 send_run:
