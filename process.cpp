@@ -43,7 +43,7 @@ int main(int argc,char **argv)
 
   const char* imagefilename = cimg_option("-o","sample.cimg",std::string("output file name (e.g." +
 #ifdef USE_NETCDF
-  std::string(" \"-o data.nc or \"") +
+  std::string(" \"-o data.nc\" or ") +
 #endif //NetCDF
   std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
   ).c_str());//ouput file name
