@@ -9,11 +9,11 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.2g"
+#define VERSION "v0.5.3d"
 
 //thread lock
 #include "CDataGenerator.hpp"
-#include "CDataProcessor_morphomath.hpp"
+#include "CDataProcessorCPU_factory.hpp"
 #ifdef DO_GPU
 #ifdef DO_GPU_NO_QUEUE
 #warning "DO_GPU_NO_QUEUE active (this must be CODE TEST only)"
@@ -50,6 +50,11 @@ int main(int argc,char **argv)
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");
   const int nbuffer=1;
+
+  const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
+  //show type list in CPU processor factory
+  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
+
 #ifdef DO_GPU
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
@@ -148,9 +153,10 @@ int main(int argc,char **argv)
       CDataProcessor<Tdata,Taccess> *process;
       {//CPU
       std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
-//      process=new CDataProcessor<Tdata, Taccess>(locks
+//      CDataProcessor<Tdata, Taccess> process(locks
 //      process=new CDataProcessor_vPvMv<Tdata, Taccess>(locks
-      process=new CDataProcessor_kernel<Tdata, Taccess>(locks
+      process=CDataProcessorCPU_factory<Tdata, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+      , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
@@ -176,9 +182,9 @@ int main(int argc,char **argv)
           NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
          process->show_checking();
         }
-        images[0].print("test");
+        images[0].print(processor_type.c_str());
         #if cimg_display!=0   
-         if(show) images[0].display_graph("test");
+         if(show) images[0].display_graph(processor_type.c_str());
         #endif
       }//vector loop
       break;
