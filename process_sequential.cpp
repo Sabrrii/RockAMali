@@ -143,7 +143,7 @@ int main(int argc,char **argv)
     case 0:
     {//sequential
      //generate
-      CDataGenerator_Peak<Tdata,Taccess> generate(locks);
+      CDataGenerator_Random<Tdata,Taccess> generate(locks);
      //process
       CDataProcessor<Tdata,Taccess> *process;
       {//CPU
