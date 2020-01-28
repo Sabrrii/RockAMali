@@ -41,11 +41,12 @@ int main(int argc,char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const char* imagefilename = cimg_option("-o","sample.cimg","output file name (e.g." \
-//#ifdef USE_NETCDF
-  " \"-o data.nc or \"" \
-//#endif //NetCDF
-  " \"-o data.cimg -d 3\" gives data_???.cimg)");
+  const char* imagefilename = cimg_option("-o","sample.cimg",std::string("output file name (e.g." +
+#ifdef USE_NETCDF
+  std::string(" \"-o data.nc or \"") +
+#endif //NetCDF
+  std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
+  ).c_str());//ouput file name
   const int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");

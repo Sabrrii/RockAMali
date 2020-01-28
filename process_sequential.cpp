@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.5g"
+#define VERSION "v0.5.5h"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -42,12 +42,19 @@ int main(int argc,char **argv)
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./process -h\n" \
   "        ./process -s 1024 -n 123 -o result.nc\n" \
-  "\n version: "+std::string(VERSION) + \
-  "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + \
+  "\n version: "+std::string(VERSION) + 
+#ifdef USE_NETCDF
+  "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
+#endif //NetCDF
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const char* imagefilename = cimg_option("-o","result.cimg","output file name (e.g. data.nc or \"-o data.cimg -d 3\" gives data_???.cimg)");
+  const char* imagefilename = cimg_option("-o","sample.cimg",std::string("output file name (e.g." +
+#ifdef USE_NETCDF
+  std::string(" \"-o data.nc or \"") +
+#endif //NetCDF
+  std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
+  ).c_str());//ouput file name
   const int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");
@@ -76,7 +83,9 @@ int main(int argc,char **argv)
   {
     show_version=true;
     std::cout<<VERSION<<std::endl;
+#ifdef USE_NETCDF
     std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION;
+#endif //NetCDF
     std::cout<<std::endl;return 0;
   }//same --version or -v option
 
