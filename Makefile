@@ -33,8 +33,8 @@ SRC_DATA_GENERATOR=CDataGenerator.hpp CDataGenerator_factory.hpp
 SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessorGPU.hpp CDataProcessorGPUfactory.hpp
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
 
-#all: process_sequential process send receive doc
-all: process process_sequential doc
+#all: process_sequential process send receive doc version
+all: process_sequential process doc version
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -65,6 +65,9 @@ receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDa
 
 doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
 	./doxygen.sh
+
+version: process.cpp process_sequential.cpp send.cpp receive.cpp
+	./versions.sh > VERSIONS; cat VERSIONS; echo
 
 #NP=4
 NT=`echo $(NP)+2   | bc`
