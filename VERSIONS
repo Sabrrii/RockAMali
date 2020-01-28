@@ -1,3 +1,5 @@
-process.v0.5.5h
-process_sequential.v0.5.5h
+process.v0.5.5
+  CImg_NetCDF.v0.8.3
+process_sequential.v0.5.5
+  CImg_NetCDF.v0.8.3
 receive.send.store.
