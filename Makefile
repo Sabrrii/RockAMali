@@ -3,7 +3,7 @@
 ## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=2048
 NP=4
-GEN_FCT=random
+GEN_FCT=peak
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program
 USE_GPU=
@@ -83,10 +83,10 @@ NS=`echo $(NP)*8| bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
 #	 ncgen parameters.cdl -o parameters.nc && ./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
-	 ncgen parameters.cdl -o parameters.nc && ./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
+	ncgen parameters.cdl -o parameters.nc && ./process.X -c $(NT) -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
 
 process_sequential_run:
-	ncgen parameters.cdl -o parameters.nc && ./process_sequential -s $(FRAME_SIZE) -o sample.cimg -r result.cimg -n 12 $(USE_GPU) $(DO_CHECK) --show
+	ncgen parameters.cdl -o parameters.nc && ./process_sequential.X -s $(FRAME_SIZE) -o sample.cimg -r result.cimg -n 12 $(USE_GPU) $(DO_CHECK) --show
 #	ncgen parameters.cdl -o parameters.nc && ./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 12 $(USE_GPU) $(DO_CHECK)
 
 #NS=123456

@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.5g"
+#define VERSION "v0.5.5h"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -64,7 +64,7 @@ int main(int argc,char **argv)
 
   ///standard options
   #if cimg_display!=0
-  const bool show_X=cimg_option("-X",true,NULL);//-X hidden option
+  const bool show_X=cimg_option("-X",false,NULL);//-X hidden option
   bool show=cimg_option("--show",show_X,"show GUI (or -X option)");show=show_X|show;//same --show or -X option
   #endif
   const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option
