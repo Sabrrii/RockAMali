@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.2f"
+#define VERSION "v0.5.2g"
 
 //thread lock
 #include "CDataGenerator.hpp"
@@ -62,7 +62,7 @@ int main(int argc,char **argv)
 
   ///standard options
   #if cimg_display!=0
-  const bool show_X=cimg_option("-X",true,NULL);//-X hidden option
+  const bool show_X=cimg_option("-X",false,NULL);//-X hidden option
   bool show=cimg_option("--show",show_X,"show GUI (or -X option)");show=show_X|show;//same --show or -X option
   #endif
   const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option
@@ -176,6 +176,10 @@ int main(int argc,char **argv)
           NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
          process->show_checking();
         }
+        images[0].print("test");
+        #if cimg_display!=0   
+         if(show) images[0].display_graph("test");
+        #endif
       }//vector loop
       break;
     }//sequential
@@ -184,11 +188,6 @@ int main(int argc,char **argv)
 
   access.print("access (free state)",false);fflush(stderr);
   images.print("CImgList",false);
-  images[0].print("test");
-  
-#if cimg_display!=0   
-    if(show) images[0].display_graph("test");
-#endif
 
   accessR.print("accessR (free state)",false);fflush(stderr);
   results.print("CImgListR",false);
