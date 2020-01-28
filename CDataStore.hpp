@@ -6,7 +6,7 @@
 using namespace cimg_library;
 
 //NetCDF
-//! \todo [high] NetCDF
+//! \todo [high] v NetCDF
 //! \todo [medium] add optional compilation with NetCDF, i.e. #ifdef for NetCDF
 #include "CImg_NetCDF.h"
 
@@ -27,7 +27,7 @@ public:
   std::string file_name;
   //NetCDF format
   bool is_netcdf_file;
-  CImgNetCDF<Tnetcdf> cimgTest;
+  CImgNetCDF<Tnetcdf> nc;
   CImg<Tnetcdf> nc_img;//temporary image for type conversion
   bool is_netcdf_init;
   //dimension names
@@ -57,7 +57,7 @@ public:
 //! \todo [high] . force NetCDF
 //! \todo [medium] check extention for NetCDF, e.g. setup is_netcdf_file=true
     is_netcdf_file=true;
-std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << cimgTest.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
     is_netcdf_init=false;
     dim_time="dimF";
     dim_names.push_back("dimS");
@@ -80,12 +80,12 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << ci
       this->lprint.unset_lock();
     }
 
-//! \todo [high] . NetCDF
+//! \todo [high] v NetCDF
     if(!is_netcdf_init)
     {
       nc_img.assign(images[n].width());
-std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << cimgTest.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
-std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << cimgTest.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
       is_netcdf_init=true;
     }//init NetCDF
 
@@ -103,7 +103,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << cimg
     if(is_netcdf_file)
     {//as NetCDF
       nc_img=images[n];
-      std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << cimgTest.addNetCDFData(nc_img) << std::endl;
+std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
     }//NetCDF
     else
      //as image
