@@ -46,9 +46,9 @@ gui: main.cpp
 	./generate.X -h 2> generateX_help.output
 
 process: process.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
-#	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0  $(DO_GPU) && ./process -h -I && ./process -v > VERSION
-	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process -h -I && ./process -v > VERSION
-	./process -h 2> process_help.output
+	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0  $(DO_GPU) && ./process -h -I && ./process -v > VERSION
+	g++ -O0 -o process.X   process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process.X -h -I && ./process.X -v > VERSION
+	./process.X -h 2> process_help.output
 
 #SEQ_GPU=
 #SEQ_GPU=-DDO_GPU_SEQ_QUEUE
@@ -58,9 +58,9 @@ SEQ_GPU=-DDO_GPU_NO_QUEUE
 #	./process_sequential -h 2> process_sequential_help.output
 
 process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-#	g++  $(SEQ_GPU)  -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
-	g++ $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
-	./process_sequential -h 2> process_sequential_help.output
+	g++  $(SEQ_GPU)  -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
+	g++ $(SEQ_GPU) -O0 -o process_sequential.X   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process_sequential -h -I && ./process_sequential.X -v > VERSION
+	./process_sequential.X -h 2> process_sequential_help.output
 
 send: send.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp CDataSend.hpp
 	g++ -O0 -o send   send.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) -Dcimg_display=0 && ./send -h -I && ./send -v > VERSION
