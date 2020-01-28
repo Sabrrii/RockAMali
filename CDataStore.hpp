@@ -56,16 +56,23 @@ public:
     file_name=imagefilename;
     file_name_digit=digit;
 
-//! \todo [medium] _ check extention for NetCDF, e.g. setup is_netcdf_file=true
+//! \todo [medium] . check extention for NetCDF, e.g. setup is_netcdf_file=true
 #ifdef USE_NETCDF
-    is_netcdf_file=true;
+    //file extention
+    std::size_t found=file_name.find_last_of(".");
+    std::string extention=file_name.substr(found);
+std::cout << "extention ="<<extention<< std::endl<< std::flush;
+    if(!extention.compare(".nc")) is_netcdf_file=true; else is_netcdf_file=false;
+    if(is_netcdf_file)
+    {
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
-    is_netcdf_init=false;
-    dim_time="dimF";
-    dim_names.push_back("dimS");
-    //variable names (and its unit)
-    var_name="signal";
-    unit_name="none";
+      is_netcdf_init=false;
+      dim_time="dimF";
+      dim_names.push_back("dimS");
+      //variable names (and its unit)
+      var_name="signal";
+      unit_name="none";
+    }
 #endif //NetCDF
 
     la_sleep=12;//us
@@ -84,7 +91,7 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
     }
 
 #ifdef USE_NETCDF
-    if(!is_netcdf_init)
+    if(is_netcdf_file) if(!is_netcdf_init)
     {
       nc_img.assign(images[n].width());
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
