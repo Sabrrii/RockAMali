@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.5d"
+#define VERSION "v0.5.5g"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -195,6 +195,11 @@ int main(int argc,char **argv)
 
   accessR.print("accessR (free state)",false);fflush(stderr);
   results.print("CImgListR",false);
+
+        images[0].print("images[0]");
+        #if cimg_display!=0   
+         if(show) images[0].display_graph("images[0]");
+        #endif
 
   return 0;
 }//main

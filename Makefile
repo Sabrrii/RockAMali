@@ -46,8 +46,8 @@ gui: main.cpp
 	./generate.X -h 2> generateX_help.output
 
 process: process.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0  $(DO_GPU) && ./process -h -I && ./process -v > VERSION
-#	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process -h -I && ./process -v > VERSION
+#	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0  $(DO_GPU) && ./process -h -I && ./process -v > VERSION
+	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process -h -I && ./process -v > VERSION
 	./process -h 2> process_help.output
 
 #SEQ_GPU=
@@ -83,7 +83,7 @@ NS=`echo $(NP)*8| bc`
 process_run:
 #	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
 #	 ncgen parameters.cdl -o parameters.nc && ./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
-	 ncgen parameters.cdl -o parameters.nc && ./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
+	 ncgen parameters.cdl -o parameters.nc && ./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
 
 process_sequential_run:
 	ncgen parameters.cdl -o parameters.nc && ./process_sequential -s $(FRAME_SIZE) -o sample.cimg -r result.cimg -n 12 $(USE_GPU) $(DO_CHECK) --show
