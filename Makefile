@@ -74,12 +74,12 @@ NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
 process_run:
-	./process -c 3 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r result.nc -b 8 -n 16 #--use-GPU --do-check #2>/dev/null | grep -e info -e test
+	./process -c 3 -s $(FRAME_SIZE) -o sample.nc -r result.nc -b 8 -n 12 2>&1 | grep -e 'NetCDF' -e ' ' --color && ncdump -h sample.nc #--use-GPU --do-check #2>/dev/null | grep -e info -e test
 #	./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
 
 process_sequential_run:
 #	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
-	./process_sequential -s $(FRAME_SIZE) -o result.nc -n 1234 $(USE_GPU) $(DO_CHECK) && ncdump -h result.nc
+	./process_sequential -s $(FRAME_SIZE) -o result.nc -n 123 $(USE_GPU) $(DO_CHECK) && ncdump -h result.nc
 
 #NS=123456
 send_run:

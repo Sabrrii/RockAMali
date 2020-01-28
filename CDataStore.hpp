@@ -84,8 +84,8 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << ci
     if(!is_netcdf_init)
     {
       nc_img.assign(images[n].width());
-std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << cimgTest.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl;
-std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << cimgTest.addNetCDFVar(nc_img,var_name,unit_name) << std::endl;
+std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << cimgTest.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << cimgTest.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
       is_netcdf_init=true;
     }//init NetCDF
 
