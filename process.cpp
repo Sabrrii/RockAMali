@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.6d"
+#define VERSION "v0.5.6e"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -53,7 +53,7 @@ int main(int argc,char **argv)
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
   const int threadCount=cimg_option("-c",3,"thread count (threads above 2 are processing one)");
 
-  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count or random");
+  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
   //show type list in generator factory
   std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
 
@@ -73,7 +73,7 @@ int main(int argc,char **argv)
 
   ///standard options
   #if cimg_display!=0
-  const bool show_X=cimg_option("-X",true,NULL);//-X hidden option
+  const bool show_X=cimg_option("-X",false,NULL);//-X hidden option
   bool show=cimg_option("--show",show_X,"show GUI (or -X option)");show=show_X|show;//same --show or -X option
   #endif
   const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option
@@ -212,6 +212,11 @@ int main(int argc,char **argv)
 
   accessR.print("accessR (free state)",false);fflush(stderr);
   results.print("CImgListR",false);
+
+        images[0].print("images[0]");
+        #if cimg_display!=0   
+         if(show) images[0].display_graph("images[0]");
+        #endif
 
   return 0;
 }//main

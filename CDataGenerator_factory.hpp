@@ -26,6 +26,9 @@ public:
       return new CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status);
     factory_types.push_back      ("random")        ;if(name == factory_types.back())
       return new CDataGenerator_Random<Tdata, Taccess>(lock,wait_status,set_status);
+    factory_types.push_back      ("peak")        ;if(name == factory_types.back())
+      return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status);
+
 //    if(name == "error")
 //      return new CDataGenerator_error;
     //listing known types in factory
