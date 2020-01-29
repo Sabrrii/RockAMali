@@ -13,6 +13,7 @@ template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor : public CDataBuffer<Tdata, Taccess>
 {
 public:
+  //Processing buffer
   CImg<Tdata> image;
   //! result access
   CAccessOMPLock laccessR;
@@ -254,5 +255,82 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
 };//CDataProcessor_kernel
 
-#endif //_DATA_PROCESSOR_
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataProcessor_Max_Min : public CDataProcessor_kernel<Tdata, Taccess>
+{
+public:
+  
 
+  CDataProcessor_Max_Min(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessor_kernel<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessor_Max_Min";
+std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+    this->image.assign(1);//content: E only
+    this->check_locks(lock);
+  }//constructor
+
+  virtual void Process(CImg<Tdata> &in, int &A, int &B, int &Ai, int &Hi, int &Ti, int &threshold) 
+  {
+	//find the min and max Amplitude
+	B = in.min();
+	A = in.max() - B;
+	//finding the trigger position
+	for (int i=0;in(i)== B; i++)
+	{
+	  Ti=i;
+	}
+	// finding the position of the maximum Amplitude		
+	for (int i=0; in(i)< A + B; i++)
+	{
+	   Ai= i+1;
+	} 		           
+	// find the position of 36.8% amplitude and the time
+	threshold = A*0.368 + B;
+	Hi=Ai;
+	while (in(Hi) > threshold) 
+  	{
+	   Hi++; 
+	}
+  }//Process_Data
+
+  virtual void Display(CImg<Tdata> &signal, int A, int B, int Ai, int Hi, int Ti, int threshold) 
+  {
+    	CImg<Tdata> imageC;
+	imageC.assign(signal.width(),1,1,4,0);
+	imageC.get_shared_channel(0)+=signal;
+	imageC.get_shared_channel(1)+=threshold;
+	imageC.get_shared_channel(2)+=A+B;
+	imageC.get_shared_channel(3)+=A+B;
+	//put x at baseline while amplitude is > threshold 
+	cimg_for_inX(imageC,Ai,Hi,i) imageC(i,0,0,2)=B;
+	cimg_for_inX(imageC,Ti,Ai,i) imageC(i,0,0,3)=B;
+        imageC.display_graph("red = signal, green = threshold, blue = max and 36.8% height positions, yellow = trigger and max");
+  }//Process_Data
+
+  //! compution kernel for an iteration
+  virtual void kernelCPU_Max_Min(CImg<Tdata> &in,CImg<Tdata> &out)
+  {
+    int A,B,Ai,Hi,Ti,threshold;
+    Process(in, A,B,Ai,Hi,Ti,threshold);
+    Display(in, A,B,Ai,Hi,Ti,threshold);
+    out(0)=A;
+  };//kernelCPU_Max_Min
+
+  //! compution kernel for an iteration
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  {
+    kernelCPU_Max_Min(in,out);
+  };//kernelCPU
+
+
+};//CDataProcessor_Max_Min	
+
+#endif //_DATA_PROCESSOR_

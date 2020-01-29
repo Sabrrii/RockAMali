@@ -4,11 +4,11 @@
 FRAME_SIZE=4096
 NP=4
 GEN_FCT=peak
-PROC=kernel
+PROC=peak
 USE_GPU=--use-GPU --GPU-factory program
 USE_GPU=
 DO_CHECK=--do-check
-#DO_CHECK=
+DO_CHECK=
 
 DATA=./
 DATA=/media/temp/
@@ -21,7 +21,7 @@ FOUT=$(FIN)
 #compiler options
 LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
 LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
-LIB_NETCDF=-I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ #- I../NetCDF/lib/ -L../NetCDF/lib/ -lnetcdf_c++ -lnetcdf 
+LIB_NETCDF=-I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 
@@ -46,7 +46,7 @@ gui: main.cpp
 	./generate.X -h 2> generateX_help.output
 
 process: process.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0  $(DO_GPU) && ./process -h -I && ./process -v > VERSION
+#	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0  $(DO_GPU) && ./process -h -I && ./process -v > VERSION
 	g++ -O0 -o process.X   process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process.X -h -I && ./process.X -v > VERSION
 	./process.X -h 2> process_help.output
 
@@ -58,7 +58,7 @@ SEQ_GPU=-DDO_GPU_NO_QUEUE
 #	./process_sequential -h 2> process_sequential_help.output
 
 process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++  $(SEQ_GPU)  -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
+	g++ $(SEQ_GPU)  -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
 	g++ $(SEQ_GPU) -O0 -o process_sequential.X   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process_sequential -h -I && ./process_sequential.X -v > VERSION
 	./process_sequential.X -h 2> process_sequential_help.output
 
@@ -86,7 +86,7 @@ process_run:
 	ncgen parameters.cdl -o parameters.nc && ./process.X -c $(NT) -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
 
 process_sequential_run:
-	ncgen parameters.cdl -o parameters.nc && ./process_sequential.X -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) -n 12 $(USE_GPU) $(DO_CHECK) --show
+	ncgen parameters.cdl -o parameters.nc && ./process_sequential.X -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show
 #	ncgen parameters.cdl -o parameters.nc && ./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 12 $(USE_GPU) $(DO_CHECK)
 
 #NS=123456

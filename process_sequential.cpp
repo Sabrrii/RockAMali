@@ -176,6 +176,11 @@ int main(int argc,char **argv)
       for(unsigned int i=0;i<count;++i)
       {
         generate->iteration(access,images,0,i);
+        images[0].print(generator_type.c_str());
+        #if cimg_display!=0   
+         if(show) images[0].display_graph(generator_type.c_str());
+        #endif
+
         process->iteration(access,images, accessR,results, 0,i);
         store.iteration(accessR,results, 0,i);
         //check
@@ -189,9 +194,10 @@ int main(int argc,char **argv)
           NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
          process->show_checking();
         }
-        images[0].print(processor_type.c_str());
+
+        results[0].print(processor_type.c_str());
         #if cimg_display!=0   
-         if(show) images[0].display_graph(processor_type.c_str());
+         if(show) results[0].display_graph(processor_type.c_str());
         #endif
       }//vector loop
       break;

@@ -252,6 +252,7 @@ int Get_Graph_Parameters(int &nb_tB, int &nb_tA, double &tau, int &A, int &B){
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
     //fill image with Peak
+//! [medium] parameters should be loaded once in constructor
     //Signal Parameters
 	int nb_tB; // 10us
 	int nb_tA; //100 ns
@@ -259,15 +260,7 @@ int Get_Graph_Parameters(int &nb_tB, int &nb_tA, double &tau, int &A, int &B){
 	int A;
 	int B;
         Get_Graph_Parameters(nb_tB, nb_tA, tau, A, B);
-	std::cerr<<nb_tA<<std::endl; 
         nb_tA+=nb_tB;
-std::cerr<<nb_tB<<std::endl;
-std::cerr<<nb_tA<<std::endl;
-std::cerr<<tau<<std::endl;
-std::cerr<<A<<std::endl;
-	std::cerr<<B<<std::endl;
-
-
 
 	//Baseline
 	cimg_for_inX(images[n],0,nb_tB,i) images[n](i)=B;
@@ -280,7 +273,8 @@ std::cerr<<A<<std::endl;
         cimg_for_inX(images[n],nb_tA,images[n].width(),i) images[n](i)=A * exp(-t++/tau)+B;
 
     //set frame count value as first array value
-    images[n](0)=i;
+//    images[n](0)=i;
+//    images[n](images[n].width()-1)=i;
 
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],i,n,c);//filling,filled

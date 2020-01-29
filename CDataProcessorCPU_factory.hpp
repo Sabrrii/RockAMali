@@ -32,6 +32,8 @@ public:
       return new CDataProcessor_vPvMv<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back   ("kernel")              ;if(name == factory_types.back())
       return new CDataProcessor_kernel<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back   ("peak")              ;if(name == factory_types.back())
+      return new CDataProcessor_Max_Min<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
 //    if(name == "error")
 //      return new CDataProcessor_error;
     //listing known types in factory
