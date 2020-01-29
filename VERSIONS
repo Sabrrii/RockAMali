@@ -2,4 +2,5 @@ process.v0.5.6d
   CImg_NetCDF.v0.8.3
 process_sequential.v0.5.6d
   CImg_NetCDF.v0.8.3
-receive.send.store.
+receive.v0.5.2d
+send.v0.5.1d
