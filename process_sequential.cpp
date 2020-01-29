@@ -9,10 +9,10 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.3d"
+#define VERSION "v0.5.3e"
 
 //thread lock
-#include "CDataGenerator.hpp"
+#include "CDataGenerator_factory.hpp"
 #include "CDataProcessorCPU_factory.hpp"
 #ifdef DO_GPU
 #ifdef DO_GPU_NO_QUEUE
@@ -50,6 +50,10 @@ int main(int argc,char **argv)
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");
   const int nbuffer=1;
+
+  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
+  //show type list in generator factory
+  std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
 
   const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
   //show type list in CPU processor factory
@@ -148,7 +152,10 @@ int main(int argc,char **argv)
     case 0:
     {//sequential
      //generate
-      CDataGenerator_Random<Tdata,Taccess> generate(locks);
+   //   CDataGenerator_Random<Tdata,Taccess> generate(locks);
+      CDataGenerator<Tdata, Taccess> *generate=CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator 
+      (generator_type, generator_type_list, locks);
+      std::cout<<"information: generator type is the one in "<<generate->class_name<<" class."<<std::endl<<std::flush;
      //process
       CDataProcessor<Tdata,Taccess> *process;
       {//CPU
@@ -168,7 +175,7 @@ int main(int argc,char **argv)
       //run
       for(unsigned int i=0;i<count;++i)
       {
-        generate.iteration(access,images,0,i);
+        generate->iteration(access,images,0,i);
         process->iteration(access,images, accessR,results, 0,i);
         store.iteration(accessR,results, 0,i);
         //check

@@ -44,7 +44,7 @@ int main(int argc,char **argv)
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
   const int threadCount=cimg_option("-c",3,"thread count (threads above 2 are processing one)");
 
-  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count or random");
+  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
   //show type list in generator factory
   std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
 
