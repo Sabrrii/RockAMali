@@ -123,7 +123,6 @@ int Read_Paramaters (Tdata &min_limit, Tdata &max_limit)
     this->class_name="CDataGenerator_Random";
     this->check_locks(lock);
     Read_Paramaters(rand_min, rand_max);
-    //! \todo [highest] setup parameters (e.g. rand_min, rand_max) from CDL, i.e. parameters.nc
     //! \todo [lowest] setup limits from CDL (e.g. CDL aggregation with ncgen)
  }//constructor
 
@@ -196,12 +195,25 @@ public:
 
     //fill image with Peak
 //! \todo [high] fill images with local defined variables
-    int baseline=23;
-    int startpeak=510;
-    int endpeak = 610;
-    int peaksize = 150;
-    images[n].fill(baseline);
-    cimg_for_inX(images[n],startpeak,endpeak,i) images[n](i)=peaksize+baseline;
+    //Signal Parameters
+	const int nb_tB = 10000/10; // 10us
+	const int nb_tA = 100/10 + nb_tB; //100 ns
+	const float tau = 5000/10; //5 us
+	const int A =1234;
+	const int B=20;
+  //      Get_Graph_parameters(int &nb_tB, int &nb_tA, double &tau, int, A, int B, int SetSetupScope)
+
+	//Baseline
+
+	cimg_for_inX(images[n],0,nb_tB,i) images[n](i)=B;
+        //Peak
+	const float step =(float)A/(nb_tA - nb_tB);
+        int j=0;
+        cimg_for_inX(images[n],nb_tB,nb_tA,i) images[n](i)=step*j++ +B;
+	//Exponential decrease
+	int t=0;
+        cimg_for_inX(images[n],nb_tA,images[n].width(),i) images[n](i)=A * exp(-t++/tau)+B;
+
     //set frame count value as first array value
     images[n](0)=i;
 

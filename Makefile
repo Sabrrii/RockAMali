@@ -1,9 +1,9 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
-FRAME_SIZE=2048
+FRAME_SIZE=4096
 NP=4
-GEN_FCT=random
+GEN_FCT=peak
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program
 USE_GPU=
