@@ -1,6 +1,8 @@
 //CoolImage
 #include "CImg.h"
 
+//! \todo [medium] [Tproc] needed for GPU
+
 //C++ base
 #include <iostream>
 #include <string>

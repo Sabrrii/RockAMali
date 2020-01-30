@@ -3,6 +3,8 @@
 
 #include "CDataProcessorGPU.hpp"
 
+//! \todo [Tproc] needed for GPU
+
 //! factory for GPU processing
 /**
  *
