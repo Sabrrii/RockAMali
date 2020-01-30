@@ -164,8 +164,13 @@ class CDataGenerator_Peak: public CDataGenerator<Tdata, Taccess>
 {
 
 public:
+  int nb_tB; // 10us
+	int nb_tA; //100 ns
+	double tau; //5 us
+	int A;
+	int B;
 
-int Get_Graph_Parameters(int &nb_tB, int &nb_tA, double &tau, int &A, int &B){
+  int Get_Graph_Parameters(int &nb_tB, int &nb_tA, double &tau, int &A, int &B){
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
   int Tau;
@@ -231,6 +236,8 @@ int Get_Graph_Parameters(int &nb_tB, int &nb_tA, double &tau, int &A, int &B){
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak";
+    Get_Graph_Parameters(nb_tB, nb_tA, tau, A, B);//Signal Parameters	
+    nb_tA+=nb_tB; //nb_tA is position
     this->check_locks(lock);
   }//constructor
 
@@ -251,17 +258,7 @@ int Get_Graph_Parameters(int &nb_tB, int &nb_tA, double &tau, int &A, int &B){
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
-    //fill image with Peak
-//! [medium] parameters should be loaded once in constructor
-    //Signal Parameters
-	int nb_tB; // 10us
-	int nb_tA; //100 ns
-	double tau; //5 us
-	int A;
-	int B;
-        Get_Graph_Parameters(nb_tB, nb_tA, tau, A, B);
-        nb_tA+=nb_tB;
-
+    //fill image with Peak 
 	//Baseline
 	cimg_for_inX(images[n],0,nb_tB,i) images[n](i)=B;
         //Peak
