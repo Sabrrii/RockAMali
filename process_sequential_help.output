@@ -1,22 +1,22 @@
 
- [0;31;59mprocess_sequential.X[0;0;0m: generate, process and store data sequentialy.
+ process_sequential.X: generate, process and store data sequentialy.
  It uses different GNU libraries (see --info option)
 
  usage: ./process -h
         ./process -s 1024 -n 123 -o result.nc
 
- version: v0.5.7d
+ version: v0.5.7f
           CImg_NetCDF.v0.8.3
- compilation date: (Jan 30 2020, 14:47:05)
+ compilation date: (Jan 30 2020, 16:05:34)
 
-    [1m-o              [0;0;0m sample.cimg              [0;32;59moutput file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
-    [1m-d              [0;0;0m 6                        [0;32;59mnumber of digit for file names[0;0;0m
-    [1m-s              [0;0;0m 1024                     [0;32;59msize   of udp buffer[0;0;0m
-    [1m-n              [0;0;0m 256                      [0;32;59mnumber of frames[0;0;0m
-    [1m--generator-factory[0;0;0m count                    [0;32;59mgenerator type, e.g. count, random or peak[0;0;0m
-    [1m--CPU-factory   [0;0;0m count                    [0;32;59mCPU processing type, e.g. count or kernel[0;0;0m
-    [1m--do-check      [0;0;0m false                    [0;32;59mdo data check, e.g. test pass (or -C option)[0;0;0m
-    [1m--show          [0;0;0m false                    [0;32;59mshow GUI (or -X option)[0;0;0m
-    [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
-    [1m--info          [0;0;0m false                    [0;32;59mshow compilation options (or -I option)[0;0;0m
-    [1m--version       [0;0;0m false                    [0;32;59mshow version (or -v option)[0;0;0m
+    -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)
+    -d               6                        number of digit for file names
+    -s               1024                     size   of udp buffer
+    -n               256                      number of frames
+    --generator-factory count                    generator type, e.g. count, random or peak
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel
+    --do-check       false                    do data check, e.g. test pass (or -C option)
+    --show           false                    show GUI (or -X option)
+    --help           true                     help (or -h option)
+    --info           false                    show compilation options (or -I option)
+    --version        false                    show version (or -v option)
