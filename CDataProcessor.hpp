@@ -9,6 +9,9 @@ using namespace cimg_library;
 
 #include "CDataBuffer.hpp"
 
+#include <netcdfcpp.h>
+#include "struct_parameter_NetCDF.h"
+
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor : public CDataBuffer<Tdata, Taccess>
 {
@@ -281,22 +284,19 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   {
 	//find the min and max Amplitude
 	B = in.min();
-	A = in.max() - B;
-	//finding the trigger position
+	A = in.max() - B;	
 	for (int i=0;in(i)== B; i++)
-	{
+	{//finding the trigger position
 	  Ti=i;
-	}
-	// finding the position of the maximum Amplitude		
+	}			
 	for (int i=0; in(i)< A + B; i++)
-	{
+	{// finding the position of the maximum Amplitude
 	   Ai= i+1;
-	} 		           
-	// find the position of 36.8% amplitude and the time
+	} 		           	
 	threshold = A*0.368 + B;
 	Hi=Ai;
 	while (in(Hi) > threshold) 
-  	{
+  	{// find the position of 36.8% amplitude
 	   Hi++; 
 	}
   }//Process_Data
@@ -333,4 +333,143 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
 };//CDataProcessor_Max_Min	
 
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataProcessor_Trapeze : public CDataProcessor_kernel<Tdata, Taccess>
+{
+public:
+
+  int Read_Paramaters (int &k, int &m, int &B, double &alpha)
+  {
+  ///file name
+  std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
+
+  ///parameter class
+  CParameterNetCDF fp;
+  //open file
+  int error=fp.loadFile((char *)fi.c_str());
+  if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
+
+  float process; 
+  std::string process_name="trapezoid";
+  //load process variable
+  error=fp.loadVar(process,&process_name);
+  if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+  std::cout<<process_name<<"="<<process<<std::endl;
+  ///k
+  std::string attribute_name="k";
+  if (error = fp.loadAttribute(attribute_name,k)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<k<<std::endl;
+
+  ///m
+  attribute_name="m";
+  if (error = fp.loadAttribute(attribute_name,m)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<m<<std::endl;
+
+  ///alpha
+  attribute_name="alpha";
+  if (error = fp.loadAttribute(attribute_name,alpha)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<alpha<<std::endl;
+
+  process_name="graph";
+  //load process variable
+  error=fp.loadVar(process,&process_name);
+  if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+  std::cout<<process_name<<"="<<process<<std::endl;
+  ///B
+  attribute_name="B";
+  if (error = fp.loadAttribute(attribute_name,B)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<B<<std::endl;
+
+
+  } //Read_Paramaters
+
+  CDataProcessor_Trapeze(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessor_kernel<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessor_Max_Min";
+std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+    this->image.assign(1);//content: E only
+    this->check_locks(lock);
+  }//constructor
+
+  virtual int trapezoidal_filter(CImg<Tdata> e, CImg<Tdata> &s, int k, int m, double alpha, int decalage) 
+  {
+  //create a filter
+    std::cout<< "k = "<<k<<std::endl;
+    std::cout<< "m = "<<m<<std::endl;
+    std::cout<< "alpha = "<<alpha<<std::endl;
+    std::cout<< "decalage = "<<decalage<<std::endl;
+    s.print("s before");
+    cimg_for_inX(s,decalage, s.width()-1,n)
+    s(n)=2*s(n-1)-s(n-2) + e(n-1)\
+		      -alpha*e(n-2) \
+			   -e(n-(k+1)) \
+			        +alpha*e(n-(k+2)) \
+				     -e(n-(k+m+1)) \
+					  +alpha*e(n-(k+m+2)) \
+						+e(n-(2*k+m+1)) \
+						     -alpha*e(n-(2*k+m+2));
+   s.print("after");		
+  }//trapezoidal_filter
+
+  /**
+   \page pageSchema Schema du signal
+  * 
+  * \image html Signal_details.png "explanation of the signal"
+  *
+  **/
+
+  virtual void Display(CImg<Tdata> in, CImg<Tdata> out, int decalage)
+  {
+	in.print("in display");
+	
+	CImg<Tdata> imageC;
+	imageC.assign(in.width(),1,1,3,0);
+	imageC.get_shared_channel(0)+=in;
+	imageC.get_shared_channel(1)+=out*in.max()/out.max(); // trapeze normalize
+	cimg_for_inX(imageC,decalage,imageC.width(),i) imageC(i,0,0,2)=in.max();//begin of the trapeze computation
+	imageC.display_graph("red = signal, green = filter, blue = trapezoid computation");
+  }//Display
+
+  //! compution kernel for an iteration
+  virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tdata> &out)
+  {
+    int k, m, B;
+    double alpha;
+    Read_Paramaters(k,m,B,alpha);
+    int decalage = 2*k+m+2;
+    in.print("in in kernel");
+    CImg<Tdata> trapeze(in.width(),1,1,1, B);
+    trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
+    Display(in, trapeze, decalage);
+  };//kernelCPU_Max_Min
+
+  //! compution kernel for an iteration
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  {
+    kernelCPU_Trapeze(in,out);
+  };//kernelCPU
+
+
+};//CDataProcessor_Trapeze
+	
 #endif //_DATA_PROCESSOR_

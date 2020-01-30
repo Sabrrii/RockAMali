@@ -33,7 +33,7 @@ using namespace cimg_library;
 
 //types
 typedef unsigned char Taccess;
-typedef unsigned int  Tdata;
+typedef float  Tdata;
 
 int main(int argc,char **argv)
 {
@@ -163,6 +163,7 @@ int main(int argc,char **argv)
 //      CDataProcessor<Tdata, Taccess> process(locks
 //      process=new CDataProcessor_vPvMv<Tdata, Taccess>(locks
       process=CDataProcessorCPU_factory<Tdata, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+//      process=CDataProcessorCPU_factory<Tdata, Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
       , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results

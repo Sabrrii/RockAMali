@@ -4,7 +4,7 @@
 FRAME_SIZE=4096
 NP=4
 GEN_FCT=peak
-PROC=peak
+PROC=trapeze
 USE_GPU=--use-GPU --GPU-factory program
 USE_GPU=
 DO_CHECK=--do-check
