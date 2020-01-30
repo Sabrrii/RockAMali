@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.6"
+#define VERSION "v0.5.7d"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -34,6 +34,7 @@ using namespace cimg_library;
 //types
 typedef unsigned char Taccess;
 typedef unsigned int  Tdata;
+typedef unsigned int  Tproc;
 
 int main(int argc,char **argv)
 {
@@ -118,7 +119,7 @@ int main(int argc,char **argv)
   omp_lock_t lck;omp_init_lock(&lck);
 
   //! result circular buffer
-  CImgList<Tdata> results(nbuffer,width,1,1,1);
+  CImgList<Tproc> results(nbuffer,width,1,1,1);
   results[0].fill(0);
   results[0].print("result",false);
   //accessR locking
@@ -175,12 +176,12 @@ int main(int argc,char **argv)
       (generator_type, generator_type_list, locks);
       std::cout<<"information: generator type is the one in "<<generate->class_name<<" class."<<std::endl<<std::flush;
      //process
-      CDataProcessor<Tdata,Taccess> *process;
+      CDataProcessor<Tdata,Tproc, Taccess> *process;
       {//CPU
       std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
 //      CDataProcessor<Tdata, Taccess> process(locks
 //      process=new CDataProcessor_vPvMv<Tdata, Taccess>(locks
-      process=CDataProcessorCPU_factory<Tdata, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+      process=CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
       , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
@@ -189,7 +190,7 @@ int main(int argc,char **argv)
       }//CPU
       process_class_name=process->class_name;
      //store
-      CDataStore<Tdata,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
+      CDataStore<Tproc,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
       //run
       for(unsigned int i=0;i<count;++i)
       {

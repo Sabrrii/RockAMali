@@ -1,1 +1,4 @@
-v0.5.6
+information: generator types are: count, random, peak.
+information: CPU processor types are: count, vPvMv, kernel.
+v0.5.7d
+  CImg_NetCDF.v0.8.3

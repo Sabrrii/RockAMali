@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.6"
+#define VERSION "v0.5.7d"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -26,6 +26,7 @@ using namespace cimg_library;
 //types
 typedef unsigned char Taccess;
 typedef unsigned int  Tdata;
+typedef unsigned int  Tproc;
 
 int main(int argc,char **argv)
 {
