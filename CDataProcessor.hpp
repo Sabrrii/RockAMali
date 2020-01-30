@@ -337,8 +337,10 @@ template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor_Trapeze : public CDataProcessor_kernel<Tdata, Taccess>
 {
 public:
+  int k, m, B, n, q, Tm, threshold;
+  double alpha, fraction; 
 
-  int Read_Paramaters (int &k, int &m, int &B, int &n, int &q, int &Tm, double &alpha, double &fraction)
+  int Read_Paramaters (int &k, int &m, int &B, int &n, int &q, int &Tm, int &threshold, double &alpha, double &fraction)
   {
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -397,29 +399,36 @@ public:
   error=fp.loadVar(process,&process_name);
   if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
   std::cout<<process_name<<"="<<process<<std::endl;
-  ///B
+  ///n
   attribute_name="n";
   if (error = fp.loadAttribute(attribute_name,n)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<n<<std::endl;
-
+  ///q
   attribute_name="q";
   if (error = fp.loadAttribute(attribute_name,q)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<q<<std::endl;
-
+  //threshold
+  attribute_name="threshold";
+  if (error = fp.loadAttribute(attribute_name,threshold)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<threshold<<std::endl;
+  ///fraction
   attribute_name="fraction";
   if (error = fp.loadAttribute(attribute_name,fraction)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<fraction<<std::endl;
-
- attribute_name="Tm";
+  ///Tm
+  attribute_name="Tm";
   if (error = fp.loadAttribute(attribute_name,Tm)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
@@ -443,6 +452,7 @@ public:
     this->debug=true;
     this->class_name="CDataProcessor_Max_Min";
 std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+    Read_Paramaters(k,m,B,n,q,Tm,threshold, alpha,fraction);
     this->image.assign(1);//content: E only
     this->check_locks(lock);
   }//constructor
@@ -450,11 +460,6 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   virtual int trapezoidal_filter(CImg<Tdata> e, CImg<Tdata> &s, int k, int m, double alpha, int decalage) 
   {
   //create a filter
-    std::cout<< "k = "<<k<<std::endl;
-    std::cout<< "m = "<<m<<std::endl;
-    std::cout<< "alpha = "<<alpha<<std::endl;
-    std::cout<< "decalage = "<<decalage<<std::endl;
-    s.print("s before");
     cimg_for_inX(s,decalage, s.width()-1,n)
     s(n)=2*s(n-1)-s(n-2) + e(n-1)\
 		      -alpha*e(n-2) \
@@ -463,10 +468,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 				     -e(n-(k+m+1)) \
 					  +alpha*e(n-(k+m+2)) \
 						+e(n-(2*k+m+1)) \
-						     -alpha*e(n-(2*k+m+2));
-   s.print("after");		
+						     -alpha*e(n-(2*k+m+2));		
   }//trapezoidal_filter
-
   /**
    \page pageSchema Schema du signal
   * 
@@ -476,8 +479,6 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
   virtual void Display(CImg<Tdata> in, CImg<Tdata> out, int decalage)
   {
-	in.print("in display");
-	
 	CImg<Tdata> imageC;
 	imageC.assign(in.width(),1,1,3,0);
 	imageC.get_shared_channel(0)+=in;
@@ -486,9 +487,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	imageC.display_graph("red = signal, green = filter, blue = trapezoidal computation");
   }//Display
 
-  virtual int Calcul_Ti(CImg<Tdata> e, int Tm ,double fraction, double alpha) 
+  virtual int Calcul_Ti(CImg<Tdata> e, int Tm,int threshold, double fraction,double alpha) 
   {
-		float threshold=e.max()/36.8;
 		CImg<Tdata> s(e.width());
 		int delay = (3*Tm)/2;
 		//Discri simple
@@ -497,24 +497,25 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 		//Discri treshold		
 		CImg<Tdata> imageDCF(s.width(),1,1,1, 0);
 		cimg_for_inX(imageDCF,delay,s.width(),n) imageDCF(n)=s(n-delay)-fraction*s(n);
-		//display the graph
-		CImg<Tdata> imageC;
-		imageC.assign(s.width(),1,1,4, 0);
-		imageC.get_shared_channel(0)+=s;
-		imageC.get_shared_channel(1)+=imageDCF;
-		imageC.get_shared_channel(2)+=threshold;
-		imageC.get_shared_channel(3)+=e/e.max()*imageDCF.max();		
-		imageC.display_graph("red = discri simple, green = dCFD, blue = threshold, yellow = graph");		
 		//find the position of the trigger
 		int Ti;
 		for (int i=0;s(i) < threshold; i++)
 		{
 		  Ti=i+1;
 		}
+		//display the graph
+		CImg<Tdata> imageC;
+		imageC.assign(s.width(),1,1,5, 0);
+		imageC.get_shared_channel(0)+=s;
+		imageC.get_shared_channel(1)+=imageDCF;
+		imageC.get_shared_channel(2)+=threshold;
+		imageC.get_shared_channel(3)+=e/e.max()*imageDCF.max();
+		cimg_for_inX(imageC,Ti,imageC.width(),i) imageC(i,0,0,4)=imageDCF.max();		
+		imageC.display_graph("red = discri simple, green = dCFD, blue = threshold, yellow = signal");
 		return Ti;
   }//Calcul_Ti
 
-  float Calculation_Energy(CImg<Tdata> trapeze, int Ti, int n, double q)
+  float Calculation_Energy(CImg<Tdata> trapeze, int Ti,int n, double q)
   {
     //sum of the n baseline value
     int base=0;
@@ -528,10 +529,10 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     return (peak-base)/n;
   }//Calculation_Energy
 
-  void Display_Trapeze_Paramaters(CImg<Tdata> in, int Ti, int n, double q)
+  void Display_Trapeze_Paramaters(CImg<Tdata> in, int Ti,int n, double q)
   {
 	CImg<Tdata> imageC;
-	imageC.assign(in.width(),1,1,5,0);
+	imageC.assign(in.width(),1,1,4,0);
 	imageC.get_shared_channel(0)+=in;
 	cimg_for_inX(imageC,Ti-n,Ti,i) imageC(i,0,0,1)=in.max();
 	cimg_for_inX(imageC,Ti,Ti+q,i) imageC(i,0,0,2)=in.max();
@@ -541,16 +542,12 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
   //! compution kernel for an iteration
   virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tdata> &out)
-  {
-    int k, m, B, n, q, Tm;
-    double alpha, fraction;
-    Read_Paramaters(k,m,B,n,q,Tm, alpha, fraction);
+  {    
     int decalage = 2*k+m+2;
-    in.print("in in kernel");
     CImg<Tdata> trapeze(in.width(),1,1,1, B);
     trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
     Display(in, trapeze, decalage);
-    int Ti=Calcul_Ti(in,Tm, fraction,alpha);
+    int Ti=Calcul_Ti(in,Tm,threshold, fraction,alpha);
     std::cout<< "Trigger start= " << Ti  <<std::endl;
     Display_Trapeze_Paramaters(trapeze, Ti, n, q);
     float E=Calculation_Energy(trapeze, Ti, n, q);
