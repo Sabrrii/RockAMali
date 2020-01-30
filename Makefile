@@ -82,14 +82,10 @@ NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
 process_run:
-	rm sample.nc; ./process -c 3 -s $(FRAME_SIZE) -o sample.nc -b 8 -n 12 2>&1 | grep -e 'NetCDF' -e ' ' --color && ncdump -h sample.nc #--use-GPU --do-check #2>/dev/null | grep -e info -e test
-	ncgen parameters.cdl -o parameters.nc && ./process.X -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
-
+	ncgen parameters.cdl -o parameters.nc && rm sample.nc; ./process.X -c $(NT) -s $(FRAME_SIZE) -o sample.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color && ncdump -h sample.nc
 
 process_sequential_run:
-#	./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 123 $(USE_GPU) $(DO_CHECK)
-	rm sample_sequential.nc; ./process_sequential -s $(FRAME_SIZE) -o sample_sequential.nc -n 123 $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc
-	ncgen parameters.cdl -o parameters.nc && ./process_sequential.X -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show
+	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
 
 #NS=123456
 send_run:
@@ -112,11 +108,11 @@ clear:
 	sync
 
 clean:
+	make clear
 	rm -f send.X    send
 	rm -f receive.X receive
 	rm -f process.X process
 	rm -f process_sequential.X process_sequential
-	make clear
 
 display:
 	convert -append $(DATA)/samples/sample*.png $(DATA)/samples.png && display samples.png &
