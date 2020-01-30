@@ -258,11 +258,27 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
 };//CDataProcessor_kernel
 
+//! process a single simulated peak (look like PAC signal)
+/**
+ * find the max, min, threshold value and the position of the  trigger, maximum, threshold
+ *
+ * assign values to the image (signal, threshold, min while between max and treshold,  min while trigger)
+ *
+ * display the graph with 4 curves (signal, threshold, max and 36.8% height positions,  trigger and max)
+ *
+ * algorithm : 
+ * - max : find the maximum value of the signal
+ * - min : find the minimum value of the signal
+ * - threshold : calculation of the 36.8% max value + baseline
+ * 
+ * \ref pageSchema "Signal schema" 
+ *
+**/
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor_Max_Min : public CDataProcessor_kernel<Tdata, Taccess>
 {
 public:
-  
+  int A,B,Ai,Hi,Ti,threshold;
 
   CDataProcessor_Max_Min(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
@@ -279,46 +295,49 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     this->image.assign(1);//content: E only
     this->check_locks(lock);
   }//constructor
-
-  virtual void Process(CImg<Tdata> &in, int &A, int &B, int &Ai, int &Hi, int &Ti, int &threshold) 
+  //! find important paramaters and their position
+  virtual void Process(CImg<Tdata> &in, int &ampli, int &base, int &Imax, int &Ith, int &Itrig, int &th) 
   {
 	//find the min and max Amplitude
-	B = in.min();
-	A = in.max() - B;	
-	for (int i=0;in(i)== B; i++)
+	base = in.min();
+	ampli = in.max() - base;	
+	for (int i=0;in(i)== base; i++)
 	{//finding the trigger position
-	  Ti=i;
+	  Itrig=i;
 	}			
-	for (int i=0; in(i)< A + B; i++)
+	for (int i=0; in(i)< ampli + base; i++)
 	{// finding the position of the maximum Amplitude
-	   Ai= i+1;
+	   Imax= i+1;
 	} 		           	
-	threshold = A*0.368 + B;
-	Hi=Ai;
-	while (in(Hi) > threshold) 
+	th = ampli*0.368 + base;
+        //Index of the threshold start where the Index of the max end
+	Ith=Imax; 
+	while (in(Ith) > th) 
   	{// find the position of 36.8% amplitude
-	   Hi++; 
+	   Ith++; 
 	}
   }//Process_Data
-
-  virtual void Display(CImg<Tdata> &signal, int A, int B, int Ai, int Hi, int Ti, int threshold) 
+  //! display the process signal
+  virtual void Display(CImg<Tdata> &signal, int ampli, int base, int Imax, int Ith, int Itrig, int th) 
   {
     	CImg<Tdata> imageC;
+	// make 4 curves with the numbers of items and fills it with 0
 	imageC.assign(signal.width(),1,1,4,0);
+        //change the specified channel to the paramaters values
 	imageC.get_shared_channel(0)+=signal;
-	imageC.get_shared_channel(1)+=threshold;
-	imageC.get_shared_channel(2)+=A+B;
-	imageC.get_shared_channel(3)+=A+B;
+	imageC.get_shared_channel(1)+=th;
+	imageC.get_shared_channel(2)+=ampli+base;
+	imageC.get_shared_channel(3)+=ampli+base;
 	//put x at baseline while amplitude is > threshold 
-	cimg_for_inX(imageC,Ai,Hi,i) imageC(i,0,0,2)=B;
-	cimg_for_inX(imageC,Ti,Ai,i) imageC(i,0,0,3)=B;
+	cimg_for_inX(imageC,Imax,Ith,i) imageC(i,0,0,2)=base;
+        //put x at baseline at the trigger  
+	cimg_for_inX(imageC,Itrig,Imax,i) imageC(i,0,0,3)=base;
         imageC.display_graph("red = signal, green = threshold, blue = max and 36.8% height positions, yellow = trigger and max");
   }//Process_Data
 
   //! compution kernel for an iteration
   virtual void kernelCPU_Max_Min(CImg<Tdata> &in,CImg<Tdata> &out)
-  {
-    int A,B,Ai,Hi,Ti,threshold;
+  {  
     Process(in, A,B,Ai,Hi,Ti,threshold);
     Display(in, A,B,Ai,Hi,Ti,threshold);
     out(0)=A;
@@ -333,18 +352,43 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
 };//CDataProcessor_Max_Min	
 
+//! process a single peak from PAC signal 
+/**
+ * Calculation of a trapezoidal based on the signal input
+ * Display a graph with 3 curves (signal input, trapezoidal filter normalize and the max when the computation begin)
+ *
+ * Create a discri simple and a discri threshold, find and return the position of the trigger
+ * Display a graph with 4 curves ( discri simple, dCFD, threshold and the signal)
+ *
+ * Display a graph with 4 curves (Filter, N baseline, Q delay, N flat top)
+ * Make the sum of baseline and peak to calculate the energy ((peak-base)/n) then return it
+ *
+ * Parameters NetCDF CDL : 
+ * - k= increase size
+ * - m= plateau size
+ * - B= Baseline
+ * - n= N baseline
+ * - q= Computing Delay
+ * - Tm= peak time
+ * - threshold= should be 36.8 % of the amplitude
+ * - alpha=duty cicle
+ * - fraction=
+ *
+ * \ref pageSchema "Signal schema" 
+ *
+**/
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessor_Trapeze : public CDataProcessor_kernel<Tdata, Taccess>
 {
 public:
   int k, m, B, n, q, Tm, threshold;
-  double alpha, fraction; 
-
-  int Read_Paramaters (int &k, int &m, int &B, int &n, int &q, int &Tm, int &threshold, double &alpha, double &fraction)
+  float alpha, fraction; 
+  //! read processing parameters from CDL parameter file (as .nc)
+  int Read_Paramaters (int &ks, int &ms, int &base, int &number, int &qDelay, int &Tpeak, int &th, float &alp, float &frac)
   {
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-  float Alpha, Fraction;
+  double Alpha, Fraction;
   ///parameter class
   CParameterNetCDF fp;
   //open file
@@ -359,27 +403,60 @@ public:
   std::cout<<process_name<<"="<<process<<std::endl;
   ///k
   std::string attribute_name="k";
-  if (error = fp.loadAttribute(attribute_name,k)!=0){
+  if (error = fp.loadAttribute(attribute_name,ks)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
-  std::cout<<"  "<<attribute_name<<"="<<k<<std::endl;
-
+  std::cout<<"  "<<attribute_name<<"="<<ks<<std::endl;
   ///m
   attribute_name="m";
-  if (error = fp.loadAttribute(attribute_name,m)!=0){
+  if (error = fp.loadAttribute(attribute_name,ms)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
-  std::cout<<"  "<<attribute_name<<"="<<m<<std::endl;
-
+  std::cout<<"  "<<attribute_name<<"="<<ms<<std::endl;
   ///alpha
   attribute_name="alpha";
-  if (error = fp.loadAttribute(attribute_name,alpha)!=0){
+  if (error = fp.loadAttribute(attribute_name,Alpha)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
-  std::cout<<"  "<<attribute_name<<"="<<alpha<<std::endl;
+  std::cout<<"  "<<attribute_name<<"="<<Alpha<<std::endl;
+  ///n
+  attribute_name="n";
+  if (error = fp.loadAttribute(attribute_name,number)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<number<<std::endl;
+  ///q
+  attribute_name="q";
+  if (error = fp.loadAttribute(attribute_name,qDelay)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<qDelay<<std::endl;
+  //threshold
+  attribute_name="threshold";
+  if (error = fp.loadAttribute(attribute_name,th)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<th<<std::endl;
+  ///fraction
+  attribute_name="fraction";
+  if (error = fp.loadAttribute(attribute_name,Fraction)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<Fraction<<std::endl;
+  ///Tm
+  attribute_name="Tm";
+  if (error = fp.loadAttribute(attribute_name,Tpeak)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<Tpeak<<std::endl;
 
   process_name="graph";
   //load process variable
@@ -388,55 +465,13 @@ public:
   std::cout<<process_name<<"="<<process<<std::endl;
   ///B
   attribute_name="B";
-  if (error = fp.loadAttribute(attribute_name,B)!=0){
+  if (error = fp.loadAttribute(attribute_name,base)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
-  std::cout<<"  "<<attribute_name<<"="<<B<<std::endl;
-
-  process_name="energy";
-  //load process variable
-  error=fp.loadVar(process,&process_name);
-  if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
-  std::cout<<process_name<<"="<<process<<std::endl;
-  ///n
-  attribute_name="n";
-  if (error = fp.loadAttribute(attribute_name,n)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<n<<std::endl;
-  ///q
-  attribute_name="q";
-  if (error = fp.loadAttribute(attribute_name,q)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<q<<std::endl;
-  //threshold
-  attribute_name="threshold";
-  if (error = fp.loadAttribute(attribute_name,threshold)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<threshold<<std::endl;
-  ///fraction
-  attribute_name="fraction";
-  if (error = fp.loadAttribute(attribute_name,fraction)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<fraction<<std::endl;
-  ///Tm
-  attribute_name="Tm";
-  if (error = fp.loadAttribute(attribute_name,Tm)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<Tm<<std::endl;
-
- // alpha=Alpha;
- // fraction=Fraction;
+  std::cout<<"  "<<attribute_name<<"="<<base<<std::endl;
+  alp=Alpha;
+  frac=Fraction;
   
   }//Read_Paramaters
 
@@ -456,27 +491,16 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     this->image.assign(1);//content: E only
     this->check_locks(lock);
   }//constructor
-
-  virtual int trapezoidal_filter(CImg<Tdata> e, CImg<Tdata> &s, int k, int m, double alpha, int decalage) 
+  //! fill the image with the filter
+  virtual int trapezoidal_filter(CImg<Tdata> e, CImg<Tdata> &s, int ks, int ms, double alp, int decalage) 
   {
   //create a filter
     cimg_for_inX(s,decalage, s.width()-1,n)
-    s(n)=2*s(n-1)-s(n-2) + e(n-1)\
-		      -alpha*e(n-2) \
-			   -e(n-(k+1)) \
-			        +alpha*e(n-(k+2)) \
-				     -e(n-(k+m+1)) \
-					  +alpha*e(n-(k+m+2)) \
-						+e(n-(2*k+m+1)) \
-						     -alpha*e(n-(2*k+m+2));		
+    s(n)=2*s(n-1)-s(n-2) + e(n-1)-alp*e(n-2) -e(n-(ks+1)) \
+			+alp*e(n-(ks+2))-e(n-(ks+ms+1))+alp*e(n-(ks+ms+2)) \
+					+e(n-(2*ks+ms+1))-alp*e(n-(2*ks+ms+2));		
   }//trapezoidal_filter
-  /**
-   \page pageSchema Schema du signal
-  * 
-  * \image html Signal_details.png "explanation of the signal"
-  *
-  **/
-
+  //! display the signal, the filter and the computation start
   virtual void Display(CImg<Tdata> in, CImg<Tdata> out, int decalage)
   {
 	CImg<Tdata> imageC;
@@ -486,57 +510,57 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	cimg_for_inX(imageC,decalage,imageC.width(),i) imageC(i,0,0,2)=in.max();//begin of the trapeze computation
 	imageC.display_graph("red = signal, green = filter, blue = trapezoidal computation");
   }//Display
-
-  virtual int Calcul_Ti(CImg<Tdata> e, int Tm,int threshold, double fraction,double alpha) 
+  //!fill the image with 2 discri and display it, return the position of the trigger
+  virtual int Calcul_Ti(CImg<Tdata> e, int Tpeak,int th, double frac,double alp) 
   {
-		CImg<Tdata> s(e.width());
-		int delay = (3*Tm)/2;
-		//Discri simple
-		s(0)=0;
-		cimg_for_inX(s,1,s.width(),n) s(n)=e(n)-alpha*e(n-1);
-		//Discri treshold		
-		CImg<Tdata> imageDCF(s.width(),1,1,1, 0);
-		cimg_for_inX(imageDCF,delay,s.width(),n) imageDCF(n)=s(n-delay)-fraction*s(n);
-		//find the position of the trigger
-		int Ti;
-		for (int i=0;s(i) < threshold; i++)
-		{
-		  Ti=i+1;
-		}
-		//display the graph
-		CImg<Tdata> imageC;
-		imageC.assign(s.width(),1,1,5, 0);
-		imageC.get_shared_channel(0)+=s;
-		imageC.get_shared_channel(1)+=imageDCF;
-		imageC.get_shared_channel(2)+=threshold;
-		imageC.get_shared_channel(3)+=e/e.max()*imageDCF.max();
-		cimg_for_inX(imageC,Ti,imageC.width(),i) imageC(i,0,0,4)=imageDCF.max();		
-		imageC.display_graph("red = discri simple, green = dCFD, blue = threshold, yellow = signal");
-		return Ti;
+	CImg<Tdata> s(e.width());
+	int delay = (3*Tpeak)/2;
+	//Discri simple
+	s(0)=0;
+	cimg_for_inX(s,1,s.width(),n) s(n)=e(n)-alp*e(n-1);
+	//Discri treshold		
+	CImg<Tdata> imageDCF(s.width(),1,1,1, 0);
+	cimg_for_inX(imageDCF,delay,s.width(),n) imageDCF(n)=s(n-delay)-frac*s(n);
+	//find the position of the trigger
+	int Ti;
+	for (int i=0;s(i) < th; i++)
+	{
+	  Ti=i+1;
+	}
+	//display the graph
+	CImg<Tdata> imageC;
+	imageC.assign(s.width(),1,1,5, 0);
+	imageC.get_shared_channel(0)+=s;
+	imageC.get_shared_channel(1)+=imageDCF;
+	imageC.get_shared_channel(2)+=th;
+	imageC.get_shared_channel(3)+=e/e.max()*imageDCF.max();
+	cimg_for_inX(imageC,Ti,imageC.width(),i) imageC(i,0,0,4)=imageDCF.max();		
+	imageC.display_graph("red = discri simple, green = dCFD, blue = threshold, yellow = signal");
+	return Ti;
   }//Calcul_Ti
-
-  float Calculation_Energy(CImg<Tdata> trapeze, int Ti,int n, double q)
+  //! calculation of the energy based on the formula (peak-base)/number
+  float Calculation_Energy(CImg<Tdata> trapeze, int Ti,int number, double qDelay)
   {
     //sum of the n baseline value
     int base=0;
-    cimg_for_inX(trapeze,Ti-n, Ti,i) base+=trapeze(i);
+    cimg_for_inX(trapeze,Ti-number, Ti,i) base+=trapeze(i);
     //sum of the n peak value
     int peak=0;
-    cimg_for_inX(trapeze,Ti+q, Ti+q+n,i) peak+=trapeze(i);
+    cimg_for_inX(trapeze,Ti+qDelay, Ti+qDelay+number,i) peak+=trapeze(i);
     //print both sum and return the energy 
     std::cout<<"base="<<base/n<<std::endl;
     std::cout<<"peak="<<peak/n<<std::endl;
-    return (peak-base)/n;
+    return (peak-base)/number;
   }//Calculation_Energy
-
-  void Display_Trapeze_Paramaters(CImg<Tdata> in, int Ti,int n, double q)
+  //! display the filter in details (signal, baseline, delay and flat top)
+  void Display_Trapeze_Paramaters(CImg<Tdata> in, int Ti,int number, double qDelay)
   {
 	CImg<Tdata> imageC;
 	imageC.assign(in.width(),1,1,4,0);
 	imageC.get_shared_channel(0)+=in;
-	cimg_for_inX(imageC,Ti-n,Ti,i) imageC(i,0,0,1)=in.max();
-	cimg_for_inX(imageC,Ti,Ti+q,i) imageC(i,0,0,2)=in.max();
-	cimg_for_inX(imageC,Ti+q,Ti+q+n,i) imageC(i,0,0,3)=in.max();
+	cimg_for_inX(imageC,Ti-number,Ti,i) imageC(i,0,0,1)=in.max();
+	cimg_for_inX(imageC,Ti,Ti+qDelay,i) imageC(i,0,0,2)=in.max();
+	cimg_for_inX(imageC,Ti+qDelay,Ti+qDelay+number,i) imageC(i,0,0,3)=in.max();
 	imageC.display_graph("red = Filter, green = N baseline, Blue = Q delay, yellow = N flat top");
   }//Display_Trapeze_Paramaters
 
@@ -560,7 +584,6 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   {
     kernelCPU_Trapeze(in,out);
   };//kernelCPU
-
 
 };//CDataProcessor_Trapeze
 	
