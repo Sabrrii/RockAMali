@@ -23,7 +23,7 @@ LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
 LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
-#LIB_NETCDF= -DUSE_NETCDF -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
+LIB_NETCDF= -DUSE_NETCDF -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
 #DO_GPU=
@@ -36,7 +36,7 @@ HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output 
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
 #all: process_sequential process send receive doc version
-all: process_sequential process doc version factory
+all: process_sequential process version factory doc
 
 #all: time_copy
 time_copy: time_copy.cpp

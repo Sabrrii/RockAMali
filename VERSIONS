@@ -1,4 +1,5 @@
-process.v0.5.7q
-process_sequential.v0.5.7q
-receive.v0.5.2d
-send.v0.5.1d
+process.v0.5.7r
+  CImg_NetCDF.v0.8.0
+process_sequential.v0.5.7r
+  CImg_NetCDF.v0.8.0
+receive.send.
