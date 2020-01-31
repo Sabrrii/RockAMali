@@ -8,8 +8,11 @@ using namespace cimg_library;
 //thread lock
 #include "CDataBuffer.hpp"
 
+//NetCDF
+#ifdef USE_NETCDF
 #include <netcdfcpp.h>
 #include "struct_parameter_NetCDF.h"
+#endif //NetCDF
 
 //! generate data into a shared circular buffer
 /**
@@ -58,6 +61,8 @@ public:
   }//iteration
 
 };//CDataGenerator
+
+#ifdef USE_NETCDF
 
 //! generate random data into a shared circular buffer
 /**
@@ -287,6 +292,8 @@ std::cerr<<A<<std::endl;
   }//iteration
 
 };//CDataGenerator_Peak
+
+#endif //NetCDF
 
 #endif //_DATA_GENERATOR_
 
