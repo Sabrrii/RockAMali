@@ -4,7 +4,7 @@
 FRAME_SIZE=4096
 NP=4
 GEN_FCT=count
-PROC=copy
+PROC=program
 USE_GPU=--use-GPU --GPU-factory $(PROC)
 #USE_GPU=
 DO_CHECK=--do-check
