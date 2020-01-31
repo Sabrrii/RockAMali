@@ -9,11 +9,11 @@
 /**
  *
 **/
-template<typename Tdata, typename Taccess=unsigned char>
+template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
 class CDataProcessorGPUfactory
 {
 public:
-  static CDataProcessorGPU<Tdata, Taccess> *NewCDataProcessorGPU(const std::string &name//="list types"
+  static CDataProcessorGPU<Tdata,Tproc, Taccess> *NewCDataProcessorGPU(const std::string &name//="list types"
   , std::vector<std::string> &factory_types
   , std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -28,7 +28,8 @@ public:
     factory_types.clear();
     //if
     factory_types.push_back      ("copy")         ;if(name == factory_types.back())
-      return new CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+      return new CDataProcessorGPU<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+/** /
     factory_types.push_back      ("program")             ;if(name == factory_types.back())
       return new CDataProcessorGPU_opencl<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back      ("lambda")              ;if(name == factory_types.back())
@@ -44,6 +45,7 @@ public:
 
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;
+/**/
     //listing known types in factory
     if(name=="list types")
       return NULL;

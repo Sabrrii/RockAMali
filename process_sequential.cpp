@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7h"
+#define VERSION "v0.5.7i"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -74,7 +74,7 @@ int main(int argc,char **argv)
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
   //show type list in factory
-  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);std::cout<<std::endl;
+  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::show_factory_types(type_list);std::cout<<std::endl;
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
         bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do_check or -C option
@@ -148,9 +148,9 @@ int main(int argc,char **argv)
 #ifdef DO_GPU
   //Choosing the target for OpenCL computing
   boost::compute::device gpu = boost::compute::system::default_device();
-  CImgList<Tdata> limages(nbuffer,width,1,1,1);
+  CImgList<Tproc> limages(nbuffer,width,1,1,1);
   std::vector<compute::future<void>  > waits(nbuffer);//this may be filled in kernel
-  compute::vector<Tdata> *device_vector_in;compute::vector<Tdata> *device_vector_out;//need more in process
+  compute::vector<Tproc> *device_vector_in;compute::vector<Tproc> *device_vector_out;//need more in process
   #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error, gpu,limages,waits,device_vector_in,device_vector_out)
 #else
   #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error)

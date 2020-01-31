@@ -26,8 +26,8 @@ using compute::lambda::_1;
  * , please use queueing and dequeuing classes to have great performances.
  * This class might be used for debug or test only.
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU : public CDataProcessor<Tdata, Taccess>
+template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
+class CDataProcessorGPU : public CDataProcessor<Tdata,Tproc, Taccess>
 {
 public:
   compute::context ctx;
@@ -35,7 +35,7 @@ public:
 
   // create vectors on the device
   compute::vector<Tdata> device_vector_in;
-  compute::vector<Tdata> device_vector_out;
+  compute::vector<Tproc> device_vector_out;
 
   CDataProcessorGPU(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -45,10 +45,11 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   , ctx(device), queue(ctx, device)
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
   {
+//! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)
     this->debug=true;
     this->class_name="CDataProcessorGPU";
     this->image.assign(VECTOR_SIZE);
@@ -56,7 +57,7 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     //compute with lambda
     using compute::lambda::_1;
@@ -65,7 +66,7 @@ public:
   };//kernelGPU
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     //copy CPU to GPU
     compute::copy(in.begin(), in.end(), device_vector_in.begin(), queue);
@@ -83,7 +84,7 @@ public:
 /**
  *  virtual check class
  *  FMA: _1 * 2 + 123
-**/
+** /
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_vMcPc_check : public CDataProcessorGPU<Tdata, Taccess>
 {
@@ -131,7 +132,7 @@ public:
 //! complex operation with lambda for GPU process
 /**
  *  FMA: _1 * 2 + 123
-**/
+** /
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_lambda : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
 {
@@ -165,7 +166,7 @@ public:
 //! complex operation with function using lambda for GPU process
 /**
  *  FMA: _1 * 2 + 123
-**/
+** /
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_function_lambda : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
 {
@@ -201,7 +202,7 @@ public:
 /**
  *  FMA: _1 * 2 + 123
  *  \note: more complex compution in boost::compute test, e.g. triangle_area in test/test_closure.cpp
-**/
+** /
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_closure : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
 {
@@ -245,7 +246,7 @@ public:
  *  FMA: val * 2 + 123
  *  \warning: Tdata should be unsigned int as function from source lock type
  *  \note: function is static code (for compute::make_function_from_source, in constructor)
-**/
+** /
 template<typename Tdata=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_function : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
 {
@@ -287,7 +288,7 @@ public:
 //! complex operation with function macro for GPU process
 /**
  *  FMA: val * 2 + 123
-**/
+** /
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataProcessorGPU_function_macro : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
 {
@@ -325,7 +326,7 @@ public:
 /**
  *  FMA: val * 2 + 123
  *  \warning: Tdata should be unsigned int as function from source lock type
-**/
+** /
 template<typename Tdata=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_opencl : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
 {
@@ -384,6 +385,8 @@ public:
   };//kernelGPU
 
 };//CDataProcessorGPU_opencl
+
+/**/
 
 #endif //_DATA_PROCESSOR_GPU_
 
