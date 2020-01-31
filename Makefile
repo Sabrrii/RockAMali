@@ -36,7 +36,7 @@ HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output 
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
 #all: process_sequential process send receive doc version
-all: process_sequential process doc version
+all: process_sequential process doc version factory
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -72,6 +72,9 @@ doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.
 
 version: process.cpp process_sequential.cpp send.cpp receive.cpp
 	./versions.sh > VERSIONS; cat VERSIONS; echo
+
+factory: CDataGenerator.hpp $(SRC_DATA_BUFFER)
+	./factories.sh 2>&1 > FACTORIES; cat FACTORIES; echo
 
 #NP=4
 NT=`echo $(NP)+2   | bc`
