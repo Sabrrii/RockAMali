@@ -4,9 +4,9 @@
 FRAME_SIZE=4096
 NP=4
 GEN_FCT=count
-PROC=count
-USE_GPU=--use-GPU --GPU-factory program
-USE_GPU=
+PROC=copy
+USE_GPU=--use-GPU --GPU-factory $(PROC)
+#USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
 
@@ -26,7 +26,7 @@ LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VE
 #LIB_NETCDF= -DUSE_NETCDF -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-DO_GPU=
+#DO_GPU=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -82,11 +82,11 @@ NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
 process_run:
 #	ncgen parameters.cdl -o parameters.nc && rm sample.nc; ./process.X -c $(NT) -s $(FRAME_SIZE) -o sample.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color && ncdump -h sample.nc
-	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
+	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -b $(NB) -n $(NS) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
 
 process_sequential_run:
 #	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
-	./process_sequential -s $(FRAME_SIZE) -o sample_sequential.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK)
+	./process_sequential -s $(FRAME_SIZE) -o sample_sequential.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -n 12 $(DO_CHECK)
 
 #NS=123456
 send_run:

@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7o"
+#define VERSION "v0.5.7p"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -171,16 +171,57 @@ int main(int argc,char **argv)
     case 0:
     {//sequential
      //generate
-   //   CDataGenerator_Random<Tdata,Taccess> generate(locks);
       CDataGenerator<Tdata, Taccess> *generate=CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator 
       (generator_type, generator_type_list, locks);
       std::cout<<"information: generator type is the one in "<<generate->class_name<<" class."<<std::endl<<std::flush;
      //process
       CDataProcessor<Tdata,Tproc, Taccess> *process;
+      CDataProcessor<Tdata,Tproc, Taccess> *deprocess;
+#ifdef DO_GPU
+      CImgList<Tdata> limages(nbuffer,width,1,1,1);
+      if(use_GPU)
+      {//GPU
+     #ifdef DO_GPU_NO_QUEUE
+      std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
+      ///GPU process from factory
+      process=CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::NewCDataProcessorGPU(processing_type,type_list
+      , locks, gpu,width
+      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
+      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
+      , do_check
+      );
+      std::cout<<"information: processing type is the one of "<<process->class_name<<" class."<<std::endl<<std::flush;
+     #else //DO_GPU_NO_QUEUE
+     #ifdef  DO_GPU_SEQ_QUEUE
+      std::cout<<"information: use GPU for processing (sequential queue)."<<std::endl<<std::flush;
+      process=new CDataProcessorGPUqueue<Tdata,Tproc, Taccess>(locks, gpu,width
+      , limages, waits[0],device_vector_in,device_vector_out
+      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
+      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
+      , do_check
+      );
+     #else //!DO_GPU_SEQ_QUEUE
+      std::cout<<"information: use GPU for processing (enqueue and dequeue)."<<std::endl<<std::flush;
+      process=new CDataProcessorGPUenqueue<Tdata,Tproc, Taccess>(locks, gpu,width
+      , limages, waits[0],device_vector_in,device_vector_out
+      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
+      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
+      , do_check
+      );
+      deprocess=new CDataProcessorGPUdequeue<Tdata,Tproc, Taccess>(locks, gpu,width
+      , limages, waits[0],device_vector_in,device_vector_out
+      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
+      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
+      , do_check
+      );
+      deprocess_class_name=deprocess->class_name;
+     #endif //!DO_GPU_SEQ_QUEUE
+     #endif //!DO_GPU_NO_QUEUE
+      }//GPU
+      else
+#endif //DO_GPU
       {//CPU
       std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
-//      CDataProcessor<Tdata, Taccess> process(locks
-//      process=new CDataProcessor_vPvMv<Tdata, Taccess>(locks
       process=CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
       , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images

@@ -117,7 +117,7 @@ public:
     }//do_check
     return true;
   }//check_data
-/*
+/**
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
@@ -126,7 +126,7 @@ public:
     compute::transform(in.begin(), in.end(), out.begin(),
       _1 * 2 + 123 , this->queue);
   };//kernelGPU
-*/
+** /
 };//CDataProcessorGPU_vMcPc_check
 
 //! complex operation with lambda for GPU process
