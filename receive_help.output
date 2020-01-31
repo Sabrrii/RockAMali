@@ -5,8 +5,8 @@
  usage: ./store -h -I
         ./store -s 1024 -n 123 -X true -o samples/sample.png -p 1234
 
- version: v0.3.1
- compilation date: (Sep  6 2019, 14:41:31)
+ version: v0.5.2d
+ compilation date: (Jan 31 2020, 15:01:58)
 
     -o               samples/sample.png       output file name (e.g. "-o data.png -d 3" gives data_???.png)
     -r               results/sample.png       result file name (e.g. "-o proc.png -d 3" gives proc_???.png)
@@ -14,11 +14,13 @@
     -s               1024                     size   of udp buffer
     -n               123                      number of vector
     -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
-    -c               0                        thread count (2 for receiving only and 4 for processing)
+    -c               2                        thread count (2 for receiving only or threads above 3 are processing one)
     -p               1234                     port where the packets are sent on the receiving device
     --use-GPU        false                    show GUI (or -G option)
+    --GPU-factory    program                  GPU processing type, e.g. program or function
     --do-check       false                    do data check, e.g. test pass (or -C option)
     --do-check-exit  false                    do data check exit on first error (or -E option)
+    --do-warmup      false                    do data warmup, e.g. allocation and fill (or -W option)
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)
     --version        false                    show version (or -v option)
