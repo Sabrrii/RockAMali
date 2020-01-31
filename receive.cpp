@@ -1,7 +1,6 @@
 //CoolImage
 #include "CImg.h"
 
-//! \todo [high] . CPU factory with Tproc
 //! \todo [medium] [Tproc] needed for GPU
 
 //C++ base
@@ -12,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7f"
+#define VERSION "v0.5.7h"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -51,7 +50,7 @@ int main(int argc,char **argv)
 //! CPU processor factory
   const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
   //show type list in CPU processor factory
-  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
+  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
 #ifdef DO_GPU
 //! GPU processor factory
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
