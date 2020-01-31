@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7f"
+#define VERSION "v0.5.7g"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -53,16 +53,16 @@ int main(int argc,char **argv)
   const int count=cimg_option("-n",256,  "number of frames");
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
   const int threadCount=cimg_option("-c",3,"thread count (threads above 2 are processing one)");
-
+//! generator factory
   const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
   //show type list in generator factory
   std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
-
+//! CPU processor factory
   const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
   //show type list in CPU processor factory
   std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
-
 #ifdef DO_GPU
+//! GPU processor factory
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
