@@ -8,13 +8,13 @@
  version: v0.5.2d
  compilation date: (Jan 31 2020, 15:12:29)
 
-    -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
-    -d               6                        number of digit for file names[0;0;0m
-    -s               1024                     size   of udp buffer[0;0;0m
-    -n               256                      number of frames[0;0;0m
-    --use-GPU        false                    use GPU for compution (or -G option)[0;0;0m
-    --GPU-factory    program                  GPU processing type, e.g. program or function[0;0;0m
-    --do-check       false                    do data check, e.g. test pass (or -C option)[0;0;0m
-    --help           true                     help (or -h option)[0;0;0m
-    --info           false                    show compilation options (or -I option)[0;0;0m
-    --version        false                    show version (or -v option)[0;0;0m
+    -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)
+    -d               6                        number of digit for file names
+    -s               1024                     size   of udp buffer
+    -n               256                      number of frames
+    --use-GPU        false                    use GPU for compution (or -G option)
+    --GPU-factory    program                  GPU processing type, e.g. program or function
+    --do-check       false                    do data check, e.g. test pass (or -C option)
+    --help           true                     help (or -h option)
+    --info           false                    show compilation options (or -I option)
+    --version        false                    show version (or -v option)
