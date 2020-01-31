@@ -179,8 +179,7 @@ int main(int argc,char **argv)
       if(use_GPU)
       {//GPU
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
-//      CDataProcessorGPU<Tdata, Taccess> *process(
-      CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(processing_type,gpu_type_list
+      CDataProcessorGPU<Tdata,Tproc, Taccess> *process=CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::NewCDataProcessorGPU(processing_type,gpu_type_list
       , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
@@ -194,7 +193,6 @@ int main(int argc,char **argv)
 #endif
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
-//      CDataProcessor<Tdata,Taccess> process(locks
       CDataProcessor<Tdata,Tproc, Taccess>  *process=CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
       , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
