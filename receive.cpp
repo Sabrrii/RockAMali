@@ -1,6 +1,8 @@
 //CoolImage
 #include "CImg.h"
 
+//! \todo [medium] [Tproc] needed for GPU
+
 //C++ base
 #include <iostream>
 #include <string>
@@ -9,30 +11,31 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.2d"
+#define VERSION "v0.5.7h"
 
 //thread lock
 #include "CDataStore.hpp"
+#include "CDataProcessorCPU_factory.hpp"
 #ifdef DO_GPU
 #include "CDataProcessorGPUfactory.hpp"
 #endif //DO_GPU
-#include "CDataProcessor.hpp"
 #include "CDataReceive.hpp"
 
 using namespace cimg_library;
 using boost::asio::ip::udp;
 
 //types
-typedef unsigned char  Taccess;
-typedef unsigned int   Tdata;
+typedef unsigned char Taccess;
+typedef unsigned int  Tdata;
+typedef float         Tproc;
 
 int main(int argc,char **argv)
 {
   ///command arguments, i.e. CLI option
   cimg_usage(std::string("receive (,  process) and store data.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
-  " usage: ./store -h -I\n" \
-  "        ./store -s 1024 -n 123 -X true -o samples/sample.png -p 1234\n" \
+  " usage: ./receive -h -I\n" \
+  "        ./receive -s 1024 -n 123 -X true -o samples/sample.png -p 1234\n" \
   "\n version: "+std::string(VERSION)+"\n compilation date:" \
   ).c_str());//cimg_usage
 
@@ -44,12 +47,17 @@ int main(int argc,char **argv)
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
   const int threadCount=cimg_option("-c",2,"thread count (2 for receiving only or threads above 3 are processing one)");
   const unsigned short port=cimg_option("-p", 1234, "port where the packets are sent on the receiving device");
+//! CPU processor factory
+  const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
+  //show type list in CPU processor factory
+  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
 #ifdef DO_GPU
+//! GPU processor factory
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"show GUI (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
   //show type list in factory
-  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);std::cout<<std::endl;
+  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::show_factory_types(type_list);std::cout<<std::endl;
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-C hidden option
         bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do-check or -C option
@@ -90,7 +98,7 @@ int main(int argc,char **argv)
   //access locking
   omp_lock_t lck;omp_init_lock(&lck);
   //! result circular buffer
-  CImgList<Tdata> results(nbuffer,width,1,1,1);
+  CImgList<Tproc> results(nbuffer,width,1,1,1);
   results[0].fill(0);
   results[0].print("result",false);
   //accessR locking
@@ -157,7 +165,7 @@ int main(int argc,char **argv)
     }//store
     case 2:
     {//store
-      CDataStore<Tdata, Taccess> store(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);//results
+      CDataStore<Tproc, Taccess> store(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);//results
       store.run(accessR,results, count);
       break;
     }//store
@@ -183,15 +191,14 @@ int main(int argc,char **argv)
 #endif
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
-//      CDataProcessor<Tdata,Taccess> process(locks
-//      CDataProcessor_vPvMv<Tdata,Taccess> process(locks
-      CDataProcessor_kernel<Tdata,Taccess> process(locks
+      CDataProcessor<Tdata,Tproc, Taccess>  *process=CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+      , locks
       , CDataAccess::STATUS_RECEIVED,CDataAccess::STATUS_PROCESSED //images
       , CDataAccess::STATUS_FREE,    CDataAccess::STATUS_FILLED    //results
       , do_check
       );
-      process.run(access,images, accessR,results, count, stride,start);
-      process.show_checking();
+      process->run(access,images, accessR,results, count, stride,start);
+      process->show_checking();
       }//CPU
       break;
     }//process

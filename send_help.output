@@ -6,7 +6,11 @@
         ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
  version: v0.5.1d
+<<<<<<< HEAD
  compilation date: (Jan 31 2020, 15:01:37)
+=======
+ compilation date: (Jan 29 2020, 14:55:03)
+>>>>>>> dev_Tproc_GPU
 
     -s               1024                     size   of udp buffer
     -n               256                      number of frames

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">RockAMali
-   &#160;<span id="projectnumber">v0.5.1d</span>
+   &#160;<span id="projectnumber">v0.5.7r</span>
    </div>
   </td>
  </tr>
@@ -106,8 +106,8 @@ command line options</h1>
  usage: ./process -h
         ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.4.1d
- compilation date: (Oct 17 2019, 14:35:19)
+ version: v0.5.7r
+ compilation date: (Feb  3 2020, 09:07:42)
 
     -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)
     -d               6                        number of digit for file names
@@ -115,6 +115,8 @@ command line options</h1>
     -n               256                      number of frames
     -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
     -c               3                        thread count (threads above 2 are processing one)
+    --generator-factory count                    generator type, e.g. count, random or peak
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel
     --do-check       false                    do data check, e.g. test pass (or -C option)
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)
@@ -127,15 +129,17 @@ command line options</h1>
  It uses different GNU libraries (see --info option)
 
  usage: ./process -h
-        ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
+        ./process -s 1024 -n 123 -o result.nc
 
- version: v0.3.6
- compilation date: (Oct  4 2019, 16:07:08)
+ version: v0.5.7r
+ compilation date: (Feb  3 2020, 09:07:38)
 
     -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)
     -d               6                        number of digit for file names
     -s               1024                     size   of udp buffer
     -n               256                      number of frames
+    --generator-factory count                    generator type, e.g. count, random or peak
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel
     --do-check       false                    do data check, e.g. test pass (or -C option)
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)
@@ -150,8 +154,12 @@ command line options</h1>
  usage: ./store -h -I
         ./store -s 1024 -n 123 -X true -o samples/sample.png -p 1234
 
- version: v0.3.1
- compilation date: (Sep  6 2019, 14:41:31)
+ version: v0.5.2d
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+ compilation date: (Jan 31 2020, 15:01:58)
+=======
+ compilation date: (Jan 29 2020, 14:54:58)
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; dev_Tproc_GPU
 
     -o               samples/sample.png       output file name (e.g. "-o data.png -d 3" gives data_???.png)
     -r               results/sample.png       result file name (e.g. "-o proc.png -d 3" gives proc_???.png)
@@ -159,11 +167,16 @@ command line options</h1>
     -s               1024                     size   of udp buffer
     -n               123                      number of vector
     -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
-    -c               0                        thread count (2 for receiving only and 4 for processing)
+    -c               2                        thread count (2 for receiving only or threads above 3 are processing one)
     -p               1234                     port where the packets are sent on the receiving device
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
     --use-GPU        false                    show GUI (or -G option)
+    --GPU-factory    program                  GPU processing type, e.g. program or function
+=======
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; dev_Tproc_GPU
     --do-check       false                    do data check, e.g. test pass (or -C option)
     --do-check-exit  false                    do data check exit on first error (or -E option)
+    --do-warmup      false                    do data warmup, e.g. allocation and fill (or -W option)
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)
     --version        false                    show version (or -v option)
@@ -178,18 +191,22 @@ command line options</h1>
         ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
  version: v0.5.1d
- compilation date: (Oct 30 2019, 14:16:30)
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+ compilation date: (Jan 31 2020, 15:01:37)
+=======
+ compilation date: (Jan 29 2020, 14:55:03)
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; dev_Tproc_GPU
 
-    -s               1024                     size   of udp buffer[0;0;0m
-    -n               256                      number of frames[0;0;0m
-    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
-    -c               2                        thread count[0;0;0m
-    -p               1234                     port where the packets are send on the receiving device[0;0;0m
-    -i               10.10.15.1               ip address of the receiver[0;0;0m
-    -w               123456789                waiting time between udp frames[0;0;0m
-    --help           true                     help (or -h option)[0;0;0m
-    --info           false                    show compilation options (or -I option)[0;0;0m
-    --version        false                    show version (or -v option)[0;0;0m
+    -s               1024                     size   of udp buffer
+    -n               256                      number of frames
+    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
+    -c               2                        thread count
+    -p               1234                     port where the packets are send on the receiving device
+    -i               10.10.15.1               ip address of the receiver
+    -w               123456789                waiting time between udp frames
+    --help           true                     help (or -h option)
+    --info           false                    show compilation options (or -I option)
+    --version        false                    show version (or -v option)
 </pre></li>
 </ul>
 <ul>

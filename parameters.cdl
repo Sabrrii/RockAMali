@@ -1,0 +1,67 @@
+netcdf RockAMali.parameters {//written in NetCDF CDL language
+  :institution = "GANIL";
+  :title = "RockAMali parameters";
+  :comment = "source of parameters for RockAMali processing program";
+  :history = "";
+  :version = "v0.0.0";
+
+dimensions:
+//  dim_string=64;
+//  dim_=unlimited;
+
+//variable declaration and attributes
+variables:
+//graph
+  int graph;
+     graph:long_name="signal graph (activated if >0)";
+     graph:nb_tB_long_name="baseline time";
+     graph:nb_tB= 1000; 
+     graph:nb_tA_long_name="peak time"; 
+     graph:nb_tA= 10; 
+     graph:tau_long_name="decrease";
+     graph:tau= 500;
+     graph:A_long_name="Amplitude";
+     graph:A= 1234;
+     graph:B_long_name="Baseline";
+     graph:B= 20;
+
+//trapezoid filter
+  int trapezoid;
+    trapezoid:long_name="trapezoid filter (activated if >0)";
+    trapezoid:k_long_name= "increase size";
+    trapezoid:k= 200;
+    trapezoid:k_units= "pixel";
+    trapezoid:m_long_name= "plateau size";
+    trapezoid:m= 50;
+    trapezoid:m_units= "pixel";
+    trapezoid:alpha_long_name= "";
+    trapezoid:alpha= 0.998;
+    trapezoid:alpha_units= "";
+
+//energy
+  int energy;
+    energy:long_name="energy measurement (activated if >0)";
+    energy:n= 209;
+    energy:q= 42;
+    energy:q_long_name= "Q computing delay";
+    energy:threshold=12;
+    energy:fraction=0.2;
+
+//random
+  int random;
+    random:long_name="random number (activated if >0)";
+    random:rand_min=0;
+    random:rand_max=65535;
+    
+//data value
+data:
+//graph
+  graph=1;
+//trapezoid filter
+  trapezoid=1;
+//energy
+  energy=1;
+//random
+  random=1;
+}
+

@@ -1,5 +1,4 @@
-process.v0.3.7
-process_sequential.v0.3.6
-receive.v0.3.1
-send.v0.3.1
-store.v0.2.1
+process.v0.5.7q
+process_sequential.v0.5.7q
+receive.v0.5.2d
+send.v0.5.1d

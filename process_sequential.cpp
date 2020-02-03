@@ -9,11 +9,11 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.2d"
+#define VERSION "v0.5.7r"
 
 //thread lock
-#include "CDataGenerator.hpp"
-#include "CDataProcessor_morphomath.hpp"
+#include "CDataGenerator_factory.hpp"
+#include "CDataProcessorCPU_factory.hpp"
 #ifdef DO_GPU
 #ifdef DO_GPU_NO_QUEUE
 #warning "DO_GPU_NO_QUEUE active (this must be CODE TEST only)"
@@ -34,6 +34,7 @@ using namespace cimg_library;
 //types
 typedef unsigned char Taccess;
 typedef unsigned int  Tdata;
+typedef float         Tproc;
 
 int main(int argc,char **argv)
 {
@@ -41,28 +42,46 @@ int main(int argc,char **argv)
   cimg_usage(std::string("generate, process and store data sequentialy.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./process -h\n" \
-  "        ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657\n" \
-  "\n version: "+std::string(VERSION)+"\n compilation date:" \
+  "        ./process -s 1024 -n 123 -o result.nc\n" \
+  "\n version: "+std::string(VERSION) + 
+#ifdef USE_NETCDF
+  "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
+#endif //NetCDF
+  "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const char* imagefilename = cimg_option("-o","sample.cimg","output file name (e.g. \"-o data.cimg -d 3\" gives data_???.cimg)");
+  const char* imagefilename = cimg_option("-o","sample.cimg",std::string("output file name (e.g." +
+#ifdef USE_NETCDF
+  std::string(" \"-o data.nc\" or ") +
+#endif //NetCDF
+  std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
+  ).c_str());//ouput file name
   const int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");
   const int nbuffer=1;
+//! generator factory
+  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
+  //show type list in generator factory
+  std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
+//! CPU processor factory
+  const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
+  //show type list in CPU processor factory
+  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
 #ifdef DO_GPU
+//! GPU processor factory
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
   //show type list in factory
-  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(type_list);std::cout<<std::endl;
+  std::vector<std::string> type_list;CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::show_factory_types(type_list);std::cout<<std::endl;
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
         bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do_check or -C option
 
   ///standard options
   #if cimg_display!=0
-  const bool show_X=cimg_option("-X",true,NULL);//-X hidden option
+  const bool show_X=cimg_option("-X",false,NULL);//-X hidden option
   bool show=cimg_option("--show",show_X,"show GUI (or -X option)");show=show_X|show;//same --show or -X option
   #endif
   const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option
@@ -70,7 +89,16 @@ int main(int argc,char **argv)
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   bool show_version=cimg_option("-v",false,NULL);//-v hidden option
-  if( cimg_option("--version",show_version,"show version (or -v option)") ) {show_version=true;std::cout<<VERSION<<std::endl;return 0;}//same --version or -v option
+  if( cimg_option("--version",show_version,"show version (or -v option)") )
+  {
+    show_version=true;
+    std::cout<<VERSION<<std::endl;
+#ifdef USE_NETCDF
+    std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION;
+#endif //NetCDF
+    std::cout<<std::endl;return 0;
+  }//same --version or -v option
+
   if(show_help) {/*print_help(std::cerr);*/return 0;}
   //}CLI option
 
@@ -91,7 +119,7 @@ int main(int argc,char **argv)
   omp_lock_t lck;omp_init_lock(&lck);
 
   //! result circular buffer
-  CImgList<Tdata> results(nbuffer,width,1,1,1);
+  CImgList<Tproc> results(nbuffer,width,1,1,1);
   results[0].fill(0);
   results[0].print("result",false);
   //accessR locking
@@ -120,9 +148,9 @@ int main(int argc,char **argv)
 #ifdef DO_GPU
   //Choosing the target for OpenCL computing
   boost::compute::device gpu = boost::compute::system::default_device();
-  CImgList<Tdata> limages(nbuffer,width,1,1,1);
+  CImgList<Tproc> limages(nbuffer,width,1,1,1);
   std::vector<compute::future<void>  > waits(nbuffer);//this may be filled in kernel
-  compute::vector<Tdata> *device_vector_in;compute::vector<Tdata> *device_vector_out;//need more in process
+  compute::vector<Tproc> *device_vector_in;compute::vector<Tproc> *device_vector_out;//need more in process
   #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error, gpu,limages,waits,device_vector_in,device_vector_out)
 #else
   #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error)
@@ -143,10 +171,12 @@ int main(int argc,char **argv)
     case 0:
     {//sequential
      //generate
-      CDataGenerator_Random<Tdata,Taccess> generate(locks);
+      CDataGenerator<Tdata, Taccess> *generate=CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator 
+      (generator_type, generator_type_list, locks);
+      std::cout<<"information: generator type is the one in "<<generate->class_name<<" class."<<std::endl<<std::flush;
      //process
-      CDataProcessor<Tdata,Taccess> *process;
-      CDataProcessor<Tdata,Taccess> *deprocess;
+      CDataProcessor<Tdata,Tproc, Taccess> *process;
+      CDataProcessor<Tdata,Tproc, Taccess> *deprocess;
 #ifdef DO_GPU
       CImgList<Tdata> limages(nbuffer,width,1,1,1);
       if(use_GPU)
@@ -154,8 +184,7 @@ int main(int argc,char **argv)
      #ifdef DO_GPU_NO_QUEUE
       std::cout<<"information: use GPU for processing."<<std::endl<<std::flush;
       ///GPU process from factory
-//      process=new CDataProcessorGPU<Tdata, Taccess>(
-      process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(processing_type,type_list
+      process=CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::NewCDataProcessorGPU(processing_type,type_list
       , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
@@ -165,7 +194,7 @@ int main(int argc,char **argv)
      #else //DO_GPU_NO_QUEUE
      #ifdef  DO_GPU_SEQ_QUEUE
       std::cout<<"information: use GPU for processing (sequential queue)."<<std::endl<<std::flush;
-      process=new CDataProcessorGPUqueue<Tdata, Taccess>(locks, gpu,width
+      process=new CDataProcessorGPUqueue<Tdata,Tproc, Taccess>(locks, gpu,width
       , limages, waits[0],device_vector_in,device_vector_out
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
@@ -173,13 +202,13 @@ int main(int argc,char **argv)
       );
      #else //!DO_GPU_SEQ_QUEUE
       std::cout<<"information: use GPU for processing (enqueue and dequeue)."<<std::endl<<std::flush;
-      process=new CDataProcessorGPUenqueue<Tdata, Taccess>(locks, gpu,width
+      process=new CDataProcessorGPUenqueue<Tdata,Tproc, Taccess>(locks, gpu,width
       , limages, waits[0],device_vector_in,device_vector_out
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
       );
-      deprocess=new CDataProcessorGPUdequeue<Tdata, Taccess>(locks, gpu,width
+      deprocess=new CDataProcessorGPUdequeue<Tdata,Tproc, Taccess>(locks, gpu,width
       , limages, waits[0],device_vector_in,device_vector_out
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
@@ -193,9 +222,8 @@ int main(int argc,char **argv)
 #endif //DO_GPU
       {//CPU
       std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
-//      process=new CDataProcessor<Tdata, Taccess>(locks
-//      process=new CDataProcessor_vPvMv<Tdata, Taccess>(locks
-      process=new CDataProcessor_kernel<Tdata, Taccess>(locks
+      process=CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+      , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
       , do_check
@@ -203,19 +231,12 @@ int main(int argc,char **argv)
       }//CPU
       process_class_name=process->class_name;
      //store
-      CDataStore<Tdata,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
+      CDataStore<Tproc,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
       //run
       for(unsigned int i=0;i<count;++i)
       {
-        generate.iteration(access,images,0,i);
+        generate->iteration(access,images,0,i);
         process->iteration(access,images, accessR,results, 0,i);
-#ifdef DO_GPU
-       #ifndef DO_GPU_NO_QUEUE
-       #ifndef DO_GPU_SEQ_QUEUE
-        deprocess->iteration(access,images, accessR,results, 0,i);
-       #endif //!DO_GPU_SEQ_QUEUE
-       #endif //!DO_GPU_NO_QUEUE
-#endif //DO_GPU
         store.iteration(accessR,results, 0,i);
         //check
         if(do_check)
@@ -228,6 +249,10 @@ int main(int argc,char **argv)
           NULL; else {++check_error;std::cout<<"compution error: bad main check (i.e. test failed) on iteration #"<<i<<" (value="<<results[0](0)<<")."<<std::endl<<std::flush;}
          process->show_checking();
         }
+        images[0].print(processor_type.c_str());
+        #if cimg_display!=0   
+         if(show) images[0].display_graph(processor_type.c_str());
+        #endif
       }//vector loop
       break;
     }//sequential

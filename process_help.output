@@ -5,8 +5,8 @@
  usage: ./process -h
         ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.5.2d
- compilation date: (Jan 31 2020, 15:13:08)
+ version: v0.5.7r
+ compilation date: (Feb  3 2020, 09:07:42)
 
     -o               sample.cimg              output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)
     -d               6                        number of digit for file names
@@ -14,8 +14,8 @@
     -n               256                      number of frames
     -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
     -c               3                        thread count (threads above 2 are processing one)
-    --use-GPU        false                    use GPU for compution (or -G option)
-    --GPU-factory    program                  GPU processing type, e.g. program or function
+    --generator-factory count                    generator type, e.g. count, random or peak
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel
     --do-check       false                    do data check, e.g. test pass (or -C option)
     --help           true                     help (or -h option)
     --info           false                    show compilation options (or -I option)

@@ -1,0 +1,9 @@
+process.v0.5.7q
+ -factory- generator types are: count.
+ -factory- CPU processor types are: count, vPvMv, kernel.
+ -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
+process_sequential.v0.5.7q
+ -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
+receive.v0.5.2d
+ -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
+send.v0.5.1d

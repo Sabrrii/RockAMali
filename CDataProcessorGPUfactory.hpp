@@ -3,15 +3,17 @@
 
 #include "CDataProcessorGPU.hpp"
 
+//! \todo [Tproc] . needed for GPU
+
 //! factory for GPU processing
 /**
  *
 **/
-template<typename Tdata, typename Taccess=unsigned char>
+template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
 class CDataProcessorGPUfactory
 {
 public:
-  static CDataProcessorGPU<Tdata, Taccess> *NewCDataProcessorGPU(const std::string &name//="list types"
+  static CDataProcessorGPU<Tdata,Tproc, Taccess> *NewCDataProcessorGPU(const std::string &name//="list types"
   , std::vector<std::string> &factory_types
   , std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -25,23 +27,24 @@ public:
     //reset
     factory_types.clear();
     //if
-    factory_types.push_back      ("copy")         ;if(name == factory_types.back())
-      return new CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    factory_types.push_back      ("program")             ;if(name == factory_types.back())
-      return new CDataProcessorGPU_opencl<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    factory_types.push_back      ("lambda")              ;if(name == factory_types.back())
-      return new CDataProcessorGPU_lambda<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    factory_types.push_back      ("closure")              ;if(name == factory_types.back())
-      return new CDataProcessorGPU_closure<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    factory_types.push_back      ("function")              ;if(name == factory_types.back())
-      return new CDataProcessorGPU_function<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    factory_types.push_back      ("function_lambda")              ;if(name == factory_types.back())
-      return new CDataProcessorGPU_function_lambda<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    factory_types.push_back      ("function_macro")              ;if(name == factory_types.back())
-      return new CDataProcessorGPU_function_macro<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("copy")            ;if(name == factory_types.back())
+      return new CDataProcessorGPU<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("program")         ;if(name == factory_types.back())
+      return new CDataProcessorGPU_opencl<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("lambda")          ;if(name == factory_types.back())
+      return new CDataProcessorGPU_lambda<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("closure")         ;if(name == factory_types.back())
+      return new CDataProcessorGPU_closure<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("function")        ;if(name == factory_types.back())
+      return new CDataProcessorGPU_function<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("function_lambda") ;if(name == factory_types.back())
+      return new CDataProcessorGPU_function_lambda<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("function_macro")  ;if(name == factory_types.back())
+      return new CDataProcessorGPU_function_macro<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
 
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;
+
     //listing known types in factory
     if(name=="list types")
       return NULL;

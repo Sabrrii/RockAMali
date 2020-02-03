@@ -9,11 +9,11 @@ using namespace cimg_library;
 
 #include "CDataBuffer.hpp"
 
-template<typename Tdata, typename Taccess=unsigned char>
+template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
 class CDataProcessor : public CDataBuffer<Tdata, Taccess>
 {
 public:
-  CImg<Tdata> image;
+  CImg<Tproc> image;
   //! result access
   CAccessOMPLock laccessR;
   CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR;
@@ -44,9 +44,22 @@ public:
     }
     check_error=0;
   }//constructor
+  //! run for loop
+  virtual void run(CImg<Taccess> &access,CImgList<Tdata> &images,  CImg<Taccess> &accessR,CImgList<Tproc> &results, unsigned int count, unsigned int stride=1, unsigned int start=0)
+  {
+    unsigned int nbuffer=images.size();
+    for(unsigned int n=start,i=start;i<count;i+=stride)
+    {
+      this->iteration(access,images, accessR,results, n,i);
+      //circular buffer
+//! \bug needed: nbuffer should be a multiple of process thread number
+      n+=stride;
+      if(n>nbuffer-1) n=start;
+     }//vector loop
+  }//run
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     std::cout<< __FILE__<<"/"<<__func__<<"(images: in="<<in.width()<<", out="<<out.size()<<") copy kernel, other kernels should be implemented in inherited class."<<std::endl<<std::flush;
     out=in;
@@ -70,7 +83,7 @@ public:
   }//check_data
 
   //! one iteration for any loop
-  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, CImg<Taccess> &accessR,CImgList<Tdata> &results, int n, int i)
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, CImg<Taccess> &accessR,CImgList<Tproc> &results, int n, int i)
   {
     if(this->debug)
     {
@@ -137,8 +150,8 @@ public:
 /**
  * val+val*val
 **/
-template<typename Tdata>
-void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tdata> &out)
+template<typename Tdata, typename Tproc>
+void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tproc> &out)
 {
   out=in;
   cimg_forX(in,x) out(x)+=in(x)*in(x);
@@ -147,8 +160,8 @@ void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tdata> &out)
 /**
  * val+val*val
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessor_vPvMv : public CDataProcessor<Tdata, Taccess>
+template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
+class CDataProcessor_vPvMv : public CDataProcessor<Tdata,Tproc, Taccess>
 {
 public:
   CDataProcessor_vPvMv(std::vector<omp_lock_t*> &lock
@@ -158,7 +171,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessor_vPvMv";
@@ -171,7 +184,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
-      CImg<Tdata> imgt(img);
+      CImg<Tproc> imgt(img);
       kernelCPU(img,imgt);
       return (this->image==imgt);
     }//do_check
@@ -179,13 +192,13 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//check_data
 
   //! compution kernel for an iteration
-  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU_vPvMv(in,out);
   };//kernelCPU
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU(in,out);
   };//kernel
@@ -196,8 +209,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 /**
  * FMA: val*cst+cst
 **/
-template<typename Tdata>
-void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tdata> &out)
+template<typename Tdata, typename Tproc>
+void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tproc> &out)
 {
   out=in*2+123;
 }//kernelCPU_vMcPc
@@ -205,8 +218,8 @@ void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tdata> &out)
 /**
  * FMA: val*cst+cst
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessor_kernel : public CDataProcessor<Tdata, Taccess>
+template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
+class CDataProcessor_kernel : public CDataProcessor<Tdata,Tproc, Taccess>
 {
 public:
 //  void *pKernel4CPU;
@@ -218,7 +231,7 @@ public:
 //  , void *kernel4CPU(void)
   , bool do_check=false
   )
-  : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessor_kernel_vMcPc";
@@ -228,7 +241,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//constructor
 
   //! compution kernel for an iteration
-  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tproc> &out)
   {
 //    *pKernelCPU(in,out);
     kernelCPU_vMcPc(in,out);
@@ -239,7 +252,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
-      CImg<Tdata> imgt(img);
+      CImg<Tproc> imgt(img);
       kernelCPU(img,imgt);
       return (this->image==imgt);
     }//do_check
@@ -247,7 +260,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//check_data
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU(in,out);
   };//kernel
