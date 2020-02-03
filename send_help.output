@@ -1,24 +1,20 @@
 
- send: generate and send data via UDP.
+ [0;31;59msend[0;0;0m: generate and send data via UDP.
  It uses different GNU libraries (see --info option)
 
  usage: ./send -h
         ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.5.1d
-<<<<<<< HEAD
- compilation date: (Jan 31 2020, 15:01:37)
-=======
- compilation date: (Jan 29 2020, 14:55:03)
->>>>>>> dev_Tproc_GPU
+ version: v0.5.7d
+ compilation date: (Feb  3 2020, 11:46:25)
 
-    -s               1024                     size   of udp buffer
-    -n               256                      number of frames
-    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
-    -c               2                        thread count
-    -p               1234                     port where the packets are send on the receiving device
-    -i               10.10.15.1               ip address of the receiver
-    -w               123456789                waiting time between udp frames
-    --help           true                     help (or -h option)
-    --info           false                    show compilation options (or -I option)
-    --version        false                    show version (or -v option)
+    [1m-s              [0;0;0m 1024                     [0;32;59msize   of udp buffer[0;0;0m
+    [1m-n              [0;0;0m 256                      [0;32;59mnumber of frames[0;0;0m
+    [1m-b              [0;0;0m 12                       [0;32;59msize   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
+    [1m-c              [0;0;0m 2                        [0;32;59mthread count[0;0;0m
+    [1m-p              [0;0;0m 1234                     [0;32;59mport where the packets are send on the receiving device[0;0;0m
+    [1m-i              [0;0;0m 10.10.15.1               [0;32;59mip address of the receiver[0;0;0m
+    [1m-w              [0;0;0m 123456789                [0;32;59mwaiting time between udp frames[0;0;0m
+    [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
+    [1m--info          [0;0;0m false                    [0;32;59mshow compilation options (or -I option)[0;0;0m
+    [1m--version       [0;0;0m false                    [0;32;59mshow version (or -v option)[0;0;0m

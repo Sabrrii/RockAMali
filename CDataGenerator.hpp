@@ -71,10 +71,6 @@ public:
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataGenerator_Random: public CDataGenerator<Tdata, Taccess>
 {
-
-
-
-
 public:
   Tdata rand_min,rand_max;
   

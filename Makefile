@@ -59,8 +59,8 @@ process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp
 #	g++ $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
 	./process_sequential -h 2> process_sequential_help.output
 
-send: send.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp CDataSend.hpp
-	g++ -O0 -o send   send.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) -Dcimg_display=0 && ./send -h -I && ./send -v > VERSION
+send: send.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) CDataSend.hpp $(SRC_NETCDF)
+	g++ -O0 -o send   send.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(LIB_NETCDF) -Dcimg_display=0 && ./send -h -I && ./send -v > VERSION
 	./send -h 2> send_help.output
 
 receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
