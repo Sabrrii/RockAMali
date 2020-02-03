@@ -35,8 +35,9 @@ SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessorGPU.hpp CDataProcessorGPUfacto
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
-#all: process_sequential process send receive doc version
-all: process_sequential process version factory doc
+all: process_sequential process send receive version factory doc
+#all: process_sequential process version factory doc
+#all: send receive version factory doc
 
 #all: time_copy
 time_copy: time_copy.cpp

@@ -8,7 +8,7 @@ process_sequential.v0.5.7r
  -factory- generator types are: count, random, peak.
  -factory- CPU processor types are: count, vPvMv, kernel.
  -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
-receive.v0.5.7r
+receive.v0.5.7s
  -factory- CPU processor types are: count, vPvMv, kernel.
  -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
 send.v0.5.7r

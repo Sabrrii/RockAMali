@@ -7,7 +7,7 @@
 
  version: v0.5.7r
           CImg_NetCDF.v0.8.0
- compilation date: (Jan 31 2020, 17:58:59)
+ compilation date: (Feb  3 2020, 11:49:26)
 
     -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     -d               6                        number of digit for file names[0;0;0m

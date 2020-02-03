@@ -1,27 +1,27 @@
 
- [0;31;59mreceive[0;0;0m: receive (,  process) and store data.
+ receive: receive (,  process) and store data.
  It uses different GNU libraries (see --info option)
 
  usage: ./receive -h -I
         ./receive -s 1024 -n 123 -X true -o samples/sample.png -p 1234
 
- version: v0.5.7r
- compilation date: (Feb  3 2020, 11:17:35)
+ version: v0.5.7s
+ compilation date: (Feb  3 2020, 11:50:28)
 
-    [1m-o              [0;0;0m samples/sample.png       [0;32;59moutput file name (e.g. "-o data.png -d 3" gives data_???.png)[0;0;0m
-    [1m-r              [0;0;0m results/sample.png       [0;32;59mresult file name (e.g. "-o proc.png -d 3" gives proc_???.png)[0;0;0m
-    [1m-d              [0;0;0m 6                        [0;32;59mnumber of digit for file names[0;0;0m
-    [1m-s              [0;0;0m 1024                     [0;32;59msize   of udp buffer[0;0;0m
-    [1m-n              [0;0;0m 123                      [0;32;59mnumber of vector[0;0;0m
-    [1m-b              [0;0;0m 12                       [0;32;59msize   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
-    [1m-c              [0;0;0m 2                        [0;32;59mthread count (2 for receiving only or threads above 3 are processing one)[0;0;0m
-    [1m-p              [0;0;0m 1234                     [0;32;59mport where the packets are sent on the receiving device[0;0;0m
-    [1m--CPU-factory   [0;0;0m count                    [0;32;59mCPU processing type, e.g. count or kernel[0;0;0m
-    [1m--use-GPU       [0;0;0m false                    [0;32;59mshow GUI (or -G option)[0;0;0m
-    [1m--GPU-factory   [0;0;0m program                  [0;32;59mGPU processing type, e.g. program or function[0;0;0m
-    [1m--do-check      [0;0;0m false                    [0;32;59mdo data check, e.g. test pass (or -C option)[0;0;0m
-    [1m--do-check-exit [0;0;0m false                    [0;32;59mdo data check exit on first error (or -E option)[0;0;0m
-    [1m--do-warmup     [0;0;0m false                    [0;32;59mdo data warmup, e.g. allocation and fill (or -W option)[0;0;0m
-    [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
-    [1m--info          [0;0;0m false                    [0;32;59mshow compilation options (or -I option)[0;0;0m
-    [1m--version       [0;0;0m false                    [0;32;59mshow version (or -v option)[0;0;0m
+    -o               samples/sample.cimg      output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
+    -o               results/sample.cimg      output file name (e.g. "-o result.cimg -d 3" gives result_???.cimg)[0;0;0m
+    -d               6                        number of digit for file names[0;0;0m
+    -s               1024                     size   of udp buffer[0;0;0m
+    -n               123                      number of vector[0;0;0m
+    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
+    -c               2                        thread count (2 for receiving only or threads above 3 are processing one)[0;0;0m
+    -p               1234                     port where the packets are sent on the receiving device[0;0;0m
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel[0;0;0m
+    --use-GPU        false                    show GUI (or -G option)[0;0;0m
+    --GPU-factory    program                  GPU processing type, e.g. program or function[0;0;0m
+    --do-check       false                    do data check, e.g. test pass (or -C option)[0;0;0m
+    --do-check-exit  false                    do data check exit on first error (or -E option)[0;0;0m
+    --do-warmup      false                    do data warmup, e.g. allocation and fill (or -W option)[0;0;0m
+    --help           true                     help (or -h option)[0;0;0m
+    --info           false                    show compilation options (or -I option)[0;0;0m
+    --version        false                    show version (or -v option)[0;0;0m

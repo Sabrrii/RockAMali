@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7r"
+#define VERSION "v0.5.7s"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -36,11 +36,24 @@ int main(int argc,char **argv)
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./receive -h -I\n" \
   "        ./receive -s 1024 -n 123 -X true -o samples/sample.png -p 1234\n" \
-  "\n version: "+std::string(VERSION)+"\n compilation date:" \
+  "\n version: "+std::string(VERSION) + 
+#ifdef USE_NETCDF
+  "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
+#endif //NetCDF
+  "\n compilation date:" \
   ).c_str());//cimg_usage
-
-  const char* imagefilename = cimg_option("-o","samples/sample.png","output file name (e.g. \"-o data.png -d 3\" gives data_???.png)");
-  const char* resultfilename =cimg_option("-r","results/sample.png","result file name (e.g. \"-o proc.png -d 3\" gives proc_???.png)");
+  const char* imagefilename = cimg_option("-o","samples/sample.cimg",std::string("output file name (e.g." +
+#ifdef USE_NETCDF
+  std::string(" \"-o data.nc\" or ") +
+#endif //NetCDF
+  std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
+  ).c_str());//ouput file name for raw
+  const char* resultfilename = cimg_option("-o","results/sample.cimg",std::string("output file name (e.g." +
+#ifdef USE_NETCDF
+  std::string(" \"-o result.nc\" or ") +
+#endif //NetCDF
+  std::string(" \"-o result.cimg -d 3\" gives result_???.cimg)")
+  ).c_str());//ouput file name for result
   const unsigned int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",123,  "number of vector");  //! \todo [high] should be NO count of the vectors with an infinite loop (to implement)
