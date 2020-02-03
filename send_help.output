@@ -5,8 +5,8 @@
  usage: ./send -h
         ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.5.7d
- compilation date: (Feb  3 2020, 11:46:25)
+ version: v0.5.7r
+ compilation date: (Feb  3 2020, 11:51:20)
 
     [1m-s              [0;0;0m 1024                     [0;32;59msize   of udp buffer[0;0;0m
     [1m-n              [0;0;0m 256                      [0;32;59mnumber of frames[0;0;0m
@@ -15,6 +15,7 @@
     [1m-p              [0;0;0m 1234                     [0;32;59mport where the packets are send on the receiving device[0;0;0m
     [1m-i              [0;0;0m 10.10.15.1               [0;32;59mip address of the receiver[0;0;0m
     [1m-w              [0;0;0m 123456789                [0;32;59mwaiting time between udp frames[0;0;0m
+    [1m--generator-factory[0;0;0m count                    [0;32;59mgenerator type, e.g. count, random or peak[0;0;0m
     [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
     [1m--info          [0;0;0m false                    [0;32;59mshow compilation options (or -I option)[0;0;0m
     [1m--version       [0;0;0m false                    [0;32;59mshow version (or -v option)[0;0;0m

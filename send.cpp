@@ -9,10 +9,10 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7d"
+#define VERSION "v0.5.7r"
 
 //thread lock
-#include "CDataGenerator.hpp"
+#include "CDataGenerator_factory.hpp"
 #include "CDataSend.hpp"
 
 using namespace cimg_library;
@@ -42,6 +42,10 @@ int main(int argc,char **argv)
   const unsigned short port=cimg_option("-p",1234,"port where the packets are send on the receiving device");
   const std::string ip=cimg_option("-i", "10.10.15.1", "ip address of the receiver");
   const int twait=cimg_option("-w", 123456789, "waiting time between udp frames");
+//! generator factory
+  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
+  //show type list in generator factory
+  std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
 
   //conversion of twait into a boost::uint64_t
   const boost::uint64_t wait=static_cast<std::size_t>(twait);
@@ -100,8 +104,11 @@ int main(int argc,char **argv)
   {
     case 0:
     {//generate
-      CDataGenerator_Random<Tdata,Taccess> generate(locks);
-      generate.run(access,images, count);
+      CDataGenerator<Tdata, Taccess> *generate=CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator(generator_type,generator_type_list
+      , locks
+      );
+      std::cout<<"information: generator type is the one in "<<generate->class_name<<" class."<<std::endl<<std::flush;
+      generate->run(access,images, count);
       break;
     }//generate
     case 1:

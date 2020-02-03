@@ -1,11 +1,8 @@
 process.v0.5.7r
-  CImg_NetCDF.v0.8.0
- -factory- generator types are: count, random, peak.
+ -factory- generator types are: count.
  -factory- CPU processor types are: count, vPvMv, kernel.
- -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
 process_sequential.v0.5.7r
-  CImg_NetCDF.v0.8.0
- -factory- generator types are: count, random, peak.
+ -factory- generator types are: count.
  -factory- CPU processor types are: count, vPvMv, kernel.
- -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
-receive.send.
+receive.send.v0.5.7r
+ -factory- generator types are: count, random, peak.
