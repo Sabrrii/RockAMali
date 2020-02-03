@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7h"
+#define VERSION "v0.5.7r"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -176,8 +176,7 @@ int main(int argc,char **argv)
       if(use_GPU)
       {//GPU
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
-//      CDataProcessorGPU<Tdata, Taccess> *process(
-      CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(processing_type,type_list
+      CDataProcessorGPU<Tdata,Tproc, Taccess> *process=CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::NewCDataProcessorGPU(processing_type,type_list
       , locks, gpu,width
       , CDataAccess::STATUS_RECEIVED,CDataAccess::STATUS_PROCESSED //images
       , CDataAccess::STATUS_FREE,    CDataAccess::STATUS_FILLED    //results

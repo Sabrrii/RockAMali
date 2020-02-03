@@ -1,2 +1,3 @@
-information: -factory- generator types are: count, random, peak.
+information: -factory- CPU processor types are: count, vPvMv, kernel.
+information: -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro.
 v0.5.7r
