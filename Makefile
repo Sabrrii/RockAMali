@@ -85,12 +85,12 @@ NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
 process_run:
-#	ncgen parameters.cdl -o parameters.nc && rm sample.nc; ./process.X -c $(NT) -s $(FRAME_SIZE) -o sample.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color && ncdump -h sample.nc
-	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -b $(NB) -n $(NS) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
+	ncgen parameters.cdl -o parameters.nc && rm sample.nc; ./process -c $(NT) -s $(FRAME_SIZE) -o sample.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color && ncdump -h sample.nc
+#	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -b $(NB) -n $(NS) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
 
 process_sequential_run:
-#	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
-	./process_sequential -s $(FRAME_SIZE) -o sample_sequential.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -n 12 $(DO_CHECK)
+	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc
+#	./process_sequential -s $(FRAME_SIZE) -o sample_sequential.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -n 12 $(DO_CHECK)
 
 #NS=123456
 send_run:
