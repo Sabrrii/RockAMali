@@ -5,8 +5,10 @@
  usage: ./send -h
         ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.5.7r
- compilation date: (Feb  3 2020, 11:50:08)
+ version: v0.5.7
+          CParameterNetCDF.v0.5.0
+          NcTypeInfo.v0.1.2
+ compilation date: (Feb  3 2020, 14:07:08)
 
     -s               1024                     size   of udp buffer[0;0;0m
     -n               256                      number of frames[0;0;0m

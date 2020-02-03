@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7s"
+#define VERSION "v0.5.7"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -39,6 +39,10 @@ int main(int argc,char **argv)
   "\n version: "+std::string(VERSION) + 
 #ifdef USE_NETCDF
   "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
+/*
+  "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
+  "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
+*/
 #endif //NetCDF
   "\n compilation date:" \
   ).c_str());//cimg_usage
@@ -48,11 +52,11 @@ int main(int argc,char **argv)
 #endif //NetCDF
   std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
   ).c_str());//ouput file name for raw
-  const char* resultfilename = cimg_option("-o","results/sample.cimg",std::string("output file name (e.g." +
+  const char* resultfilename = cimg_option("-r","results/sample.cimg",std::string("result file name (e.g." +
 #ifdef USE_NETCDF
-  std::string(" \"-o result.nc\" or ") +
+  std::string(" \"-r result.nc\" or ") +
 #endif //NetCDF
-  std::string(" \"-o result.cimg -d 3\" gives result_???.cimg)")
+  std::string(" \"-r result.cimg -d 3\" gives result_???.cimg)")
   ).c_str());//ouput file name for result
   const unsigned int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
@@ -89,7 +93,19 @@ int main(int argc,char **argv)
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   bool show_version=cimg_option("-v",false,NULL);//-v hidden option
-  if( cimg_option("--version",show_version,"show version (or -v option)") ) {show_version=true;std::cout<<VERSION<<std::endl;return 0;}//same --version or -v option
+  if( cimg_option("--version",show_version,"show version (or -v option)") )
+  {
+    show_version=true;
+    std::cout<<VERSION<<std::endl;
+#ifdef USE_NETCDF
+    std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
+/*
+    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
+    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
+*/
+#endif //NetCDF
+    std::cout<<std::endl;return 0;
+  }//same --version or -v option
   if(show_help) {/*print_help(std::cerr);*/return 0;}
   //}CLI option
 

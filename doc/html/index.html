@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">RockAMali
-   &#160;<span id="projectnumber">v0.5.7r</span>
+   &#160;<span id="projectnumber">v0.5.7</span>
    </div>
   </td>
  </tr>
@@ -88,9 +88,11 @@ command line options</h1>
  usage: ./process -h
         ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.5.7r
+ version: v0.5.7
           CImg_NetCDF.v0.8.0
- compilation date: (Feb  3 2020, 11:49:26)
+          CParameterNetCDF.v0.5.0
+          NcTypeInfo.v0.1.2
+ compilation date: (Feb  3 2020, 14:06:27)
 
     -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     -d               6                        number of digit for file names[0;0;0m
@@ -114,9 +116,11 @@ command line options</h1>
  usage: ./process -h
         ./process -s 1024 -n 123 -o result.nc
 
- version: v0.5.7r
+ version: v0.5.7
           CImg_NetCDF.v0.8.0
- compilation date: (Feb  3 2020, 11:48:45)
+          CParameterNetCDF.v0.5.0
+          NcTypeInfo.v0.1.2
+ compilation date: (Feb  3 2020, 14:05:46)
 
     -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     -d               6                        number of digit for file names[0;0;0m
@@ -138,11 +142,12 @@ command line options</h1>
  usage: ./receive -h -I
         ./receive -s 1024 -n 123 -X true -o samples/sample.png -p 1234
 
- version: v0.5.7s
- compilation date: (Feb  3 2020, 11:50:28)
+ version: v0.5.7
+          CImg_NetCDF.v0.8.0
+ compilation date: (Feb  3 2020, 14:07:29)
 
-    -o               samples/sample.cimg      output file name (e.g. "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
-    -o               results/sample.cimg      output file name (e.g. "-o result.cimg -d 3" gives result_???.cimg)[0;0;0m
+    -o               samples/sample.cimg      output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
+    -r               results/sample.cimg      result file name (e.g. "-r result.nc" or  "-r result.cimg -d 3" gives result_???.cimg)[0;0;0m
     -d               6                        number of digit for file names[0;0;0m
     -s               1024                     size   of udp buffer[0;0;0m
     -n               123                      number of vector[0;0;0m
@@ -166,8 +171,10 @@ command line options</h1>
  usage: ./send -h
         ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657
 
- version: v0.5.7r
- compilation date: (Feb  3 2020, 11:50:08)
+ version: v0.5.7
+          CParameterNetCDF.v0.5.0
+          NcTypeInfo.v0.1.2
+ compilation date: (Feb  3 2020, 14:07:08)
 
     -s               1024                     size   of udp buffer[0;0;0m
     -n               256                      number of frames[0;0;0m

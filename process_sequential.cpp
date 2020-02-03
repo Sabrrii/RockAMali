@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.7r"
+#define VERSION "v0.5.7"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -46,6 +46,8 @@ int main(int argc,char **argv)
   "\n version: "+std::string(VERSION) + 
 #ifdef USE_NETCDF
   "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
+  "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
+  "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
 #endif //NetCDF
   "\n compilation date:" \
   ).c_str());//cimg_usage
@@ -94,7 +96,9 @@ int main(int argc,char **argv)
     show_version=true;
     std::cout<<VERSION<<std::endl;
 #ifdef USE_NETCDF
-    std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION;
+    std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
+    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
+    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
 #endif //NetCDF
     std::cout<<std::endl;return 0;
   }//same --version or -v option

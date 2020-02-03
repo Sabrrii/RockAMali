@@ -5,9 +5,11 @@
  usage: ./process -h
         ./process -s 1024 -n 123 -o result.nc
 
- version: v0.5.7r
+ version: v0.5.7
           CImg_NetCDF.v0.8.0
- compilation date: (Feb  3 2020, 11:48:45)
+          CParameterNetCDF.v0.5.0
+          NcTypeInfo.v0.1.2
+ compilation date: (Feb  3 2020, 14:05:46)
 
     -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     -d               6                        number of digit for file names[0;0;0m
