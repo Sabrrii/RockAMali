@@ -271,14 +271,14 @@ std::cerr<<A<<std::endl;
 
 
 	//Baseline
-	cimg_for_inX(images[n],0,nb_tB,i) images[n](i)=B;
+	cimg_for_inX(images[n],0,nb_tB,x) images[n](x)=B;
         //Peak
 	const float step =(float)A/(nb_tA - nb_tB);
         int j=0;
-        cimg_for_inX(images[n],nb_tB,nb_tA,i) images[n](i)=step*j++ +B;
+        cimg_for_inX(images[n],nb_tB,nb_tA,x) images[n](x)=step*j++ +B;
 	//Exponential decrease
 	int t=0;
-        cimg_for_inX(images[n],nb_tA,images[n].width(),i) images[n](i)=A * exp(-t++/tau)+B;
+        cimg_for_inX(images[n],nb_tA,images[n].width(),x) images[n](x)=A * exp(-t++/tau)+B;
 
     //set frame count value as first array value
     images[n](0)=i;
