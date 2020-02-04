@@ -6,7 +6,7 @@
 using namespace cimg_library;
 
 //NetCDF
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
 #include "CImg_NetCDF.h"
 #endif //NetCDF
 
@@ -25,7 +25,7 @@ class CDataStore: public CDataBuffer<Tdata, Taccess>
 public:
   //! output file name or template
   std::string file_name;
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
   //NetCDF format
   bool is_netcdf_file;
   CImgNetCDF<Tnetcdf> nc;
@@ -57,7 +57,7 @@ public:
     file_name_digit=digit;
 
 //! \todo [medium] . check extention for NetCDF, e.g. setup is_netcdf_file=true
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
     //file extention
     std::size_t found=file_name.find_last_of(".");
     std::string extention=file_name.substr(found);
@@ -90,7 +90,7 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
       this->lprint.unset_lock();
     }
 
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
     if(is_netcdf_file) if(!is_netcdf_init)
     {
       nc_img.assign(images[n].width());
@@ -102,7 +102,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
 
     //{CImg file
     CImg<char> nfilename(1024);
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
     if(!is_netcdf_file)
 #endif //NetCDF
       cimg::number_filename(file_name.c_str(),i,file_name_digit,nfilename);
@@ -113,7 +113,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_STORING, c, la_sleep);//processed,storing
 
     //save data
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
     if(is_netcdf_file)
     {//as NetCDF
       nc_img=images[n];

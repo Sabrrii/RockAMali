@@ -44,7 +44,7 @@ int main(int argc,char **argv)
   " usage: ./process -h\n" \
   "        ./process -s 1024 -n 123 -o result.nc\n" \
   "\n version: "+std::string(VERSION) + 
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
   "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
   "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
   "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
@@ -53,7 +53,7 @@ int main(int argc,char **argv)
   ).c_str());//cimg_usage
 
   const char* imagefilename = cimg_option("-o","sample.cimg",std::string("output file name (e.g." +
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
   std::string(" \"-o data.nc\" or ") +
 #endif //NetCDF
   std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
@@ -95,7 +95,7 @@ int main(int argc,char **argv)
   {
     show_version=true;
     std::cout<<VERSION<<std::endl;
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
     std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
     std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
     std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;

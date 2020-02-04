@@ -31,7 +31,7 @@ int main(int argc,char **argv)
   " usage: ./send -h\n" \
   "        ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657\n" \
   "\n version: "+std::string(VERSION) +
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
   "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
   "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
 #endif //NetCDF
@@ -69,7 +69,7 @@ int main(int argc,char **argv)
   {
     show_version=true;
     std::cout<<VERSION<<std::endl;
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
     std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
     std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
 #endif //NetCDF

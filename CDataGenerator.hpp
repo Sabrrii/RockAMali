@@ -9,7 +9,7 @@ using namespace cimg_library;
 #include "CDataBuffer.hpp"
 
 //NetCDF
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
 #include <netcdfcpp.h>
 #include "struct_parameter_NetCDF.h"
 #endif //NetCDF
@@ -62,7 +62,7 @@ public:
 
 };//CDataGenerator
 
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
 
 //! generate random data into a shared circular buffer
 /**

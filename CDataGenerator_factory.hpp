@@ -24,7 +24,7 @@ public:
     //if
     factory_types.push_back      ("count")         ;if(name == factory_types.back())
       return new CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status);
-#ifdef USE_NETCDF
+#ifdef DO_NETCDF
     //! NetCDF enabling more classes, e.g. classes that load parameters from .CDL (i.e. .nc)
     factory_types.push_back      ("random")        ;if(name == factory_types.back())
       return new CDataGenerator_Random<Tdata, Taccess>(lock,wait_status,set_status);

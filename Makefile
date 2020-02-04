@@ -23,10 +23,13 @@ LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
 LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
-LIB_NETCDF= -DUSE_NETCDF -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
+LIB_NETCDF=-I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 
+##do compile
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
 DO_GPU=
+DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF)
+DO_NETCDF=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -48,24 +51,24 @@ gui: main.cpp
 	./generate.X -h 2> generateX_help.output
 
 process: process.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp $(SRC_NETCDF)
-	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process   -h -I && ./process   -v > VERSION
-	g++ -O0 -o process.X process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) && ./process.X -h -I && ./process.X -v > VERSION
+	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process   -h -I && ./process   -v > VERSION
+	g++ -O0 -o process.X process.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) && ./process.X -h -I && ./process.X -v > VERSION
 	./process -h 2> process_help.output
 
 #SEQ_GPU=
 #SEQ_GPU=-DDO_GPU_SEQ_QUEUE
 SEQ_GPU=-DDO_GPU_NO_QUEUE
 process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp $(SRC_NETCDF)
-	g++ $(SEQ_GPU) -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential   -h -I && ./process_sequential   -v > VERSION
-	g++ $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
+	g++ $(SEQ_GPU) -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential   -h -I && ./process_sequential   -v > VERSION
+	g++ $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
 	./process_sequential -h 2> process_sequential_help.output
 
 send: send.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) CDataSend.hpp $(SRC_NETCDF)
-	g++ -O0 -o send   send.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(LIB_NETCDF) -Dcimg_display=0 && ./send -h -I && ./send -v > VERSION
+	g++ -O0 -o send   send.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(DO_NETCDF) -Dcimg_display=0 && ./send -h -I && ./send -v > VERSION
 	./send -h 2> send_help.output
 
 receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ -O0 -o receive receive.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./receive -h -I && ./receive -v > VERSION
+	g++ -O0 -o receive receive.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./receive -h -I && ./receive -v > VERSION
 	./receive -h 2> receive_help.output
 
 doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp

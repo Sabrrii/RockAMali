@@ -9,8 +9,10 @@ using namespace cimg_library;
 
 #include "CDataBuffer.hpp"
 
+#ifdef DO_NETCDF
 #include <netcdfcpp.h>
 #include "struct_parameter_NetCDF.h"
+#endif
 
 template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
 class CDataProcessor : public CDataBuffer<Tdata, Taccess>
@@ -369,6 +371,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
 };//CDataProcessor_Max_Min	
 
+#ifdef DO_NETCDF
+
 //! process a single peak from PAC signal 
 /**
  * Calculation of a trapezoidal based on the signal input
@@ -616,6 +620,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   };//kernelCPU
 
 };//CDataProcessor_Trapeze
+
+#endif //NetCDF
 	
 #endif //_DATA_PROCESSOR_
 
