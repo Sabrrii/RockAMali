@@ -280,7 +280,7 @@ public:
 //    images[n](images[n].width()-1)=i;
 
     //set filled
-    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],i,n,c);//filling,filled
+    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
 
 };//CDataGenerator_Peak
@@ -292,7 +292,7 @@ class CDataGenerator_Peak_Noise: public CDataGenerator_Peak<Tdata, Taccess>
 public:
   float rand_min,rand_max;
 
-  int Get_Graph_Parameters(float &min_noise, float &max_noise){
+  int Get_Noise_Parameters(float &min_noise, float &max_noise){
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
   double rnd; 
@@ -310,7 +310,7 @@ public:
   std::cout<<process_name<<"="<<process<<std::endl;
    
   ///noise
-  attribute_name="noise";
+  std::string attribute_name="noise";
   if (error = fp.loadAttribute(attribute_name,rnd)!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
@@ -319,7 +319,7 @@ public:
   
   min_noise=-(rnd/2); // convert into int
   max_noise=rnd/2; // convert into int
-}//Get_Graph_Parameters
+}//Get_Noise_Parameters
 
   CDataGenerator_Peak_Noise(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
@@ -328,10 +328,8 @@ public:
   : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
   {
 //    this->debug=true;
-    this->class_name="CDataGenerator_Peak_Noise";
-    this->Get_Graph_Parameters(this->nb_tB, this->nb_tA, this->tau, this->A, this->B);//Signal Parameters	
-    Get_Graph_Parameters(rand_min,rand_max);//noise Parameters	
-    this->nb_tA+=this->nb_tB; //nb_tA is position
+    this->class_name="CDataGenerator_Peak_Noise";	
+    Get_Noise_Parameters(rand_min,rand_max);//noise Parameters	
     this->check_locks(lock);
   }//constructor
 
@@ -362,7 +360,7 @@ public:
     cimg_forX(images[n],i) images[n](i)+=Test(i);
 
     //set filled
-    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],i,n,c);//filling,filled
+    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
 
 };//CDataGenerator_Peak_Noise
