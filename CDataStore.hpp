@@ -56,7 +56,6 @@ public:
     file_name=imagefilename;
     file_name_digit=digit;
 
-//! \todo [medium] . check extention for NetCDF, e.g. setup is_netcdf_file=true
 #ifdef DO_NETCDF
     //file extention
     std::size_t found=file_name.find_last_of(".");
@@ -70,6 +69,7 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
       dim_time="dimF";
       dim_names.push_back("dimS");
       //variable names (and its unit)
+	//! \todo [medium] variable name should be variable of this classe(and we could add a attribute to specify the factory type)
       var_name="signal";
       unit_name="none";
     }

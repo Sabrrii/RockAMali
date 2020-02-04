@@ -2,7 +2,7 @@
 #define _DATA_GENERATOR_FACTORY_
 
 #include "CDataGenerator.hpp"
-//! \todo [high] add CDataGenerator_physic: PAC_peak(+noise) (e.g. in CDataGenerator_physic.hpp)
+//! \todo [low] add CDataGenerator_physic: PAC_peak(+noise) (e.g. in CDataGenerator_physic.hpp)
 
 //! factory for data generator
 /**
