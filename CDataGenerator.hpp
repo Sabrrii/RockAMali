@@ -176,9 +176,10 @@ public:
   int nb_tB,nb_tA,A,B;
   double tau; 
   int Get_Graph_Parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base){
+  int Tau;
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-  int Tau;
+  
   ///parameter class
   CParameterNetCDF fp;
   //open file
@@ -291,10 +292,9 @@ class CDataGenerator_Peak_Noise: public CDataGenerator_Peak<Tdata, Taccess>
 public:
   float rand_min,rand_max;
 
-  int Get_Graph_Parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base, float &min_noise, float &max_noise){
+  int Get_Graph_Parameters(float &min_noise, float &max_noise){
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-  int Tau;
   double rnd; 
   ///parameter class
   CParameterNetCDF fp;
@@ -308,41 +308,6 @@ public:
   error=fp.loadVar(process,&process_name);
   if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
   std::cout<<process_name<<"="<<process<<std::endl;
-  ///nb_tB
-  std::string attribute_name="nb_tB";	// 10us
-  if (error = fp.loadAttribute(attribute_name,nb_base)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<nb_base<<std::endl;
-  ///nb_tA
-  attribute_name="nb_tA";		//100 ns
-  if (error = fp.loadAttribute(attribute_name,nb_peak)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<nb_peak<<std::endl;
-  ///tau
-  attribute_name="tau";			//5 us
-  if (error = fp.loadAttribute(attribute_name,Tau)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<Tau<<std::endl;
-  ///A
-  attribute_name="A";
-  if (error = fp.loadAttribute(attribute_name,ampl)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<ampl<<std::endl;		 
-  ///B
-  attribute_name="B";
-  if (error = fp.loadAttribute(attribute_name,base)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<base<<std::endl; 
    
   ///noise
   attribute_name="noise";
@@ -352,7 +317,6 @@ public:
   }
   std::cout<<"  "<<attribute_name<<"="<<rnd<<std::endl; 
   
-  decrease=Tau; // convert into int
   min_noise=-(rnd/2); // convert into int
   max_noise=rnd/2; // convert into int
 }//Get_Graph_Parameters
@@ -365,7 +329,8 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_Noise";
-    Get_Graph_Parameters(this->nb_tB, this->nb_tA, this->tau, this->A, this->B, rand_min,rand_max);//Signal Parameters	
+    this->Get_Graph_Parameters(this->nb_tB, this->nb_tA, this->tau, this->A, this->B);//Signal Parameters	
+    Get_Graph_Parameters(rand_min,rand_max);//noise Parameters	
     this->nb_tA+=this->nb_tB; //nb_tA is position
     this->check_locks(lock);
   }//constructor
