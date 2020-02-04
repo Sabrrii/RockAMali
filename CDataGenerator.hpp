@@ -8,8 +8,11 @@ using namespace cimg_library;
 //thread lock
 #include "CDataBuffer.hpp"
 
+//NetCDF
+#ifdef USE_NETCDF
 #include <netcdfcpp.h>
 #include "struct_parameter_NetCDF.h"
+#endif //NetCDF
 
 //! generate data into a shared circular buffer
 /**
@@ -59,6 +62,8 @@ public:
 
 };//CDataGenerator
 
+#ifdef USE_NETCDF
+
 //! generate random data into a shared circular buffer
 /**
  * random data except first one that is frame count value
@@ -70,7 +75,6 @@ public:
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataGenerator_Random: public CDataGenerator<Tdata, Taccess>
 {
-
 public:
   Tdata rand_min,rand_max;
   
@@ -291,7 +295,6 @@ public:
 template<typename Tdata, typename Taccess=unsigned char>
 class CDataGenerator_Peak_Noise: public CDataGenerator_Peak<Tdata, Taccess>
 {
-
 public:
   float rand_min,rand_max;
 
@@ -386,6 +389,8 @@ public:
  * - A * exp(-t/tau)+B: Exponential decrease 
  * - nbitem: size of image (x) 
 **/
+
+#endif //NetCDF
 
 #endif //_DATA_GENERATOR_
 

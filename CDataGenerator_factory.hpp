@@ -24,13 +24,15 @@ public:
     //if
     factory_types.push_back      ("count")         ;if(name == factory_types.back())
       return new CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status);
+#ifdef USE_NETCDF
+    //! NetCDF enabling more classes, e.g. classes that load parameters from .CDL (i.e. .nc)
     factory_types.push_back      ("random")        ;if(name == factory_types.back())
       return new CDataGenerator_Random<Tdata, Taccess>(lock,wait_status,set_status);
     factory_types.push_back      ("peak")        ;if(name == factory_types.back())
       return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status);
     factory_types.push_back      ("peak_noise")        ;if(name == factory_types.back())
       return new CDataGenerator_Peak_Noise<Tdata, Taccess>(lock,wait_status,set_status);
-
+#endif //NetCDF
 //    if(name == "error")
 //      return new CDataGenerator_error;
     //listing known types in factory
@@ -55,7 +57,7 @@ public:
   static void show_factory_types(std::vector<std::string> &factory_types)
   {
     if(factory_types.empty()) get_factory_types(factory_types);
-    std::cout<<"information: generator types are: ";
+    std::cout<<"information: -factory- generator types are: ";
     unsigned int i;
     for(i=0;i<factory_types.size()-1;++i)
       std::cout<<factory_types[i]<<", ";

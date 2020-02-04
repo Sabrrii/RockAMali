@@ -5,7 +5,7 @@ FRAME_SIZE=4096
 NP=4
 GEN_FCT=peak_noise
 PROC=peak
-USE_GPU=--use-GPU --GPU-factory program
+USE_GPU=--use-GPU --GPU-factory $(PROC)
 USE_GPU=
 DO_CHECK=--do-check
 DO_CHECK=
@@ -21,9 +21,9 @@ FOUT=$(FIN)
 #compiler options
 LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
 LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
-LIB_NETCDF=-I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
+LIB_NETCDF= -DUSE_NETCDF -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
 DO_GPU=
@@ -33,9 +33,11 @@ SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
 SRC_DATA_GENERATOR=CDataGenerator.hpp CDataGenerator_factory.hpp
 SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessorGPU.hpp CDataProcessorGPUfactory.hpp
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
+SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
-#all: process_sequential process send receive doc
-all: process process_sequential doc
+#all: process_sequential process send receive version factory doc
+all: process_sequential process version factory doc
+#all: send receive version factory doc
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -45,33 +47,35 @@ gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
 	./generate.X -h 2> generateX_help.output
 
-process: process.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
-#	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0  $(DO_GPU) && ./process -h -I && ./process -v > VERSION
-	g++ -O0 -o process.X   process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process.X -h -I && ./process.X -v > VERSION
-	./process.X -h 2> process_help.output
+process: process.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp $(SRC_NETCDF)
+	g++ -O0 -o process   process.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process   -h -I && ./process   -v > VERSION
+	g++ -O0 -o process.X process.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) && ./process.X -h -I && ./process.X -v > VERSION
+	./process -h 2> process_help.output
 
 #SEQ_GPU=
 #SEQ_GPU=-DDO_GPU_SEQ_QUEUE
 SEQ_GPU=-DDO_GPU_NO_QUEUE
-#process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-#	g++ $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
-#	./process_sequential -h 2> process_sequential_help.output
+process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp $(SRC_NETCDF)
+	g++ $(SEQ_GPU) -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential   -h -I && ./process_sequential   -v > VERSION
+	g++ $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
+	./process_sequential -h 2> process_sequential_help.output
 
-process_sequential: process_sequential.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ $(SEQ_GPU)  -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./process_sequential -h -I && ./process_sequential -v > VERSION
-	g++ $(SEQ_GPU) -O0 -o process_sequential.X   process_sequential.cpp $(LIB_CIMG) $(LIB_NETCDF) $(LIB_XWINDOWS) $(DO_GPU) && ./process_sequential -h -I && ./process_sequential.X -v > VERSION
-	./process_sequential.X -h 2> process_sequential_help.output
-
-send: send.cpp $(SRC_DATA_BUFFER) CDataGenerator.hpp CDataSend.hpp
-	g++ -O0 -o send   send.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) -Dcimg_display=0 && ./send -h -I && ./send -v > VERSION
+send: send.cpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) CDataSend.hpp $(SRC_NETCDF)
+	g++ -O0 -o send   send.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(LIB_NETCDF) -Dcimg_display=0 && ./send -h -I && ./send -v > VERSION
 	./send -h 2> send_help.output
 
 receive: receive.cpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
-	g++ -O0 -o receive receive.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) -Dcimg_display=0 $(DO_GPU) && ./receive -h -I && ./receive -v > VERSION
+	g++ -O0 -o receive receive.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(LIB_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./receive -h -I && ./receive -v > VERSION
 	./receive -h 2> receive_help.output
 
 doc: doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
 	./doxygen.sh
+
+version: process.cpp process_sequential.cpp send.cpp receive.cpp
+	./versions.sh > VERSIONS; cat VERSIONS; echo
+
+factory: CDataGenerator.hpp $(SRC_DATA_BUFFER)
+	./factories.sh 2>&1 > FACTORIES; cat FACTORIES; echo
 
 #NP=4
 NT=`echo $(NP)+2   | bc`
@@ -81,13 +85,12 @@ NT=`echo $(NP)+2   | bc`
 NB=`echo $(NP)*4| bc`
 NS=`echo $(NP)*8| bc`
 process_run:
-#	./process -c 4 -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -b 8 -n 16 --use-GPU --do-check #2>/dev/null | grep -e info -e test
-#	 ncgen parameters.cdl -o parameters.nc && ./process -c $(NT) -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
-	ncgen parameters.cdl -o parameters.nc && ./process.X -c $(NT) -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) --show 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(PROC) --color
+	ncgen parameters.cdl -o parameters.nc && rm sample.nc; ./process -c $(NT) -s $(FRAME_SIZE) -o sample.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color && ncdump -h sample.nc
+#	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -b $(NB) -n $(NS) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
 
 process_sequential_run:
-	ncgen parameters.cdl -o parameters.nc && ./process_sequential.X -s $(FRAME_SIZE) -o sample.cimg -r result.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show
-#	ncgen parameters.cdl -o parameters.nc && ./process_sequential -s $(FRAME_SIZE) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -n 12 $(USE_GPU) $(DO_CHECK)
+#	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc
+	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
 
 #NS=123456
 send_run:
@@ -105,10 +108,12 @@ receive_run: clear
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
 	mkdir  $(DATA)/samples/ $(DATA)/results/
-	rm -f sample_??????.cimg
+	rm -f sample_??????.cimg result_??????.cimg
+	rm -f sample.nc sample_sequential.nc parameters.nc
 	sync
 
-clean: clear
+clean:
+	make clear
 	rm -f send.X    send
 	rm -f receive.X receive
 	rm -f process.X process

@@ -12,12 +12,12 @@ using namespace cimg_library;
 #include <netcdfcpp.h>
 #include "struct_parameter_NetCDF.h"
 
-template<typename Tdata, typename Taccess=unsigned char>
+template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
 class CDataProcessor : public CDataBuffer<Tdata, Taccess>
 {
 public:
   //Processing buffer
-  CImg<Tdata> image;
+  CImg<Tproc> image;
   //! result access
   CAccessOMPLock laccessR;
   CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR;
@@ -48,9 +48,22 @@ public:
     }
     check_error=0;
   }//constructor
+  //! run for loop
+  virtual void run(CImg<Taccess> &access,CImgList<Tdata> &images,  CImg<Taccess> &accessR,CImgList<Tproc> &results, unsigned int count, unsigned int stride=1, unsigned int start=0)
+  {
+    unsigned int nbuffer=images.size();
+    for(unsigned int n=start,i=start;i<count;i+=stride)
+    {
+      this->iteration(access,images, accessR,results, n,i);
+      //circular buffer
+//! \bug needed: nbuffer should be a multiple of process thread number
+      n+=stride;
+      if(n>nbuffer-1) n=start;
+     }//vector loop
+  }//run
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     std::cout<< __FILE__<<"/"<<__func__<<"(images: in="<<in.width()<<", out="<<out.size()<<") copy kernel, other kernels should be implemented in inherited class."<<std::endl<<std::flush;
     out=in;
@@ -74,7 +87,7 @@ public:
   }//check_data
 
   //! one iteration for any loop
-  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, CImg<Taccess> &accessR,CImgList<Tdata> &results, int n, int i)
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, CImg<Taccess> &accessR,CImgList<Tproc> &results, int n, int i)
   {
     if(this->debug)
     {
@@ -141,8 +154,8 @@ public:
 /**
  * val+val*val
 **/
-template<typename Tdata>
-void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tdata> &out)
+template<typename Tdata, typename Tproc>
+void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tproc> &out)
 {
   out=in;
   cimg_forX(in,x) out(x)+=in(x)*in(x);
@@ -151,8 +164,8 @@ void kernelCPU_vPvMv(CImg<Tdata> &in,CImg<Tdata> &out)
 /**
  * val+val*val
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessor_vPvMv : public CDataProcessor<Tdata, Taccess>
+template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
+class CDataProcessor_vPvMv : public CDataProcessor<Tdata,Tproc, Taccess>
 {
 public:
   CDataProcessor_vPvMv(std::vector<omp_lock_t*> &lock
@@ -162,7 +175,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessor_vPvMv";
@@ -175,7 +188,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
-      CImg<Tdata> imgt(img);
+      CImg<Tproc> imgt(img);
       kernelCPU(img,imgt);
       return (this->image==imgt);
     }//do_check
@@ -183,13 +196,13 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//check_data
 
   //! compution kernel for an iteration
-  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU_vPvMv(in,out);
   };//kernelCPU
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU(in,out);
   };//kernel
@@ -200,8 +213,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 /**
  * FMA: val*cst+cst
 **/
-template<typename Tdata>
-void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tdata> &out)
+template<typename Tdata, typename Tproc>
+void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tproc> &out)
 {
   out=in*2+123;
 }//kernelCPU_vMcPc
@@ -209,8 +222,8 @@ void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tdata> &out)
 /**
  * FMA: val*cst+cst
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessor_kernel : public CDataProcessor<Tdata, Taccess>
+template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
+class CDataProcessor_kernel : public CDataProcessor<Tdata,Tproc, Taccess>
 {
 public:
 //  void *pKernel4CPU;
@@ -222,7 +235,7 @@ public:
 //  , void *kernel4CPU(void)
   , bool do_check=false
   )
-  : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessor_kernel_vMcPc";
@@ -232,7 +245,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//constructor
 
   //! compution kernel for an iteration
-  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tproc> &out)
   {
 //    *pKernelCPU(in,out);
     kernelCPU_vMcPc(in,out);
@@ -243,7 +256,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
-      CImg<Tdata> imgt(img);
+      CImg<Tproc> imgt(img);
       kernelCPU(img,imgt);
       return (this->image==imgt);
     }//do_check
@@ -251,7 +264,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//check_data
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU(in,out);
   };//kernel
@@ -274,8 +287,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
  * \ref pageSchema "Signal schema" 
  *
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessor_Max_Min : public CDataProcessor_kernel<Tdata, Taccess>
+template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
+class CDataProcessor_Max_Min : public CDataProcessor_kernel<Tdata,Tproc, Taccess>
 {
 public:
   int A,B,Ai,Hi,Ti,threshold;
@@ -287,7 +300,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor_kernel<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessor_Max_Min";
@@ -320,7 +333,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   //! display the process signal
   virtual void Display(CImg<Tdata> &signal, int ampli, int base, int Imax, int Ith, int Itrig, int th) 
   {
-    	CImg<Tdata> imageC;
+    	CImg<Tproc> imageC;
 	// make 4 curves with the numbers of items and fills it with 0
 	imageC.assign(signal.width(),1,1,4,0);
         //change the specified channel to the paramaters values
@@ -336,7 +349,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//Process_Data
 
   //! compution kernel for an iteration
-  virtual void kernelCPU_Max_Min(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU_Max_Min(CImg<Tdata> &in,CImg<Tproc> &out)
   {  
     Process(in, A,B,Ai,Hi,Ti,threshold);
     Display(in, A,B,Ai,Hi,Ti,threshold);
@@ -344,7 +357,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   };//kernelCPU_Max_Min
 
   //! compution kernel for an iteration
-  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU_Max_Min(in,out);
   };//kernelCPU
@@ -377,8 +390,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
  * \ref pageSchema "Signal schema" 
  *
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessor_Trapeze : public CDataProcessor_kernel<Tdata, Taccess>
+template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
+class CDataProcessor_Trapeze : public CDataProcessor_kernel<Tdata,Tproc, Taccess>
 {
 public:
   int k, m, B, n, q, Tm, threshold;
@@ -482,7 +495,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor_kernel<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessor_Max_Min";
@@ -492,7 +505,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     this->check_locks(lock);
   }//constructor
   //! fill the image with the filter
-  virtual int trapezoidal_filter(CImg<Tdata> e, CImg<Tdata> &s, int ks, int ms, double alp, int decalage) 
+  virtual int trapezoidal_filter(CImg<Tdata> e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
   {
   //create a filter
     cimg_for_inX(s,decalage, s.width()-1,n)
@@ -501,9 +514,9 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 					+e(n-(2*ks+ms+1))-alp*e(n-(2*ks+ms+2));		
   }//trapezoidal_filter
   //! display the signal, the filter and the computation start
-  virtual void Display(CImg<Tdata> in, CImg<Tdata> out, int decalage)
+  virtual void Display(CImg<Tdata> in, CImg<Tproc> out, int decalage)
   {
-	CImg<Tdata> imageC;
+	CImg<Tproc> imageC;
 	imageC.assign(in.width(),1,1,3,0);
 	imageC.get_shared_channel(0)+=in;
 	imageC.get_shared_channel(1)+=out*in.max()/out.max(); // trapeze normalize
@@ -513,13 +526,13 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   //!fill the image with 2 discri and display it, return the position of the trigger
   virtual int Calcul_Ti(CImg<Tdata> e, int Tpeak,int th, double frac,double alp) 
   {
-	CImg<Tdata> s(e.width());
+	CImg<Tproc> s(e.width());
 	int delay = (3*Tpeak)/2;
 	//Discri simple
 	s(0)=0;
 	cimg_for_inX(s,1,s.width(),n) s(n)=e(n)-alp*e(n-1);
 	//Discri treshold		
-	CImg<Tdata> imageDCF(s.width(),1,1,1, 0);
+	CImg<Tproc> imageDCF(s.width(),1,1,1, 0);
 	cimg_for_inX(imageDCF,delay,s.width(),n) imageDCF(n)=s(n-delay)-frac*s(n);
 	//find the position of the trigger
 	int Ti;
@@ -528,7 +541,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	  Ti=i+1;
 	}
 	//display the graph
-	CImg<Tdata> imageC;
+	CImg<Tproc> imageC;
 	imageC.assign(s.width(),1,1,5, 0);
 	imageC.get_shared_channel(0)+=s;
 	imageC.get_shared_channel(1)+=imageDCF;
@@ -539,7 +552,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	return Ti;
   }//Calcul_Ti
   //! calculation of the energy based on the formula (peak-base)/number
-  float Calculation_Energy(CImg<Tdata> trapeze, int Ti,int number, double qDelay)
+  float Calculation_Energy(CImg<Tproc> trapeze, int Ti,int number, double qDelay)
   {
     //sum of the n baseline value
     int base=0;
@@ -555,7 +568,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   //! display the filter in details (signal, baseline, delay and flat top)
   void Display_Trapeze_Paramaters(CImg<Tdata> in, int Ti,int number, double qDelay)
   {
-	CImg<Tdata> imageC;
+	CImg<Tproc> imageC;
 	imageC.assign(in.width(),1,1,4,0);
 	imageC.get_shared_channel(0)+=in;
 	cimg_for_inX(imageC,Ti-number,Ti,i) imageC(i,0,0,1)=in.max();
@@ -565,10 +578,11 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//Display_Trapeze_Paramaters
 
   //! compution kernel for an iteration
-  virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tproc> &out)
   {    
     int decalage = 2*k+m+2;
-    CImg<Tdata> trapeze(in.width(),1,1,1, B);
+//! \todo [low] trapzoid container should be assigned once only
+    CImg<Tproc> trapeze(in.width(),1,1,1, B);
     trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
     Display(in, trapeze, decalage);
     int Ti=Calcul_Ti(in,Tm,threshold, fraction,alpha);
@@ -580,7 +594,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   };//kernelCPU_Max_Min
 
   //! compution kernel for an iteration
-  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernelCPU(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     kernelCPU_Trapeze(in,out);
   };//kernelCPU
@@ -588,3 +602,4 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 };//CDataProcessor_Trapeze
 	
 #endif //_DATA_PROCESSOR_
+

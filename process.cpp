@@ -1,6 +1,8 @@
 //CoolImage
 #include "CImg.h"
 
+//! \todo [medium] [Tproc] needed for GPU
+
 //C++ base
 #include <iostream>
 #include <string>
@@ -9,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.5h"
+#define VERSION "v0.5.8d"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -26,6 +28,7 @@ using namespace cimg_library;
 //types
 typedef unsigned char Taccess;
 typedef unsigned int  Tdata;
+typedef float         Tproc;
 
 int main(int argc,char **argv)
 {
@@ -34,30 +37,41 @@ int main(int argc,char **argv)
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./process -h\n" \
   "        ./process -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657\n" \
-  "\n version: "+std::string(VERSION)+"\n compilation date:" \
+  "\n version: "+std::string(VERSION) + 
+#ifdef USE_NETCDF
+  "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
+  "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
+  "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
+#endif //NetCDF
+  "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const char* imagefilename = cimg_option("-o","sample.cimg","output file name (e.g. \"-o data.cimg -d 3\" gives data_???.cimg)");
+  const char* imagefilename = cimg_option("-o","sample.cimg",std::string("output file name (e.g." +
+#ifdef USE_NETCDF
+  std::string(" \"-o data.nc\" or ") +
+#endif //NetCDF
+  std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
+  ).c_str());//ouput file name
   const int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
   const int threadCount=cimg_option("-c",3,"thread count (threads above 2 are processing one)");
-
+//! generator factory
   const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
   //show type list in generator factory
   std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
-
+//! CPU processor factory
   const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
   //show type list in CPU processor factory
-  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
-
+  std::vector<std::string> cpu_type_list;CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::show_factory_types(cpu_type_list);std::cout<<std::endl;
 #ifdef DO_GPU
+//! GPU processor factory
   const bool use_GPU_G=cimg_option("-G",false,NULL);//-G hidden option
         bool use_GPU=cimg_option("--use-GPU",use_GPU_G,"use GPU for compution (or -G option)");use_GPU=use_GPU_G|use_GPU;//same --use-GPU or -G option
   const std::string processing_type=cimg_option("--GPU-factory","program","GPU processing type, e.g. program or function");
   //show type list in GPU processor factory
-  std::vector<std::string> gpu_type_list;CDataProcessorGPUfactory<Tdata, Taccess>::show_factory_types(gpu_type_list);std::cout<<std::endl;
+  std::vector<std::string> gpu_type_list;CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::show_factory_types(gpu_type_list);std::cout<<std::endl;
 #endif //DO_GPU
   const bool do_check_C=cimg_option("-C",false,NULL);//-G hidden option
         bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do_check or -C option
@@ -72,7 +86,17 @@ int main(int argc,char **argv)
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   bool show_version=cimg_option("-v",false,NULL);//-v hidden option
-  if( cimg_option("--version",show_version,"show version (or -v option)") ) {show_version=true;std::cout<<VERSION<<std::endl;return 0;}//same --version or -v option
+  if( cimg_option("--version",show_version,"show version (or -v option)") )
+  {
+    show_version=true;
+    std::cout<<VERSION<<std::endl;
+#ifdef USE_NETCDF
+    std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
+    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
+    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
+#endif //NetCDF
+    std::cout<<std::endl;return 0;
+  }//same --version or -v option
   if(show_help) {/*print_help(std::cerr);*/return 0;}
   //}CLI option
 
@@ -94,7 +118,7 @@ int main(int argc,char **argv)
   omp_lock_t lck;omp_init_lock(&lck);
 
   //! result circular buffer
-  CImgList<Tdata> results(nbuffer,width,1,1,1);
+  CImgList<Tproc> results(nbuffer,width,1,1,1);
   results[0].fill(0);
   results[0].print("result",false);
   //accessR locking
@@ -148,7 +172,7 @@ int main(int argc,char **argv)
     }//generate
     case 1:
     {//store
-      CDataStore<Tdata,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
+      CDataStore<Tproc,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
       store.run(accessR,results, count);
       break;
     }//store
@@ -159,8 +183,7 @@ int main(int argc,char **argv)
       if(use_GPU)
       {//GPU
       std::cout<<"information: use GPU for processing (from "<<start<<" by step of "<<stride<<")."<<std::endl<<std::flush;
-//      CDataProcessorGPU<Tdata, Taccess> *process(
-      CDataProcessorGPU<Tdata, Taccess> *process=CDataProcessorGPUfactory<Tdata, Taccess>::NewCDataProcessorGPU(processing_type,gpu_type_list
+      CDataProcessorGPU<Tdata,Tproc, Taccess> *process=CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::NewCDataProcessorGPU(processing_type,gpu_type_list
       , locks, gpu,width
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
@@ -174,8 +197,7 @@ int main(int argc,char **argv)
 #endif
       {//CPU
       std::cout<<"information: use CPU for processing (from "<<start<<" by step of "<<stride<<"."<<std::endl<<std::flush;
-//      CDataProcessor<Tdata,Taccess> process(locks
-      CDataProcessor<Tdata,Taccess>  *process=CDataProcessorCPU_factory<Tdata, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
+      CDataProcessor<Tdata,Tproc, Taccess>  *process=CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
       , locks
       , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
       , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results

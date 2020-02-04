@@ -9,10 +9,10 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.1d"
+#define VERSION "v0.5.8d"
 
 //thread lock
-#include "CDataGenerator.hpp"
+#include "CDataGenerator_factory.hpp"
 #include "CDataSend.hpp"
 
 using namespace cimg_library;
@@ -30,7 +30,12 @@ int main(int argc,char **argv)
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./send -h\n" \
   "        ./send -s 1024 -n 123 -X true -p 1234 -i 10.10.15.1 -w 1234657\n" \
-  "\n version: "+std::string(VERSION)+"\n compilation date:" \
+  "\n version: "+std::string(VERSION) +
+#ifdef USE_NETCDF
+  "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
+  "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
+#endif //NetCDF
+  "\n compilation date:" \
   ).c_str());//cimg_usage
 
   //const char* imagefilename = cimg_option("-o","sample.cimg","output file name (e.g. \"-o data.cimg -d 3\" gives data_???.cimg)");
@@ -42,6 +47,10 @@ int main(int argc,char **argv)
   const unsigned short port=cimg_option("-p",1234,"port where the packets are send on the receiving device");
   const std::string ip=cimg_option("-i", "10.10.15.1", "ip address of the receiver");
   const int twait=cimg_option("-w", 123456789, "waiting time between udp frames");
+//! generator factory
+  const std::string generator_type=cimg_option("--generator-factory","count","generator type, e.g. count, random or peak");
+  //show type list in generator factory
+  std::vector<std::string> generator_type_list;CDataGenerator_factory<Tdata, Taccess>::show_factory_types(generator_type_list);std::cout<<std::endl;
 
   //conversion of twait into a boost::uint64_t
   const boost::uint64_t wait=static_cast<std::size_t>(twait);
@@ -56,7 +65,16 @@ int main(int argc,char **argv)
   bool show_info=cimg_option("-I",false,NULL);//-I hidden option
   if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
   bool show_version=cimg_option("-v",false,NULL);//-v hidden option
-  if( cimg_option("--version",show_version,"show version (or -v option)") ) {show_version=true;std::cout<<VERSION<<std::endl;return 0;}//same --version or -v option
+  if( cimg_option("--version",show_version,"show version (or -v option)") )
+  {
+    show_version=true;
+    std::cout<<VERSION<<std::endl;
+#ifdef USE_NETCDF
+    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
+    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
+#endif //NetCDF
+    std::cout<<std::endl;return 0;
+  }//same --version or -v option
   if(show_help) {/*print_help(std::cerr);*/return 0;}
   //}CLI option
 
@@ -100,8 +118,11 @@ int main(int argc,char **argv)
   {
     case 0:
     {//generate
-      CDataGenerator_Random<Tdata,Taccess> generate(locks);
-      generate.run(access,images, count);
+      CDataGenerator<Tdata, Taccess> *generate=CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator(generator_type,generator_type_list
+      , locks
+      );
+      std::cout<<"information: generator type is the one in "<<generate->class_name<<" class."<<std::endl<<std::flush;
+      generate->run(access,images, count);
       break;
     }//generate
     case 1:
