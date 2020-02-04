@@ -230,7 +230,7 @@ public:
 
 }//Get_Graph_Parameters
 
-  void Peak (CImgList<Tdata> &images, int n, int i) //fill image with Peak 
+  void Peak (CImgList<Tdata> &images, int n)//, int index) //fill image with Peak 
   {
 	//Baseline
 	cimg_for_inX(images[n],0,nb_tB,i) images[n](i)=B;
@@ -260,12 +260,12 @@ public:
   /**
    * entirely filled with the frame count value
   **/
-  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int i)
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
   {
     if(this->debug)
     {
       this->lprint.print("",false);
-      printf("4 B%02d #%04d: ",n,i);fflush(stdout);
+      printf("4 B%02d #%04d: ",n,index);fflush(stdout);
       access.print("access",false);fflush(stderr);
       this->lprint.unset_lock();
     }
@@ -273,7 +273,7 @@ public:
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
-     Peak (images, n, i);
+     Peak (images, n);
     //set frame count value as first array value
 //    images[n](0)=i;
 //    images[n](images[n].width()-1)=i;
@@ -374,12 +374,12 @@ public:
   /**
    * entirely filled with the frame count value
   **/
-  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int i)
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
   {
     if(this->debug)
     {
       this->lprint.print("",false);
-      printf("4 B%02d #%04d: ",n,i);fflush(stdout);
+      printf("4 B%02d #%04d: ",n,index);fflush(stdout);
       access.print("access",false);fflush(stderr);
       this->lprint.unset_lock();
     }
@@ -392,7 +392,7 @@ public:
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
-    this->Peak (images, n, i);
+    this->Peak (images, n);
     //add noise on peak
     cimg_forX(images[n],i) images[n](i)+=Test(i);
 
