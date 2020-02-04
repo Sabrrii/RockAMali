@@ -331,6 +331,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	}
   }//Process_Data
   //! display the process signal
+  #if cimg_display!=0
   virtual void Display(CImg<Tdata> &signal, int ampli, int base, int Imax, int Ith, int Itrig, int th) 
   {
     	CImg<Tproc> imageC;
@@ -347,12 +348,15 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	cimg_for_inX(imageC,Itrig,Imax,i) imageC(i,0,0,3)=base;
         imageC.display_graph("red = signal, green = threshold, blue = max and 36.8% height positions, yellow = trigger and max");
   }//Process_Data
-
+  #endif //cimg_display
+ 
   //! compution kernel for an iteration
   virtual void kernelCPU_Max_Min(CImg<Tdata> &in,CImg<Tproc> &out)
   {  
     Process(in, A,B,Ai,Hi,Ti,threshold);
+    #if cimg_display!=0
     Display(in, A,B,Ai,Hi,Ti,threshold);
+    #endif
     out(0)=A;
   };//kernelCPU_Max_Min
 
@@ -514,6 +518,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 					+e(n-(2*ks+ms+1))-alp*e(n-(2*ks+ms+2));		
   }//trapezoidal_filter
   //! display the signal, the filter and the computation start
+  #if cimg_display!=0
   virtual void Display(CImg<Tdata> in, CImg<Tproc> out, int decalage)
   {
 	CImg<Tproc> imageC;
@@ -523,6 +528,8 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	cimg_for_inX(imageC,decalage,imageC.width(),i) imageC(i,0,0,2)=in.max();//begin of the trapeze computation
 	imageC.display_graph("red = signal, green = filter, blue = trapezoidal computation");
   }//Display
+  #endif // #if cimg_display
+
   //!fill the image with 2 discri and display it, return the position of the trigger
   virtual int Calcul_Ti(CImg<Tdata> e, int Tpeak,int th, double frac,double alp) 
   {
@@ -540,6 +547,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	{
 	  Ti=i+1;
 	}
+        #if cimg_display!=0
 	//display the graph
 	CImg<Tproc> imageC;
 	imageC.assign(s.width(),1,1,5, 0);
@@ -549,8 +557,10 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	imageC.get_shared_channel(3)+=e/e.max()*imageDCF.max();
 	cimg_for_inX(imageC,Ti,imageC.width(),i) imageC(i,0,0,4)=imageDCF.max();		
 	imageC.display_graph("red = discri simple, green = dCFD, blue = threshold, yellow = signal");
+	#endif //#cimg_display
 	return Ti;
   }//Calcul_Ti
+
   //! calculation of the energy based on the formula (peak-base)/number
   float Calculation_Energy(CImg<Tproc> trapeze, int Ti,int number, double qDelay)
   {
@@ -565,6 +575,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     std::cout<<"peak="<<peak/n<<std::endl;
     return (peak-base)/number;
   }//Calculation_Energy
+  #if cimg_display!=0
   //! display the filter in details (signal, baseline, delay and flat top)
   void Display_Trapeze_Paramaters(CImg<Tdata> in, int Ti,int number, double qDelay)
   {
@@ -576,6 +587,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	cimg_for_inX(imageC,Ti+qDelay,Ti+qDelay+number,i) imageC(i,0,0,3)=in.max();
 	imageC.display_graph("red = Filter, green = N baseline, Blue = Q delay, yellow = N flat top");
   }//Display_Trapeze_Paramaters
+  #endif //#cimg_display
 
   //! compution kernel for an iteration
   virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tproc> &out)
@@ -584,10 +596,14 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //! \todo [low] trapzoid container should be assigned once only
     CImg<Tproc> trapeze(in.width(),1,1,1, B);
     trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
+    #if cimg_display!=0
     Display(in, trapeze, decalage);
+    #endif //#cimg_display
     int Ti=Calcul_Ti(in,Tm,threshold, fraction,alpha);
     std::cout<< "Trigger start= " << Ti  <<std::endl;
+    #if cimg_display!=0
     Display_Trapeze_Paramaters(trapeze, Ti, n, q);
+    #endif //#cimg_display
     float E=Calculation_Energy(trapeze, Ti, n, q);
     std::cout<< "Energy= " << E  <<std::endl;
     out(0)=E;
