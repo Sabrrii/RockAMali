@@ -356,8 +356,8 @@ public:
     }
 
     //image random
-    CImg<Tdata> Test(images[n].width());
-    Test.rand(rand_min,rand_max);
+    CImg<float> Random(images[n].width());
+    Random.rand(rand_min,rand_max);
 
     //wait lock
     unsigned int c=0;
@@ -365,7 +365,7 @@ public:
 
     this->Peak (images, n);
     //add noise on peak
-    cimg_forX(images[n],i) images[n](i)+=Test(i);
+    cimg_forX(images[n],i) images[n](i)+=Random(i);
 
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled

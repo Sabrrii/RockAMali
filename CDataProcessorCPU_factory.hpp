@@ -31,10 +31,10 @@ public:
       return new CDataProcessor_vPvMv<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back   ("kernel")              ;if(name == factory_types.back())
       return new CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
-    factory_types.push_back   ("peak")                ;if(name == factory_types.back())
+    factory_types.push_back   ("pac")                ;if(name == factory_types.back())
       return new CDataProcessor_Max_Min<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
 #ifdef DO_NETCDF
-    factory_types.push_back   ("trapeze")             ;if(name == factory_types.back())
+    factory_types.push_back   ("filter")             ;if(name == factory_types.back())
       return new CDataProcessor_Trapeze<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
 #endif //NETCDF
 

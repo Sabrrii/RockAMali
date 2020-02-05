@@ -506,7 +506,7 @@ public:
   : CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
-    this->class_name="CDataProcessor_Max_Min";
+    this->class_name="CDataProcessor_Trapeze";
 std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     Read_Paramaters(k,m,B,n,q,Tm,threshold, alpha,fraction);
     this->image.assign(1);//content: E only
@@ -611,7 +611,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     float E=Calculation_Energy(trapeze, Ti, n, q);
     std::cout<< "Energy= " << E  <<std::endl;
     out(0)=E;
-  };//kernelCPU_Max_Min
+  };//kernelCPU_Trapeze
 
   //! compution kernel for an iteration
   virtual void kernelCPU(CImg<Tdata> &in,CImg<Tproc> &out)

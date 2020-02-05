@@ -4,11 +4,11 @@
 FRAME_SIZE=4096
 NP=4
 GEN_FCT=peak_noise
-PROC=peak
+PROC=filter
 USE_GPU=--use-GPU --GPU-factory $(PROC)
 USE_GPU=
 DO_CHECK=--do-check
-DO_CHECK=
+#DO_CHECK=
 
 DATA=./
 DATA=/media/temp/
@@ -29,7 +29,7 @@ LIB_NETCDF=-I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetC
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
 DO_GPU=
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF)
-DO_NETCDF=
+#DO_NETCDF=
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -39,7 +39,7 @@ HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output 
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
 #all: process_sequential process send receive version factory doc
-all: process_sequential process version factory doc
+all: process_sequential version factory 
 #all: send receive version factory doc
 
 #all: time_copy
