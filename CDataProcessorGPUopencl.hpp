@@ -2,6 +2,7 @@
 #define _DATA_PROCESSOR_GPU_OPENCL_
 
 #include "CDataProcessorGPU.hpp"
+#include <typeinfo>       // operator typeid
 
 //! complex operation with OpenCL including template types for GPU process
 /**
@@ -26,8 +27,8 @@ compute::program make_opencl_program(const compute::context& context)
   );//source
   //translate template
   std::string source=source_with_template;
-  std::vector<std::string> str_old;str_old.push_back("Tdata");       str_old.push_back("Tproc");
-  std::vector<std::string> str_new;str_new.push_back("unsigned int");str_new.push_back("float");
+  std::vector<std::string> str_old;str_old.push_back(      "Tdata");       str_old.push_back(      "Tproc");
+  std::vector<std::string> str_new;str_new.push_back(typeid(Tdata).name());str_new.push_back(typeid(Tproc).name());
   for(unsigned int i=0;i<str_old.size();++i)
   {
     //replace all str_old by str_new
@@ -38,6 +39,7 @@ compute::program make_opencl_program(const compute::context& context)
       pos+=str_new[i].size();
     }//replace loop
   }//for loop
+std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::flush;
   // create program
   return compute::program::build_with_source(source,context);
 }//make_opencl_program
