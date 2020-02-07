@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.9i"
+#define VERSION "v0.5.9j"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -30,9 +30,6 @@ using namespace cimg_library;
 
 int main(int argc,char **argv)
 {
-  //compiled data types
-  std::cout<<get_compiled_data_types()<<std::endl;
-
   ///command arguments, i.e. CLI option
   cimg_usage(std::string("generate, process and store data.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
@@ -44,6 +41,7 @@ int main(int argc,char **argv)
   "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
   "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
 #endif //NetCDF
+  "\n "+get_compiled_data_types()+
   "\n compilation date:" \
   ).c_str());//cimg_usage
 

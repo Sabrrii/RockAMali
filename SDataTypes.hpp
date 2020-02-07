@@ -7,7 +7,7 @@ typedef float         Tproc;
 
 std::string get_compiled_data_types()
 {
-  std::string str="information: compiled types <Tdata,Tproc, Taccess>=<";
+  std::string str="compiled types <Tdata,Tproc, Taccess>=<";
   str+=CImg<Tdata>::pixel_type();
   str+=",";
   str+=CImg<Tproc>::pixel_type();
