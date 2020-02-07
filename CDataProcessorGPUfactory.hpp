@@ -2,6 +2,7 @@
 #define _DATA_PROCESSOR_GPU_FACTORY_
 
 #include "CDataProcessorGPU.hpp"
+#include "CDataProcessorGPUopencl.hpp"
 
 //! factory for GPU processing
 /**
@@ -25,8 +26,10 @@ public:
     //reset
     factory_types.clear();
     //if
+    ///CDataProcessorGPU.hpp
     factory_types.push_back      ("copy")            ;if(name == factory_types.back())
       return new CDataProcessorGPU<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    ///vMcPc
     factory_types.push_back      ("program")         ;if(name == factory_types.back())
       return new CDataProcessorGPU_opencl<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back      ("lambda")          ;if(name == factory_types.back())
@@ -39,6 +42,9 @@ public:
       return new CDataProcessorGPU_function_lambda<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back      ("function_macro")  ;if(name == factory_types.back())
       return new CDataProcessorGPU_function_macro<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    ///CDataProcessorGPUopencl.hpp
+    factory_types.push_back      ("program_template")  ;if(name == factory_types.back())
+      return new CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
 
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;
