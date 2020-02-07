@@ -3,7 +3,9 @@
 
 typedef unsigned char Taccess;
 typedef unsigned int  Tdata;
-typedef float         Tproc;
+//typedef float         Tproc;
+//typedef unsigned int  Tproc;
+typedef long int  Tproc;
 
 std::string get_compiled_data_types()
 {

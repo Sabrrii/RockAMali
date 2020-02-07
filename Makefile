@@ -6,7 +6,7 @@ NP=1
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_template
-#USE_GPU=
+USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
 
@@ -27,7 +27,7 @@ LIB_NETCDF=-I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetC
 
 ##do compile
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-#DO_GPU=
+DO_GPU=
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF)
 #DO_NETCDF=
 
@@ -39,8 +39,9 @@ HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output 
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
 #all: process_sequential process send receive version factory doc
-all: process_sequential process version factory doc
+#all: process_sequential process version factory doc
 #all: send receive version factory doc
+all: process version factory
 
 #all: time_copy
 time_copy: time_copy.cpp
