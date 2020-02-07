@@ -2,7 +2,7 @@
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=4096
-NP=4
+NP=1
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_template
@@ -39,7 +39,7 @@ HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output 
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
 #all: process_sequential process send receive version factory doc
-all: process_sequential version factory
+all: process_sequential process version factory doc
 #all: send receive version factory doc
 
 #all: time_copy

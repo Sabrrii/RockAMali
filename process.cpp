@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.8d"
+#define VERSION "v0.5.9h"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -32,6 +32,12 @@ typedef float         Tproc;
 
 int main(int argc,char **argv)
 {
+  //compiled data types
+  std::vector<std::string> str_types;str_types.push_back(CImg<Tdata>::pixel_type());str_types.push_back(CImg<Tproc>::pixel_type());str_types.push_back(CImg<Taccess>::pixel_type());
+  std::cout<<"compiled types<Tdata,Tproc, Taccess, >=<";
+  for(unsigned int i=0;i<str_types.size();++i) std::cout<<str_types[i]<<", ";
+  std::cout<<">"<<std::endl;
+
   ///command arguments, i.e. CLI option
   cimg_usage(std::string("generate, process and store data.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
