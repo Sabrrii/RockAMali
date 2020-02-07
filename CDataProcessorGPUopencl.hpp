@@ -6,7 +6,7 @@
 //! complex operation with OpenCL including template types for GPU process
 /**
  *  FMA: val * 2 + 123
- *  \warning: Tdata should be unsigned int as function from source lock type
+ *  \note: Tdata and Tproc should be in the template source
 **/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_opencl_template : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
@@ -19,9 +19,8 @@ compute::program make_opencl_program(const compute::context& context)
 {
 //  const char source_with_template[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
 //  __kernel void vMcPc(__global const Tdata*input, int size, __global Tproc*output)
-  const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-//  __kernel void vMcPc(__global const unsigned int*input, int size, __global unsigned int*output)
-  __kernel void vMcPc(__global const unsigned int*input, int size, __global float*output)
+  const char source_with_template[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
+  __kernel void vMcPc(__global const unsigned int*input, int size, __global Tproc*output)
   {
     const int gid = get_global_id(0);
     output[gid]=input[gid]*2+123.45;
@@ -29,6 +28,16 @@ compute::program make_opencl_program(const compute::context& context)
   );//source
   //translate template
   //! \todo .
+  std::string source=source_with_template;
+  const std::string str_old="Tproc";
+  const std::string str_new="float";
+  //replace all str_old by str_new
+  std::string::size_type pos = 0;
+  while ( (pos=source.find(str_old, pos)) != std::string::npos )
+  {
+    source.replace(pos,str_old.size(), str_new);
+    pos+=str_new.size();
+  }//replace loop
   // create program
   return compute::program::build_with_source(source,context);
 }//make_opencl_program
