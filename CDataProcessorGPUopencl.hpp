@@ -17,27 +17,27 @@ class CDataProcessorGPU_opencl_template : public CDataProcessorGPU_vMcPc_check<T
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
-//  const char source_with_template[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-//  __kernel void vMcPc(__global const Tdata*input, int size, __global Tproc*output)
   const char source_with_template[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc(__global const unsigned int*input, int size, __global Tproc*output)
+  __kernel void vMcPc(__global const Tdata*input, int size, __global Tproc*output)
   {
     const int gid = get_global_id(0);
     output[gid]=input[gid]*2+123.45;
   }
   );//source
   //translate template
-  //! \todo .
   std::string source=source_with_template;
-  const std::string str_old="Tproc";
-  const std::string str_new="float";
-  //replace all str_old by str_new
-  std::string::size_type pos = 0;
-  while ( (pos=source.find(str_old, pos)) != std::string::npos )
+  std::vector<std::string> str_old;str_old.push_back("Tdata");       str_old.push_back("Tproc");
+  std::vector<std::string> str_new;str_new.push_back("unsigned int");str_new.push_back("float");
+  for(unsigned int i=0;i<str_old.size();++i)
   {
-    source.replace(pos,str_old.size(), str_new);
-    pos+=str_new.size();
-  }//replace loop
+    //replace all str_old by str_new
+    std::string::size_type pos=0;
+    while( (pos=source.find(str_old[i], pos)) != std::string::npos )
+    {
+      source.replace(pos,str_old[i].size(), str_new[i]);
+      pos+=str_new[i].size();
+    }//replace loop
+  }//for loop
   // create program
   return compute::program::build_with_source(source,context);
 }//make_opencl_program
