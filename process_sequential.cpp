@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.9h"
+#define VERSION "v0.5.9i"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -32,17 +32,12 @@ using namespace cimg_library;
 #define S 0 //sample
 
 //types
-typedef unsigned char Taccess;
-typedef unsigned int  Tdata;
-typedef float         Tproc;
+#include "SDataTypes.hpp"
 
 int main(int argc,char **argv)
 {
   //compiled data types
-  std::vector<std::string> str_types;str_types.push_back(CImg<Tdata>::pixel_type());str_types.push_back(CImg<Tproc>::pixel_type());str_types.push_back(CImg<Taccess>::pixel_type());
-  std::cout<<"compiled types<Tdata,Tproc, Taccess, >=<";
-  for(unsigned int i=0;i<str_types.size();++i) std::cout<<str_types[i]<<", ";
-  std::cout<<">"<<std::endl;
+  std::cout<<get_compiled_data_types()<<std::endl;
 
   ///command arguments, i.e. CLI option
   cimg_usage(std::string("generate, process and store data sequentialy.\n" \
