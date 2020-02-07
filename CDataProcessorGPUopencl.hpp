@@ -20,8 +20,8 @@ compute::program make_opencl_program(const compute::context& context)
 //  const char source_with_template[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
 //  __kernel void vMcPc(__global const Tdata*input, int size, __global Tproc*output)
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc(__global const unsigned int*input, int size, __global unsigned int*output)
-//  __kernel void vMcPc(__global const unsigned int*input, int size, __global float*output)
+//  __kernel void vMcPc(__global const unsigned int*input, int size, __global unsigned int*output)
+  __kernel void vMcPc(__global const unsigned int*input, int size, __global float*output)
   {
     const int gid = get_global_id(0);
     output[gid]=input[gid]*2+123.45;
