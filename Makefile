@@ -6,7 +6,7 @@ NP=4
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_template
-USE_GPU=
+#USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
 
@@ -27,7 +27,7 @@ LIB_NETCDF=-I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetC
 
 ##do compile
 DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-DO_GPU=
+#DO_GPU=
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF)
 #DO_NETCDF=
 

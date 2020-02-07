@@ -27,8 +27,8 @@ compute::program make_opencl_program(const compute::context& context)
   );//source
   //translate template
   std::string source=source_with_template;
-  std::vector<std::string> str_old;str_old.push_back(      "Tdata");       str_old.push_back(      "Tproc");
-  std::vector<std::string> str_new;str_new.push_back(typeid(Tdata).name());str_new.push_back(typeid(Tproc).name());
+  std::vector<std::string> str_old;str_old.push_back(    "Tdata");              str_old.push_back(    "Tproc");
+  std::vector<std::string> str_new;str_new.push_back(CImg<Tdata>::pixel_type());str_new.push_back(CImg<Tproc>::pixel_type());
   for(unsigned int i=0;i<str_old.size();++i)
   {
     //replace all str_old by str_new
