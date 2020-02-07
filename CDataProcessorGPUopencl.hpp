@@ -6,7 +6,7 @@
 
 //! complex operation with OpenCL including template types for GPU process
 /**
- *  FMA: val * 2 + 123
+ *  FMA: val * 2.1 + 123.45
  *  \note: Tdata and Tproc should be in the template source
 **/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>

@@ -129,7 +129,7 @@ public:
 
 //! complex operation with lambda for GPU process
 /**
- *  FMA: _1 * 2 + 123
+ *  FMA: _1 * 2.1 + 123.45
 **/
 template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
 class CDataProcessorGPU_lambda : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
@@ -156,14 +156,14 @@ public:
     //compute with lambda
     using compute::lambda::_1;
     compute::transform(in.begin(), in.end(), out.begin(),
-      _1 * 2 + 123 , this->queue);
+      _1 * 2.1 + 123.45 , this->queue);
   };//kernelGPU
 
 };//CDataProcessorGPU_lambda
 
 //! complex operation with function using lambda for GPU process
 /**
- *  FMA: _1 * 2 + 123
+ *  FMA: _1 * 2.1 + 123.45
 **/
 template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
 class CDataProcessorGPU_function_lambda : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
@@ -189,7 +189,7 @@ public:
   {
     //compute with lambda
     using compute::lambda::_1;
-    compute::function<Tproc(Tdata)> vMcPc = _1 * 2 + 123;
+    compute::function<Tproc(Tdata)> vMcPc = _1 * 2.1 + 123.45;
     compute::transform(in.begin(), in.end(), out.begin(),
       vMcPc , this->queue);
   };//kernelGPU
@@ -198,7 +198,7 @@ public:
 
 //! complex operation with closure for GPU process
 /**
- *  FMA: _1 * 2 + 123
+ *  FMA: _1 * 2.1 + 123.45
  *  \note: more complex compution in boost::compute test, e.g. triangle_area in test/test_closure.cpp
 **/
 template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
@@ -224,8 +224,8 @@ public:
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     //compute with closure
-    Tdata mul = 2;
-    Tdata cst = 123;
+    Tdata mul = 2.1;
+    Tdata cst = 123.45;
     BOOST_COMPUTE_CLOSURE(Tproc, vMcPc, (Tdata x), (mul, cst),
     {
         return x * mul + cst;
@@ -241,7 +241,7 @@ public:
 
 //! complex operation with function for GPU process
 /**
- *  FMA: val * 2 + 123
+ *  FMA: val * 2.1 + 123.45
  *  \warning: Tdata should be unsigned int as function from source lock type
  *  \note: function is static code (for compute::make_function_from_source, in constructor)
 **/
@@ -253,7 +253,7 @@ class CDataProcessorGPU_function : public CDataProcessorGPU_vMcPc_check<Tdata,Tp
   {
     static compute::function<Tproc (Tdata)> tmp=compute::make_function_from_source<Tproc (Tdata)>(
         "vMcPc",
-        "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
+        "unsigned int vMcPc(unsigned int x) { return x *2.1 + 123.45; }"
     );
     vMcPc=&tmp;
   }//make_OpenCL_function
@@ -285,7 +285,7 @@ public:
 
 //! complex operation with function macro for GPU process
 /**
- *  FMA: val * 2 + 123
+ *  FMA: val * 2.1 + 123.45
 **/
 template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
 class CDataProcessorGPU_function_macro : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
@@ -293,7 +293,7 @@ class CDataProcessorGPU_function_macro : public CDataProcessorGPU_vMcPc_check<Td
 //OpenCL function for this class
   BOOST_COMPUTE_FUNCTION(Tdata, vMcPc, (Tdata x),
   {
-    return x *2 + 123;
+    return x *2.1 + 123.45;
   });//FUNCTION
 public:
   CDataProcessorGPU_function_macro(std::vector<omp_lock_t*> &lock
@@ -322,7 +322,7 @@ public:
 
 //! complex operation with openCL for GPU process
 /**
- *  FMA: val * 2 + 123
+ *  FMA: val * 2.1 + 123.45
  *  \warning: Tdata should be unsigned int as function from source lock type
 **/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
@@ -338,7 +338,7 @@ compute::program make_opencl_program(const compute::context& context)
   __kernel void vMcPc(__global const unsigned int*input, int size, __global unsigned int*output)
   {
     const int gid = get_global_id(0);
-    output[gid]=input[gid]*2+123;
+    output[gid]=input[gid]*2.1 + 123.45;
   }
   );//source
   // create program

@@ -213,12 +213,12 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 
 //! complex operation for CPU process (intended for GPU lambda)
 /**
- * FMA: val*cst+cst
+ * FMA: val*cst+cst, e.g. val * 2.1 + 123.45
 **/
 template<typename Tdata, typename Tproc>
 void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tproc> &out)
 {
-  out=in*2+123;
+  out=in*2.1 + 123.45;
 }//kernelCPU_vMcPc
 //! complex operation for CPU process (intended for GPU lambda)
 /**
