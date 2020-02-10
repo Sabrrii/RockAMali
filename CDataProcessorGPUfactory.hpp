@@ -39,6 +39,9 @@ public:
       return new CDataProcessorGPU_function_lambda<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back      ("function_macro")  ;if(name == factory_types.back())
       return new CDataProcessorGPU_function_macro<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("discri")          ;if(name == factory_types.back())
+      return new CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+
 
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;

@@ -384,5 +384,65 @@ public:
 
 };//CDataProcessorGPU_opencl
 
+template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
+class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>
+{
+  compute::program program;
+  compute::kernel  kernel;
+  bool kernel_loaded;
+//OpenCL function for this class
+compute::program make_opencl_program(const compute::context& context)
+{
+  const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
+  __kernel void discri(__global const unsigned int*input, int size, __global float*output)
+  {
+    const int gid = get_global_id(0);
+    output[gid]=input[gid]*2+123;
+  }
+  );//source
+  // create program
+  return compute::program::build_with_source(source,context);
+}//make_opencl_program
+
+public:
+  CDataProcessorGPU_discri_opencl(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessorGPU_discri_opencl";
+    this->check_locks(lock);
+    //OpenCL framework
+    program=make_opencl_program(this->ctx);
+    kernel_loaded=false;
+  }//constructor
+
+  //! compution kernel for an iteration (compution=copy, here)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
+  {
+    if(!kernel_loaded)
+    {//load kernel
+      kernel=compute::kernel(program, "discri");
+      kernel.set_arg(0,this->device_vector_in.get_buffer());
+      kernel.set_arg(1,(int)this->device_vector_in.size());
+      kernel.set_arg(2,this->device_vector_out.get_buffer());
+      kernel_loaded=true;
+    }//load kernel once
+    //compute
+    using compute::uint_;
+    uint_ tpb=16;
+    uint_ workSize=this->device_vector_in.size();
+    this->queue.enqueue_1d_range_kernel(kernel,0,workSize,tpb);
+  };//kernelGPU
+
+};//CDataProcessorGPU_discri_opencl
+
+
 #endif //_DATA_PROCESSOR_GPU_
 
