@@ -390,7 +390,9 @@ class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Ta
   compute::program program;
   compute::kernel  kernel;
   bool kernel_loaded;
-  const float alpha = 0.998;
+  float alpha = 0.88888;
+
+
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
@@ -414,6 +416,34 @@ compute::program make_opencl_program(const compute::context& context)
 }//make_opencl_program
 
 public:
+
+  int Read_Paramaters (float &alp)
+  {
+  ///file name
+  std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
+  double Alpha;
+  ///parameter class
+  CParameterNetCDF fp;
+  //open file
+  int error=fp.loadFile((char *)fi.c_str());
+  if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
+
+  float process; 
+  std::string process_name="trapezoid";
+  //load process variable
+  error=fp.loadVar(process,&process_name);
+  if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+  std::cout<<process_name<<"="<<process<<std::endl;
+  ///alpha
+  std::string attribute_name="alpha";
+  if (error = fp.loadAttribute(attribute_name,Alpha)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<Alpha<<std::endl;
+  alp=Alpha;
+  
+  }//Read_Paramaters
   CDataProcessorGPU_discri_opencl(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
@@ -428,6 +458,9 @@ public:
     this->class_name="CDataProcessorGPU_discri_opencl";
     this->check_locks(lock);
     //OpenCL framework
+    std::cout<<alpha<<std::endl<<std::flush;
+    Read_Paramaters(alpha);
+    std::cout<<alpha<<std::endl<<std::flush;
     program=make_opencl_program(this->ctx);
     kernel_loaded=false;
   }//constructor
