@@ -390,13 +390,13 @@ class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Ta
   compute::program program;
   compute::kernel  kernel;
   bool kernel_loaded;
+  const float alpha = 0.998;
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void discri(__global const unsigned int*input, int size, __global float*output)
-  {
-    const float alpha = 0.998;
+  __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha)
+  {   
     const int gid = get_global_id(0);
     if ( gid == 0) 
     {
@@ -441,6 +441,7 @@ public:
       kernel.set_arg(0,this->device_vector_in.get_buffer());
       kernel.set_arg(1,(int)this->device_vector_in.size());
       kernel.set_arg(2,this->device_vector_out.get_buffer());
+      kernel.set_arg(3,alpha);
       kernel_loaded=true;
     }//load kernel once
     //compute
