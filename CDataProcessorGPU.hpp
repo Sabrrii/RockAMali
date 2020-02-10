@@ -396,8 +396,17 @@ compute::program make_opencl_program(const compute::context& context)
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void discri(__global const unsigned int*input, int size, __global float*output)
   {
+    const float alpha = 0.998;
     const int gid = get_global_id(0);
-    output[gid]=input[gid]*2.1+123.45;
+    if ( gid == 0) 
+    {
+	output[gid] = 0;
+    } 
+    else
+    {
+        output[gid]=input[gid]-alpha*input[gid-1];
+    }
+    
   }
   );//source
   // create program
