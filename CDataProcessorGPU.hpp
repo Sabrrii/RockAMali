@@ -335,10 +335,10 @@ class CDataProcessorGPU_opencl : public CDataProcessorGPU_vMcPc_check<Tdata,Tpro
 compute::program make_opencl_program(const compute::context& context)
 {
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc(__global const unsigned int*input, int size, __global unsigned int*output)
+  __kernel void vMcPc(__global const unsigned int*input, int size, __global float*output)
   {
     const int gid = get_global_id(0);
-    output[gid]=input[gid]*2+123;
+    output[gid]=input[gid]*2.1+123.45;
   }
   );//source
   // create program
@@ -394,10 +394,10 @@ class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Ta
 compute::program make_opencl_program(const compute::context& context)
 {
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void discri(__global const unsigned int*input, int size, __global unsigned int*output)
+  __kernel void discri(__global const unsigned int*input, int size, __global float*output)
   {
     const int gid = get_global_id(0);
-    output[gid]=input[gid]*2+123;
+    output[gid]=input[gid]*2.1+123.45;
   }
   );//source
   // create program
