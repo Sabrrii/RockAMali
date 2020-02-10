@@ -93,15 +93,15 @@ process_run:
 
 process_sequential_run:
 	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc
-	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
+#	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
 
 #NS=123456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 2345678
+	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 123456789
 
-#NP=4
-#NT=`echo $(NP)+3   | bc`
-#NB=`echo $(NP)*4096| bc`
+NP=1
+NT=`echo $(NP)+3   | bc`
+NB=`echo $(NP)*4096| bc`
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
