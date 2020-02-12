@@ -1,0 +1,65 @@
+netcdf RockAMali.parameters {//written in NetCDF CDL language
+  :institution = "GANIL";
+  :title = "RockAMali parameters";
+  :comment = "source of parameters for RockAMali processing program";
+  :history = "";
+  :version = "v0.0.0";
+
+dimensions:
+//  dim_string=64;
+//  dim_=unlimited;
+
+//variable declaration and attributes
+variables:
+//graph
+  int graph;
+     graph:long_name="signal graph (activated if >0)";
+     graph:nb_tB_long_name="baseline time";
+     graph:nb_tB= 1000; 
+     graph:nb_tA_long_name="peak time"; 
+     graph:nb_tA= 10; 
+     graph:tau_long_name="time decrease";
+     graph:tau= 500;
+     graph:A_long_name="Amplitude";
+     graph:A= 1234;
+     graph:B_long_name="Baseline";
+     graph:B= 20;
+     graph:rand_min=0;
+     graph:rand_max=65535;
+     graph:noise=10.1;
+     graph:min_Amp=500;
+     graph:max_Amp=2000;
+     graph:min_tau;
+     graph:max_tau;
+     graph:min_tB;
+     graph:max_tB;
+     graph:min_tA;
+     graph:max_tA;
+
+//trapezoid filter
+  int trapezoid;
+    trapezoid:long_name="trapezoid filter (activated if >0)";
+    trapezoid:k_long_name= "increase size";
+    trapezoid:k= 200;
+    trapezoid:k_units= "pixel";
+    trapezoid:m_long_name= "plateau size";
+    trapezoid:m= 50;
+    trapezoid:m_units= "pixel";
+    trapezoid:alpha_long_name= "";
+    trapezoid:alpha= 0.99800199866733306675;
+    trapezoid:alpha_units= "";
+    trapezoid:n= 34;
+    trapezoid:q= 211;
+    trapezoid:q_long_name= "Q computing delay";
+    trapezoid:threshold=34;
+    trapezoid:fraction=0.2;
+    trapezoid:Tm=20;
+
+//data value
+data:
+//graph
+  graph=1;
+//trapezoid filter
+  trapezoid=1;
+}
+
