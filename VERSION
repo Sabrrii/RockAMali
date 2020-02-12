@@ -1,3 +1,6 @@
-information: generator types are: count, random, peak.
-information: CPU processor types are: count, vPvMv, kernel.
-v0.5.3e
+information: -factory- generator types are: count, signal_random, full_random, signal_pac, peak_noise.
+information: -factory- CPU processor types are: count, vPvMv, kernel, pac, filter.
+v0.5.8d
+  CImg_NetCDF.v0.8.3
+  CParameterNetCDF.v0.5.0
+  NcTypeInfo.v0.1.2

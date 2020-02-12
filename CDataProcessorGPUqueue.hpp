@@ -1,6 +1,7 @@
 #ifndef _DATA_PROCESSOR_GPU_QUEUE_
 #define _DATA_PROCESSOR_GPU_QUEUE_
 
+//! \todo [low] [Tproc] needed for GPU
 
 //Packages Boost
 #include <vector>

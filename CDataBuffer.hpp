@@ -36,11 +36,6 @@ public:
   {
     std::cout<< __FILE__<<"/"<<__func__<<"(buffer="<<access.width()<<", buffer="<<images.size()<<", n="<<n<<", iter="<<i<<") empty, should be implemented in inherited class."<<std::endl<<std::flush;
   };//iteration
-  //! one iteration for any loop
-  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, CImg<Taccess> &accessR,CImgList<Tdata> &results, int n, int i)
-  {
-    std::cout<< __FILE__<<"/"<<__func__<<"(buffer="<<access.width()<<", buffer="<<images.size()<<", buffer="<<accessR.width()<<", buffer="<<results.size()<<", n="<<n<<", iter="<<i<<") empty, should be implemented in inherited class."<<std::endl<<std::flush;
-  };//iteration
 
   //! run for loop
   virtual void run(CImg<Taccess> &access,CImgList<Tdata> &images, unsigned int count)
@@ -51,19 +46,6 @@ public:
       this->iteration(access,images, n,i);
       //circular buffer
       if(n==nbuffer-1) n=-1;
-     }//vector loop
-  }//run
-  //! run for loop
-  virtual void run(CImg<Taccess> &access,CImgList<Tdata> &images,  CImg<Taccess> &accessR,CImgList<Tdata> &results, unsigned int count, unsigned int stride=1, unsigned int start=0)
-  {
-    unsigned int nbuffer=images.size();
-    for(unsigned int n=start,i=start;i<count;i+=stride)
-    {
-      this->iteration(access,images, accessR,results, n,i);
-      //circular buffer
-//! \bug needed: nbuffer should be a multiple of process thread number
-      n+=stride;
-      if(n>nbuffer-1) n=start;
      }//vector loop
   }//run
 

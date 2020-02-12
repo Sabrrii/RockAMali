@@ -24,17 +24,20 @@ variables:
      graph:A= 1234;
      graph:B_long_name="Baseline";
      graph:B= 20;
+//Generator Random
      graph:rand_min=0;
      graph:rand_max=65535;
+//Generator full_random
      graph:noise=10.1;
-     graph:min_Amp=500;
-     graph:max_Amp=2000;
-     graph:min_tau;
-     graph:max_tau;
-     graph:min_tB;
-     graph:max_tB;
-     graph:min_tA;
-     graph:max_tA;
+     graph:min_Amp=10;
+     graph:max_Amp=1000;
+     graph:min_tau=2;
+     graph:max_tau=700;
+     graph:min_tB=1000;
+     graph:max_tB=2000;
+     graph:min_tA=10;
+     graph:max_tA=100;
+
 
 //trapezoid filter
   int trapezoid;

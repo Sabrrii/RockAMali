@@ -1,7 +1,6 @@
 #ifndef _DATA_PROCESSOR_GPU_
 #define _DATA_PROCESSOR_GPU_
 
-
 //Packages Boost
 #include <vector>
 #include <iostream>
@@ -25,8 +24,8 @@ using compute::lambda::_1;
  * , please use queueing and dequeuing classes to have great performances.
  * This class might be used for debug or test only.
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU : public CDataProcessor<Tdata, Taccess>
+template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
+class CDataProcessorGPU : public CDataProcessor<Tdata,Tproc, Taccess>
 {
 public:
   compute::context ctx;
@@ -34,7 +33,9 @@ public:
 
   // create vectors on the device
   compute::vector<Tdata> device_vector_in;
-  compute::vector<Tdata> device_vector_out;
+  compute::vector<Tproc> device_vector_out;
+  compute::vector<Tdata> device_vector_uint;
+  compute::vector<Tdata> device_vector_uint2;
 
   CDataProcessorGPU(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -44,10 +45,12 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor<Tdata, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   , ctx(device), queue(ctx, device)
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
+  , device_vector_uint(VECTOR_SIZE/2, ctx), device_vector_uint2(VECTOR_SIZE/2, ctx)
   {
+//! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)
     this->debug=true;
     this->class_name="CDataProcessorGPU";
     this->image.assign(VECTOR_SIZE);
@@ -55,7 +58,7 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     //compute with lambda
     using compute::lambda::_1;
@@ -64,7 +67,7 @@ public:
   };//kernelGPU
 
   //! compution kernel for an iteration
-  virtual void kernel(CImg<Tdata> &in,CImg<Tdata> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     //copy CPU to GPU
     compute::copy(in.begin(), in.end(), device_vector_in.begin(), queue);
@@ -83,8 +86,8 @@ public:
  *  virtual check class
  *  FMA: _1 * 2 + 123
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU_vMcPc_check : public CDataProcessorGPU<Tdata, Taccess>
+template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
+class CDataProcessorGPU_vMcPc_check : public CDataProcessorGPU<Tdata,Tproc, Taccess>
 {
 public:
   CDataProcessorGPU_vMcPc_check(std::vector<omp_lock_t*> &lock
@@ -95,7 +98,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessorGPU<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessorGPU<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_vMcPc_check";
@@ -107,7 +110,7 @@ public:
 //std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
-      CImg<Tdata> imgt;
+      CImg<Tproc> imgt;
       kernelCPU_vMcPc(img,imgt);
 //imgt.print("img check",false);
 //this->image.print("img GPU",false);
@@ -115,7 +118,7 @@ public:
     }//do_check
     return true;
   }//check_data
-/*
+/**
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
   {
@@ -124,15 +127,15 @@ public:
     compute::transform(in.begin(), in.end(), out.begin(),
       _1 * 2 + 123 , this->queue);
   };//kernelGPU
-*/
+**/
 };//CDataProcessorGPU_vMcPc_check
 
 //! complex operation with lambda for GPU process
 /**
  *  FMA: _1 * 2 + 123
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU_lambda : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
+template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
+class CDataProcessorGPU_lambda : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
 public:
   CDataProcessorGPU_lambda(std::vector<omp_lock_t*> &lock
@@ -143,7 +146,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessorGPU_vMcPc_check<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_vMcPc_lambda";
@@ -151,7 +154,7 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     //compute with lambda
     using compute::lambda::_1;
@@ -165,8 +168,8 @@ public:
 /**
  *  FMA: _1 * 2 + 123
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU_function_lambda : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
+template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
+class CDataProcessorGPU_function_lambda : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
 public:
   CDataProcessorGPU_function_lambda(std::vector<omp_lock_t*> &lock
@@ -177,7 +180,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessorGPU_vMcPc_check<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_function_vMcPc_lambda";
@@ -185,11 +188,11 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     //compute with lambda
     using compute::lambda::_1;
-    compute::function<Tdata(Tdata)> vMcPc = _1 * 2 + 123;
+    compute::function<Tproc(Tdata)> vMcPc = _1 * 2 + 123;
     compute::transform(in.begin(), in.end(), out.begin(),
       vMcPc , this->queue);
   };//kernelGPU
@@ -201,8 +204,8 @@ public:
  *  FMA: _1 * 2 + 123
  *  \note: more complex compution in boost::compute test, e.g. triangle_area in test/test_closure.cpp
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU_closure : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
+template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
+class CDataProcessorGPU_closure : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
 public:
   CDataProcessorGPU_closure(std::vector<omp_lock_t*> &lock
@@ -213,7 +216,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessorGPU_vMcPc_check<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_vMcPc_closure";
@@ -221,12 +224,12 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     //compute with closure
     Tdata mul = 2;
     Tdata cst = 123;
-    BOOST_COMPUTE_CLOSURE(Tdata, vMcPc, (Tdata x), (mul, cst),
+    BOOST_COMPUTE_CLOSURE(Tproc, vMcPc, (Tdata x), (mul, cst),
     {
         return x * mul + cst;
     });
@@ -245,13 +248,13 @@ public:
  *  \warning: Tdata should be unsigned int as function from source lock type
  *  \note: function is static code (for compute::make_function_from_source, in constructor)
 **/
-template<typename Tdata=unsigned int, typename Taccess=unsigned char>
-class CDataProcessorGPU_function : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
+template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
+class CDataProcessorGPU_function : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
-  compute::function<Tdata (Tdata)> *vMcPc;
+  compute::function<Tproc (Tdata)> *vMcPc;
   void make_OpenCL_function()
   {
-    static compute::function<Tdata (Tdata)> tmp=compute::make_function_from_source<Tdata (Tdata)>(
+    static compute::function<Tproc (Tdata)> tmp=compute::make_function_from_source<Tproc (Tdata)>(
         "vMcPc",
         "unsigned int vMcPc(unsigned int x) { return x *2 + 123; }"
     );
@@ -266,7 +269,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessorGPU_vMcPc_check<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_function_vMcPc_uInt";
@@ -275,7 +278,7 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     compute::transform(in.begin(), in.end(), out.begin(),
       *vMcPc , this->queue);
@@ -287,8 +290,8 @@ public:
 /**
  *  FMA: val * 2 + 123
 **/
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataProcessorGPU_function_macro : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
+template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
+class CDataProcessorGPU_function_macro : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
 //OpenCL function for this class
   BOOST_COMPUTE_FUNCTION(Tdata, vMcPc, (Tdata x),
@@ -304,7 +307,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessorGPU_vMcPc_check<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_function_macro_vMcPc";
@@ -312,7 +315,7 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     compute::transform(in.begin(), in.end(), out.begin(),
       vMcPc , this->queue);
@@ -325,8 +328,8 @@ public:
  *  FMA: val * 2 + 123
  *  \warning: Tdata should be unsigned int as function from source lock type
 **/
-template<typename Tdata=unsigned int, typename Taccess=unsigned char>
-class CDataProcessorGPU_opencl : public CDataProcessorGPU_vMcPc_check<Tdata, Taccess>
+template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
+class CDataProcessorGPU_opencl : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
   compute::program program;
   compute::kernel  kernel;
@@ -335,10 +338,10 @@ class CDataProcessorGPU_opencl : public CDataProcessorGPU_vMcPc_check<Tdata, Tac
 compute::program make_opencl_program(const compute::context& context)
 {
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc(__global const unsigned int*input, int size, __global unsigned int*output)
+  __kernel void vMcPc(__global const unsigned int*input, int size, __global float*output)
   {
     const int gid = get_global_id(0);
-    output[gid]=input[gid]*2+123;
+    output[gid]=input[gid]*2.1+123.45;
   }
   );//source
   // create program
@@ -354,7 +357,7 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessorGPU_vMcPc_check<Tdata, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_opencl_vMcPc";
@@ -365,7 +368,7 @@ public:
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tdata> &out)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     if(!kernel_loaded)
     {//load kernel
@@ -383,6 +386,111 @@ public:
   };//kernelGPU
 
 };//CDataProcessorGPU_opencl
+
+template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
+class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>
+{
+  compute::program program;
+  compute::kernel  kernel;
+  bool kernel_loaded;
+  float alpha = 0.998;
+
+
+//OpenCL function for this class
+compute::program make_opencl_program(const compute::context& context)
+{
+  const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
+  __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha, __global float*output2)
+  {   
+    const int gid = get_global_id(0);
+    if ( gid == 0) 
+    {
+	output[gid] = 0;
+    } 
+    else
+    {
+        output[gid]=input[gid]-alpha*input[gid-1];
+//	output2[gid]=input[gid]-alpha*input[gid-1];
+    }
+    
+  }
+  );//source
+  // create program
+  return compute::program::build_with_source(source,context);
+}//make_opencl_program
+
+public:
+
+/*  int Read_Paramaters (float &alp)
+  {
+  ///file name
+  std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
+  double Alpha;
+  ///parameter class
+  CParameterNetCDF fp;
+  //open file
+  int error=fp.loadFile((char *)fi.c_str());
+  if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
+
+  float process; 
+  std::string process_name="trapezoid";
+  //load process variable
+  error=fp.loadVar(process,&process_name);
+  if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+  std::cout<<process_name<<"="<<process<<std::endl;
+  ///alpha
+  std::string attribute_name="alpha";
+  if (error = fp.loadAttribute(attribute_name,Alpha)!=0){
+    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    return error;
+  }
+  std::cout<<"  "<<attribute_name<<"="<<Alpha<<std::endl;
+  alp=Alpha;
+  
+  }//Read_Paramaters*/
+  CDataProcessorGPU_discri_opencl(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->class_name="CDataProcessorGPU_discri_opencl";
+    this->check_locks(lock);
+    //OpenCL framework
+    std::cout<<alpha<<std::endl<<std::flush;
+ /*    Read_Paramaters(alpha);
+    std::cout<<alpha<<std::endl<<std::flush;*/
+    program=make_opencl_program(this->ctx);
+    kernel_loaded=false;
+  }//constructor
+
+  //! compution kernel for an iteration (compution=copy, here)
+  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
+  {
+    if(!kernel_loaded)
+    {//load kernel
+      kernel=compute::kernel(program, "discri");
+      kernel.set_arg(0,this->device_vector_in.get_buffer());
+      kernel.set_arg(1,(int)this->device_vector_in.size());
+      kernel.set_arg(2,this->device_vector_out.get_buffer());
+      kernel.set_arg(3,alpha);
+      kernel.set_arg(4,this->device_vector_uint2.get_buffer());
+      kernel_loaded=true;
+    }//load kernel once
+    //compute
+    using compute::uint_;
+    uint_ tpb=16;
+    uint_ workSize=this->device_vector_in.size();
+    this->queue.enqueue_1d_range_kernel(kernel,0,workSize,tpb);
+  };//kernelGPU
+
+};//CDataProcessorGPU_discri_opencl
+
 
 #endif //_DATA_PROCESSOR_GPU_
 
