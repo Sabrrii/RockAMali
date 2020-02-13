@@ -4,7 +4,7 @@
 FRAME_SIZE=4096
 NP=4
 GEN_FCT=peak_noise
-PROC=discri_2
+PROC=discri_in2
 USE_GPU=--use-GPU --GPU-factory $(PROC)
 #USE_GPU=
 DO_CHECK=--do-check

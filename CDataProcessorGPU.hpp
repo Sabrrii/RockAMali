@@ -34,7 +34,7 @@ public:
   // create vectors on the device
   compute::vector<Tdata> device_vector_in;
   compute::vector<Tproc> device_vector_out;
- // compute::vector<Tdata> device_vector_uint2;
+
 
   CDataProcessorGPU(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -47,7 +47,6 @@ public:
   : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   , ctx(device), queue(ctx, device)
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
-// ,device_vector_uint2(VECTOR_SIZE/2, ctx)
   {
 //! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)
     this->debug=true;
@@ -389,8 +388,7 @@ public:
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>
 {
-  compute::program program;
-  compute::kernel  kernel;
+
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
@@ -416,6 +414,8 @@ compute::program make_opencl_program(const compute::context& context)
 public:
   bool kernel_loaded;
   float alpha;
+  compute::program program;
+  compute::kernel  ocl_kernel;
 
   int Read_Paramaters (float &alp)
   {
@@ -468,27 +468,28 @@ public:
   {
     if(!kernel_loaded)
     {//load kernel
-      kernel=compute::kernel(program, "discri");
-      kernel.set_arg(0,this->device_vector_in.get_buffer());
-      kernel.set_arg(1,(int)this->device_vector_in.size());
-      kernel.set_arg(2,this->device_vector_out.get_buffer());
-      kernel.set_arg(3,alpha);
+      ocl_kernel=compute::kernel(program, "discri");
+      ocl_kernel.set_arg(0,this->device_vector_in.get_buffer());
+      ocl_kernel.set_arg(1,(int)this->device_vector_in.size());
+      ocl_kernel.set_arg(2,this->device_vector_out.get_buffer());
+      ocl_kernel.set_arg(3,alpha);
       kernel_loaded=true;
     }//load kernel once
     //compute
     using compute::uint_;
     uint_ tpb=16;
     uint_ workSize=this->device_vector_in.size();
-    this->queue.enqueue_1d_range_kernel(kernel,0,workSize,tpb);
+    this->queue.enqueue_1d_range_kernel(ocl_kernel,0,workSize,tpb);
   };//kernelGPU
 
 };//CDataProcessorGPU_discri_opencl
 
+
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_discri_opencl_int2 : public CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>
 {
-  compute::program program;
-  compute::kernel  kernel;
+  compute::vector<Tdata> device_vector_in2;
+  compute::vector<Tproc> device_vector_out2;
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
@@ -522,34 +523,50 @@ public:
   , bool do_check=false
   )
   : CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+//   ,device_vector_in2(VECTOR_SIZE/2, ctx),device_vector_out2(VECTOR_SIZE/2, ctx)
+   ,device_vector_in2(VECTOR_SIZE, this->ctx),device_vector_out2(VECTOR_SIZE, this->ctx)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_discri_opencl_int2";
     this->check_locks(lock);
     //OpenCL framework
     this->Read_Paramaters(this->alpha);
-    program=make_opencl_program(this->ctx);
+    this->program=make_opencl_program(this->ctx);
     this->kernel_loaded=false;
   }//constructor
 
+  //! compution kernel for an iteration
+  virtual void kernel_in2(CImg<Tdata> &in,CImg<Tproc> &out)
+  {
+	//! \todo copy in2 ...
+    //copy CPU to GPU
+    compute::copy(in.begin(), in.end(), device_vector_in2.begin(), this->queue);
+    //compute
+    kernelGPU_in2(device_vector_in2,device_vector_out2);
+    //copy GPU to CPU
+    compute::copy(device_vector_out2.begin(), device_vector_out2.end(), out.begin(), this->queue);
+    //wait for completion
+    this->queue.finish();
+  };//kernel_in2
+
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
+  virtual void kernelGPU_in2(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     if(!this->kernel_loaded)
     {//load kernel
-      kernel=compute::kernel(program, "discri");
-      kernel.set_arg(0,this->device_vector_in.get_buffer());
-      kernel.set_arg(1,(int)this->device_vector_in.size());
-      kernel.set_arg(2,this->device_vector_out.get_buffer());
-      kernel.set_arg(3,this->alpha);
+      this->ocl_kernel=compute::kernel(this->program,"discri");
+      this->ocl_kernel.set_arg(0,this->device_vector_in2.get_buffer());
+      this->ocl_kernel.set_arg(1,(int)this->device_vector_in2.size());
+      this->ocl_kernel.set_arg(2,this->device_vector_out2.get_buffer());
+      this->ocl_kernel.set_arg(3,this->alpha);
       this->kernel_loaded=true;
     }//load kernel once
     //compute
     using compute::uint_;
     uint_ tpb=16;
-    uint_ workSize=this->device_vector_in.size();
-    this->queue.enqueue_1d_range_kernel(kernel,0,workSize,tpb);
-  };//kernelGPU
+    uint_ workSize=this->device_vector_in2.size();
+    this->queue.enqueue_1d_range_kernel(this->ocl_kernel,0,workSize,tpb);
+  };//kernelGPU_in2
 
 };//CDataProcessorGPU_discri_opencl_int2
 
