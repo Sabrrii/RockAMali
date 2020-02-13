@@ -82,7 +82,7 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
     kernel_loaded=false;
   }//constructor
 
-  //! compution kernel for an iteration (compution=copy, here)
+  //! compution kernel for an iteration
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     if(!kernel_loaded)
@@ -101,6 +101,96 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
   };//kernelGPU
 
 };//CDataProcessorGPU_opencl_template
+
+
+template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char
+, typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
+>
+class CDataProcessorGPU_opencl_T4 : public CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>
+{
+public:
+  // create vectors on the device
+  compute::vector<Tdata4> device_vector_in4;
+  compute::vector<Tproc4> device_vector_out4;
+
+//! OpenCL source (with template)
+/**
+ * template types must be either \c Tdata or \c Tproc
+ * \note this function should redefined in inherited class
+**/
+void define_opencl_source()
+{
+  this->kernel_name="vMcPc4";
+  this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
+  __kernel void vMcPc(__global const uint4*input, int size, __global float4*output)
+  {
+    const int gid = get_global_id(0);
+    output[gid]=input[gid]*2.1+123.45;
+  }
+  );//source with template
+}//define_opencl_source
+
+  CDataProcessorGPU_opencl_T4(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  , device_vector_in4(VECTOR_SIZE/4, this->ctx), device_vector_out4(VECTOR_SIZE/4, this->ctx)
+  {
+    this->debug=true;
+    this->check_locks(lock);
+    //OpenCL framework
+    this->program=this->make_opencl_program(this->ctx);
+    this->class_name="CDataProcessorGPU_openclT4_"+this->kernel_name;
+    this->kernel_loaded=false;
+  }//constructor
+
+  //! compution kernel for an iteration
+  virtual void kernelGPU4(compute::vector<Tdata4> &in,compute::vector<Tproc4> &out)
+  {
+    if(!this->kernel_loaded)
+    {//load kernel
+      this->kernel=compute::kernel(this->program,this->kernel_name.c_str());
+      this->kernel.set_arg(0,this->device_vector_in4.get_buffer());
+      this->kernel.set_arg(1,(int)this->device_vector_in4.size());
+      this->kernel.set_arg(2,this->device_vector_out4.get_buffer());
+      this->kernel_loaded=true;
+    }//load kernel once
+    //compute
+    using compute::uint_;
+    uint_ tpb=16;
+    uint_ workSize=this->device_vector_in4.size();
+    this->queue.enqueue_1d_range_kernel(this->kernel,0,workSize,tpb);
+  };//kernelGPU
+/*
+//! \todo [highest] implement kernel for T*4
+  //! compution kernel for an iteration
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
+  {
+    //! \todo . share data
+    ///share data
+    CImg<Tdata4> in4;
+    CImg<Tproc4> out4;
+    in4.data=in.data;in4.width=in.width()/4;
+    out4.data=out.data;
+    //copy CPU to GPU
+    compute::copy(in4.begin(), in4.end(), device_vector_in4.begin(), queue);
+    //compute
+    kernelGPU4(device_vector_in4,device_vector_out4);
+    //copy GPU to CPU
+    compute::copy(device_vector_out4.begin(), device_vector_out4.end(), out4.begin(), queue);
+    //wait for completion
+    queue.finish();
+    ///unshare data
+    in4.data=NULL;
+    out4.data=NULL;
+  };//kernel
+*/
+};//CDataProcessorGPU_opencl_T4
 
 #endif //_DATA_PROCESSOR_GPU_OPENCL_
 
