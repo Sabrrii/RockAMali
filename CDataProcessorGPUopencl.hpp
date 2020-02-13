@@ -166,8 +166,7 @@ void define_opencl_source()
     uint_ workSize=this->device_vector_in4.size();
     this->queue.enqueue_1d_range_kernel(this->kernel,0,workSize,tpb);
   };//kernelGPU
-/*
-//! \todo [highest] implement kernel for T*4
+
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
@@ -175,8 +174,8 @@ void define_opencl_source()
     ///share data
     CImg<Tdata4> in4;
     CImg<Tproc4> out4;
-    in4.data=in.data;in4.width=in.width()/4;
-    out4.data=out.data;
+    in4._data=(Tdata4*)in.data();  in4._width=in.width()/4;
+    out4._data=(Tproc4*)out.data();out4._width=out.width()/4;
     //copy CPU to GPU
     compute::copy(in4.begin(), in4.end(), device_vector_in4.begin(), queue);
     //compute
@@ -186,10 +185,10 @@ void define_opencl_source()
     //wait for completion
     queue.finish();
     ///unshare data
-    in4.data=NULL;
-    out4.data=NULL;
+    in4._data=NULL;
+    out4._data=NULL;
   };//kernel
-*/
+
 };//CDataProcessorGPU_opencl_T4
 
 #endif //_DATA_PROCESSOR_GPU_OPENCL_
