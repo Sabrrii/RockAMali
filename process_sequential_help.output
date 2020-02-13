@@ -10,7 +10,7 @@
           CParameterNetCDF.v0.5.0
           NcTypeInfo.v0.1.2
  compiled types <Tdata,Tproc, Taccess>=<unsigned int,int64, unsigned char>
- compilation date: (Feb 13 2020, 09:56:48)
+ compilation date: (Feb 13 2020, 10:24:35)
 
     -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     -d               6                        number of digit for file names[0;0;0m
@@ -18,6 +18,8 @@
     -n               256                      number of frames[0;0;0m
     --generator-factory count                    generator type, e.g. count, random or peak[0;0;0m
     --CPU-factory    count                    CPU processing type, e.g. count or kernel[0;0;0m
+    --use-GPU        false                    use GPU for compution (or -G option)[0;0;0m
+    --GPU-factory    program                  GPU processing type, e.g. program or function[0;0;0m
     --do-check       false                    do data check, e.g. test pass (or -C option)[0;0;0m
     --help           true                     help (or -h option)[0;0;0m
     --info           false                    show compilation options (or -I option)[0;0;0m
