@@ -13,7 +13,7 @@ class CDataProcessorGPU_opencl_template : public CDataProcessorGPU_vMcPc_check<T
 {
 public:
   compute::program program;
-  compute::kernel  kernel;
+  compute::kernel  oclKernel;
   bool kernel_loaded;
 //OpenCL function for this class
   //! OpenCL kernel name
@@ -87,17 +87,17 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
   {
     if(!kernel_loaded)
     {//load kernel
-      kernel=compute::kernel(program,kernel_name.c_str());
-      kernel.set_arg(0,this->device_vector_in.get_buffer());
-      kernel.set_arg(1,(int)this->device_vector_in.size());
-      kernel.set_arg(2,this->device_vector_out.get_buffer());
+      oclKernel=compute::kernel(program,kernel_name.c_str());
+      oclKernel.set_arg(0,this->device_vector_in.get_buffer());
+      oclKernel.set_arg(1,(int)this->device_vector_in.size());
+      oclKernel.set_arg(2,this->device_vector_out.get_buffer());
       kernel_loaded=true;
     }//load kernel once
     //compute
     using compute::uint_;
     uint_ tpb=16;
     uint_ workSize=this->device_vector_in.size();
-    this->queue.enqueue_1d_range_kernel(kernel,0,workSize,tpb);
+    this->queue.enqueue_1d_range_kernel(oclKernel,0,workSize,tpb);
   };//kernelGPU
 
 };//CDataProcessorGPU_opencl_template
@@ -154,17 +154,17 @@ void define_opencl_source()
   {
     if(!this->kernel_loaded)
     {//load kernel
-      this->kernel=compute::kernel(this->program,this->kernel_name.c_str());
-      this->kernel.set_arg(0,this->device_vector_in4.get_buffer());
-      this->kernel.set_arg(1,(int)this->device_vector_in4.size());
-      this->kernel.set_arg(2,this->device_vector_out4.get_buffer());
+      this->oclKernel=compute::kernel(this->program,this->kernel_name.c_str());
+      this->oclKernel.set_arg(0,this->device_vector_in4.get_buffer());
+      this->oclKernel.set_arg(1,(int)this->device_vector_in4.size());
+      this->oclKernel.set_arg(2,this->device_vector_out4.get_buffer());
       this->kernel_loaded=true;
     }//load kernel once
     //compute
     using compute::uint_;
     uint_ tpb=16;
     uint_ workSize=this->device_vector_in4.size();
-    this->queue.enqueue_1d_range_kernel(this->kernel,0,workSize,tpb);
+    this->queue.enqueue_1d_range_kernel(this->oclKernel,0,workSize,tpb);
   };//kernelGPU
 
   //! compution kernel for an iteration
