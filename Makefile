@@ -33,10 +33,16 @@ else
 endif #NetCDF
 
 ##do compile
-DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
-DO_GPU=
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF)
 #DO_NETCDF=
+#DO_GPU (depending on target architecture)
+ifeq ($(shell uname -p),x86_64)
+##AMD64 (gan*)
+	DO_GPU=
+else
+##ARM64 (RockPro64)
+	DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
+endif #DO_GPU
 
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
@@ -48,7 +54,7 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
-all: process version factory
+all: process process_sequential version factory
 
 #all: time_copy
 time_copy: time_copy.cpp
