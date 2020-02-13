@@ -177,13 +177,13 @@ void define_opencl_source()
     in4._data=(Tdata4*)in.data();  in4._width=in.width()/4;
     out4._data=(Tproc4*)out.data();out4._width=out.width()/4;
     //copy CPU to GPU
-    compute::copy(in4.begin(), in4.end(), device_vector_in4.begin(), queue);
+    compute::copy(in4.begin(), in4.end(), device_vector_in4.begin(), this->queue);
     //compute
     kernelGPU4(device_vector_in4,device_vector_out4);
     //copy GPU to CPU
-    compute::copy(device_vector_out4.begin(), device_vector_out4.end(), out4.begin(), queue);
+    compute::copy(device_vector_out4.begin(), device_vector_out4.end(), out4.begin(), this->queue);
     //wait for completion
-    queue.finish();
+    this->queue.finish();
     ///unshare data
     in4._data=NULL;
     out4._data=NULL;
