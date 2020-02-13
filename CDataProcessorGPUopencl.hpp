@@ -16,6 +16,8 @@ public:
   compute::kernel  kernel;
   bool kernel_loaded;
 //OpenCL function for this class
+  //! OpenCL kernel name
+  std::string kernel_name;
   //! OpenCL source string (with template)
   std::string source_with_template;
 //! OpenCL source (with template)
@@ -25,6 +27,7 @@ public:
 **/
 void define_opencl_source()
 {
+  kernel_name="vMcPc";
   source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void vMcPc(__global const Tdata*input, int size, __global Tproc*output)
   {
@@ -45,7 +48,7 @@ compute::program make_opencl_program(const compute::context& context)
   std::string source=source_with_template;
   std::vector<std::string> str_old;str_old.push_back(    "Tdata");              str_old.push_back(    "Tproc");
   std::vector<std::string> str_new;str_new.push_back(CImg<Tdata>::pixel_type());str_new.push_back(CImg<Tproc>::pixel_type());
-  //! \todo [template in OpenCL] CImg<T>::pixel_type() is almost ok, except for "long int" giving "int64" (and may be more !?)
+  //! \bug [template in OpenCL] CImg<T>::pixel_type() is almost ok, except for "long int" giving "int64" (and may be more !?)
   for(unsigned int i=0;i<str_old.size();++i)
   {
     //replace all str_old by str_new
@@ -72,10 +75,10 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
     this->debug=true;
-    this->class_name="CDataProcessorGPU_openclT_vMcPc";
     this->check_locks(lock);
     //OpenCL framework
     program=make_opencl_program(this->ctx);
+    this->class_name="CDataProcessorGPU_openclT_"+kernel_name;
     kernel_loaded=false;
   }//constructor
 
@@ -84,7 +87,7 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
   {
     if(!kernel_loaded)
     {//load kernel
-      kernel=compute::kernel(program, "vMcPc");
+      kernel=compute::kernel(program,kernel_name.c_str());
       kernel.set_arg(0,this->device_vector_in.get_buffer());
       kernel.set_arg(1,(int)this->device_vector_in.size());
       kernel.set_arg(2,this->device_vector_out.get_buffer());
