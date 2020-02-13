@@ -34,8 +34,7 @@ public:
   // create vectors on the device
   compute::vector<Tdata> device_vector_in;
   compute::vector<Tproc> device_vector_out;
-  compute::vector<Tdata> device_vector_uint;
-  compute::vector<Tdata> device_vector_uint2;
+ // compute::vector<Tdata> device_vector_uint2;
 
   CDataProcessorGPU(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -48,7 +47,7 @@ public:
   : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   , ctx(device), queue(ctx, device)
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
-  , device_vector_uint(VECTOR_SIZE/2, ctx), device_vector_uint2(VECTOR_SIZE/2, ctx)
+// ,device_vector_uint2(VECTOR_SIZE/2, ctx)
   {
 //! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)
     this->debug=true;
@@ -393,14 +392,13 @@ class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Ta
   compute::program program;
   compute::kernel  kernel;
   bool kernel_loaded;
-  float alpha = 0.998;
-
+  float alpha;
 
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha, __global float*output2)
+  __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha)
   {   
     const int gid = get_global_id(0);
     if ( gid == 0) 
@@ -410,7 +408,6 @@ compute::program make_opencl_program(const compute::context& context)
     else
     {
         output[gid]=input[gid]-alpha*input[gid-1];
-//	output2[gid]=input[gid]-alpha*input[gid-1];
     }
     
   }
@@ -421,7 +418,7 @@ compute::program make_opencl_program(const compute::context& context)
 
 public:
 
-/*  int Read_Paramaters (float &alp)
+  int Read_Paramaters (float &alp)
   {
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -462,9 +459,7 @@ public:
     this->class_name="CDataProcessorGPU_discri_opencl";
     this->check_locks(lock);
     //OpenCL framework
-    std::cout<<alpha<<std::endl<<std::flush;
- /*    Read_Paramaters(alpha);
-    std::cout<<alpha<<std::endl<<std::flush;*/
+    Read_Paramaters(alpha);
     program=make_opencl_program(this->ctx);
     kernel_loaded=false;
   }//constructor
@@ -479,7 +474,6 @@ public:
       kernel.set_arg(1,(int)this->device_vector_in.size());
       kernel.set_arg(2,this->device_vector_out.get_buffer());
       kernel.set_arg(3,alpha);
-      kernel.set_arg(4,this->device_vector_uint2.get_buffer());
       kernel_loaded=true;
     }//load kernel once
     //compute
@@ -490,6 +484,7 @@ public:
   };//kernelGPU
 
 };//CDataProcessorGPU_discri_opencl
+
 
 
 #endif //_DATA_PROCESSOR_GPU_

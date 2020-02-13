@@ -23,7 +23,7 @@ variables:
      graph:A_long_name="Amplitude";
      graph:A= 1234;
      graph:B_long_name="Baseline";
-     graph:B= 2000;
+     graph:B= 20;
 //Generator Random
      graph:rand_min=0;
      graph:rand_max=65535;
