@@ -5,7 +5,7 @@ process.v0.5.9k
  -factory- generator types are: count, random, peak, peak_noise.
  -factory- CPU processor types are: count, vPvMv, kernel, peak, trapeze.
  -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro, program_template, program_T4.
-process_sequential.v0.5.9j
+process_sequential.v0.5.9
   CImg_NetCDF.v0.8.3
   CParameterNetCDF.v0.5.0
   NcTypeInfo.v0.1.2
