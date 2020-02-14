@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.9i"
+#define VERSION "v0.5.9j"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -51,12 +51,18 @@ int main(int argc,char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const char* imagefilename = cimg_option("-o","sample.cimg",std::string("output file name (e.g." +
+  const char* imagefilename = cimg_option("-o","samples/sample.cimg",std::string("output file name (e.g." +
 #ifdef DO_NETCDF
   std::string(" \"-o data.nc\" or ") +
 #endif //NetCDF
   std::string(" \"-o data.cimg -d 3\" gives data_???.cimg)")
-  ).c_str());//ouput file name
+  ).c_str());//ouput file name for raw
+  const char* resultfilename = cimg_option("-r","results/sample.cimg",std::string("result file name (e.g." +
+#ifdef DO_NETCDF
+  std::string(" \"-r result.nc\" or ") +
+#endif //NetCDF
+  std::string(" \"-r result.cimg -d 3\" gives result_???.cimg)")
+  ).c_str());//ouput file name for result
   const int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
   const int count=cimg_option("-n",256,  "number of frames");
@@ -189,8 +195,8 @@ int main(int argc,char **argv)
       ///GPU process from factory
       process=CDataProcessorGPUfactory<Tdata,Tproc, Taccess>::NewCDataProcessorGPU(processing_type,type_list
       , locks, gpu,width
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
+      , CDataAccess::STATUS_FILLED,CDataAccess::STATUS_PROCESSED //images
+      , CDataAccess::STATUS_FREE,  CDataAccess::STATUS_FILLED    //results
       , do_check
       );
       std::cout<<"information: processing type is the one of "<<process->class_name<<" class."<<std::endl<<std::flush;
@@ -227,25 +233,27 @@ int main(int argc,char **argv)
       std::cout<<"information: use CPU for processing."<<std::endl<<std::flush;
       process=CDataProcessorCPU_factory<Tdata,Tproc, Taccess>::NewCDataProcessorCPU(processor_type,cpu_type_list
       , locks
-      , CDataAccess::STATUS_FILLED, CDataAccess::STATUS_FREE  //images
-      , CDataAccess::STATUS_FREE,   CDataAccess::STATUS_FILLED//results
+      , CDataAccess::STATUS_FILLED,CDataAccess::STATUS_PROCESSED //images
+      , CDataAccess::STATUS_FREE,  CDataAccess::STATUS_FILLED    //results
       , do_check
       );
       }//CPU
       process_class_name=process->class_name;
-     //store
-      CDataStore<Tproc,Taccess> store(locksR, imagefilename,digit, CDataAccess::STATUS_FILLED);
+     //stores
+      CDataStore<Tdata,Taccess> store(locks,    imagefilename,digit, CDataAccess::STATUS_PROCESSED);
+      CDataStore<Tproc,Taccess> storeR(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);
       //run
       for(unsigned int i=0;i<count;++i)
       {
         generate->iteration(access,images,0,i);
         images[0].print(generator_type.c_str());
+        store.iteration(access,images, 0,i);
         #if cimg_display!=0   
          if(show) images[0].display_graph(generator_type.c_str());
         #endif
 
         process->iteration(access,images, accessR,results, 0,i);
-        store.iteration(accessR,results, 0,i);
+        storeR.iteration(accessR,results, 0,i);
         //check
         if(do_check)
         {
