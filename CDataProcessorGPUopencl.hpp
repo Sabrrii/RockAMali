@@ -42,8 +42,6 @@ void define_opencl_source()
 **/
 compute::program make_opencl_program(const compute::context& context)
 {
-  //init. source
-  this->define_opencl_source();
   //translate template
   std::string source=source_with_template;
   std::vector<std::string> str_old;str_old.push_back(    "Tdata");              str_old.push_back(    "Tproc");
@@ -77,6 +75,8 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
     this->debug=true;
     this->check_locks(lock);
     //OpenCL framework
+    //init. source
+    this->define_opencl_source();
     program=make_opencl_program(this->ctx);
     this->class_name="CDataProcessorGPU_openclT_"+kernel_name;
     kernel_loaded=false;
@@ -124,7 +124,7 @@ void define_opencl_source()
 {
   this->kernel_name="vMcPc4";
   this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc(__global const uint4*input, int size, __global float4*output)
+  __kernel void vMcPc4(__global const uint4*input, int size, __global float4*output)
   {
     const int gid = get_global_id(0);
     output[gid]=input[gid]*2.1+123.45;
@@ -150,6 +150,8 @@ void define_opencl_source()
     in4._depth=out4._depth=1;
     in4._spectrum=out4._spectrum=1;
     //OpenCL framework
+    //init. source
+    define_opencl_source();
     this->program=this->make_opencl_program(this->ctx);
     this->class_name="CDataProcessorGPU_openclT4_"+this->kernel_name;
     this->kernel_loaded=false;
