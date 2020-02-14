@@ -207,5 +207,64 @@ virtual void define_opencl_source()
 
 };//CDataProcessorGPU_opencl_T4
 
+//! 4 complex operation with OpenCL including template types for GPU process
+/**
+ *  FMA by 4.xyzw: val * 2.1 + 123.45
+ *  Tdata4 and Tproc4 should same type as Tdata and Tproc
+ *  \note: Tdata and Tproc only could be in the template source
+**/
+template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char
+, typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
+>
+class CDataProcessorGPU_opencl_T4xyzw : public CDataProcessorGPU_opencl_T4<Tdata,Tproc, Taccess>
+{
+public:
+//! OpenCL source (with template)
+/**
+ * template types must be either \c Tdata or \c Tproc
+ * \note this function should redefined in inherited class
+**/
+virtual void define_opencl_source()
+{
+  this->kernel_name="vMcPc4xyzw";
+  this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
+  __kernel void vMcPc4xyzw(__global const Tdata*input, int size, __global Tproc*output)
+  {
+    const int gid = get_global_id(0)*4;
+    const Tproc mul=2.1;
+    const Tproc cst=123.45;
+    uint4 in;
+    in.x=input[gid];
+    in.y=input[gid+1];
+    in.z=input[gid+2];
+    in.w=input[gid+3];
+    output[gid]  =in.x*mul+cst;
+    output[gid+1]=in.y*mul+cst;
+    output[gid+2]=in.z*mul+cst;
+    output[gid+3]=in.w*mul+cst;
+  }
+  );//source with template
+}//define_opencl_source
+
+  CDataProcessorGPU_opencl_T4xyzw(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU_opencl_T4<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    this->debug=true;
+    this->check_locks(lock);
+    //OpenCL framework
+    this->program=this->make_opencl_program(this->ctx);
+    this->class_name="CDataProcessorGPU_openclT4_"+this->kernel_name;
+    this->kernel_loaded=false;
+  }//constructor
+
+};//CDataProcessorGPU_opencl_T4xyzw
+
 #endif //_DATA_PROCESSOR_GPU_OPENCL_
 
