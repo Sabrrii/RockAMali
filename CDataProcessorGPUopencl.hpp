@@ -231,17 +231,19 @@ virtual void define_opencl_source()
   __kernel void vMcPc4xyzw(__global const Tdata*input, int size, __global Tproc*output)
   {
     const int gid = get_global_id(0)*4;
-    const Tproc mul=2.1;
-    const Tproc cst=123.45;
-    uint4 in;
-    in.x=input[gid];
-    in.y=input[gid+1];
-    in.z=input[gid+2];
-    in.w=input[gid+3];
-    output[gid]  =in.x*mul+cst;
-    output[gid+1]=in.y*mul+cst;
-    output[gid+2]=in.z*mul+cst;
-    output[gid+3]=in.w*mul+cst;
+    const Tproc4 mul=(Tproc4)(2.1);
+    const Tproc4 cst=(Tproc4)(123.45);
+    Tproc4 in;
+    Tproc4 out;
+    in.x=(Tproc)(input[gid]);
+    in.y=(Tproc)(input[gid+1]);
+    in.z=(Tproc)(input[gid+2]);
+    in.w=(Tproc)(input[gid+3]);
+    out=in*mul+cst;
+    output[gid]  =out.x;
+    output[gid+1]=out.y;
+    output[gid+2]=out.z;
+    output[gid+3]=out.w;
   }
   );//source with template
 }//define_opencl_source
