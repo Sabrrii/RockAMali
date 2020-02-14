@@ -127,8 +127,8 @@ virtual void define_opencl_source()
   __kernel void vMcPc4(__global const uint4*input, int size, __global float4*output)
   {
     const int gid = get_global_id(0);
-    const float4 mul=(float4)(2.1f,2.1f,2.1f,2.1f);
-    const float4 cst=(float4)(123.45f,123.45f,123.45f,123.45f);
+    const float4 mul=input[0];
+    const float4 cst=output[0];
     output[gid]=input[gid]*mul+cst;
   }
   );//source with template
