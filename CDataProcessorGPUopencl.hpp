@@ -222,7 +222,6 @@ public:
 //! OpenCL source (with template)
 /**
  * template types must be either \c Tdata or \c Tproc
- * \note this function should redefined in inherited class
 **/
 virtual void define_opencl_source()
 {
@@ -283,7 +282,6 @@ public:
 //! OpenCL source (with template)
 /**
  * template types must be either \c Tdata or \c Tproc
- * \note this function should redefined in inherited class
 **/
 virtual void define_opencl_source()
 {
