@@ -34,11 +34,18 @@ virtual void define_opencl_source()
     const int gid = get_global_id(0);
     output[gid]=input[gid]*2.1+123.45;
   }
+  __kernel void vMcPc2(__global const uint2*input, int size, __global float2*output)
+  {
+    const int gid = get_global_id(0);
+    output[gid]=input[gid]*2.1+123.45;
+  }
+/*
   __kernel void vMcPc4(__global const uint4*input, int size, __global float4*output)
   {
     const int gid = get_global_id(0);
     output[gid]=input[gid]*2.1+123.45;
   }
+*/
   );//source with template
 }//define_opencl_source
 //! OpenCL program from source (with template)
