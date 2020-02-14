@@ -124,7 +124,7 @@ virtual void define_opencl_source()
 {
   this->kernel_name="vMcPc4";
   this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc4(__global const uint*input, int size, __global float*output)
+  __kernel void vMcPc4(__global const uint2*input, int size, __global float2*output)
   {
     const int gid = get_global_id(0);
     output[gid]=input[gid];
