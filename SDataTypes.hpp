@@ -5,7 +5,7 @@ typedef unsigned char Taccess;
 typedef unsigned int  Tdata;
 typedef float         Tproc;
 //typedef unsigned int  Tproc;
-//typedef long int  Tproc;
+//typedef long int  Tproc; //bad for CImg<T>::pixel_type() for openCL kernel (as int64 return)
 
 //! data types as a description string
 std::string get_compiled_data_types()

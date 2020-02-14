@@ -32,7 +32,9 @@ virtual void define_opencl_source()
   __kernel void vMcPc(__global const Tdata*input, int size, __global Tproc*output)
   {
     const int gid = get_global_id(0);
-    output[gid]=input[gid]*2.1+123.45;
+    const Tproc mul=2.1;
+    const Tproc cst=123.45;
+    output[gid]=input[gid]*mul+cst;
   }
   );//source with template
 }//define_opencl_source
@@ -103,6 +105,12 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
 };//CDataProcessorGPU_opencl_template
 
 
+//! 4 complex operation with OpenCL including template types for GPU process
+/**
+ *  FMA by 4: val * 2.1 + 123.45
+ *  Tdata4 and Tproc4 should same type as Tdata and Tproc
+ *  \note: Tdata and Tproc only could be in the template source
+**/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char
 , typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
 >
@@ -124,13 +132,15 @@ virtual void define_opencl_source()
 {
   this->kernel_name="vMcPc4";
   this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc4(__global const uint*input, int size, __global float*output)
+  __kernel void vMcPc4(__global const Tdata*input, int size, __global Tproc*output)
   {
     const int gid = get_global_id(0)*4;
-    output[gid]=input[gid];
-    output[gid+1]=input[gid+1];
-    output[gid+2]=input[gid+2];
-    output[gid+3]=input[gid+3];
+    const Tproc mul=2.1;
+    const Tproc cst=123.45;
+    output[gid]  =input[gid]  *mul+cst;
+    output[gid+1]=input[gid+1]*mul+cst;
+    output[gid+2]=input[gid+2]*mul+cst;
+    output[gid+3]=input[gid+3]*mul+cst;
   }
   );//source with template
 }//define_opencl_source
@@ -179,7 +189,6 @@ virtual void define_opencl_source()
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
-    //! \todo . share data
     ///share data
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
