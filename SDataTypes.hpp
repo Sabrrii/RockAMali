@@ -7,6 +7,7 @@ typedef float         Tproc;
 //typedef unsigned int  Tproc;
 //typedef long int  Tproc;
 
+//! data types as a description string
 std::string get_compiled_data_types()
 {
   std::string str="compiled types <Tdata,Tproc, Taccess>=<";

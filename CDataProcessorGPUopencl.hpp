@@ -112,6 +112,8 @@ public:
   // create vectors on the device
   compute::vector<Tdata4> device_vector_in4;
   compute::vector<Tproc4> device_vector_out4;
+  CImg<Tdata4> in4;
+  CImg<Tproc4> out4;
 
 //! OpenCL source (with template)
 /**
@@ -143,6 +145,7 @@ void define_opencl_source()
   {
     this->debug=true;
     this->check_locks(lock);
+    in4._width=out4._width=VECTOR_SIZE/4;
     //OpenCL framework
     this->program=this->make_opencl_program(this->ctx);
     this->class_name="CDataProcessorGPU_openclT4_"+this->kernel_name;
@@ -172,10 +175,8 @@ void define_opencl_source()
   {
     //! \todo . share data
     ///share data
-    CImg<Tdata4> in4;
-    CImg<Tproc4> out4;
-    in4._data=(Tdata4*)in.data();  in4._width=in.width()/4;
-    out4._data=(Tproc4*)out.data();out4._width=out.width()/4;
+    in4._data=(Tdata4*)in.data();
+    out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
     compute::copy(in4.begin(), in4.end(), device_vector_in4.begin(), this->queue);
     //compute
