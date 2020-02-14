@@ -146,6 +146,9 @@ void define_opencl_source()
     this->debug=true;
     this->check_locks(lock);
     in4._width=out4._width=VECTOR_SIZE/4;
+    in4._height=out4._height=1;
+    in4._depth=out4._depth=1;
+    in4._spectrum=out4._spectrum=1;
     //OpenCL framework
     this->program=this->make_opencl_program(this->ctx);
     this->class_name="CDataProcessorGPU_openclT4_"+this->kernel_name;
