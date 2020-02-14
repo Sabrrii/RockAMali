@@ -291,7 +291,7 @@ virtual void define_opencl_source()
   this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void vMcPc4ls_fma(__global const Tdata*input, int size, __global Tproc*output)
   {
-    const int gid = get_global_id(0)*4;
+    const int gid = get_global_id(0);
     const Tproc4 mul=(Tproc4)(2.1);
     const Tproc4 cst=(Tproc4)(123.45);
     uint4 uin=vload4(gid,input);
