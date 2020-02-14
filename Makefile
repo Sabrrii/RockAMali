@@ -109,6 +109,13 @@ process_sequential_run:
 	ncgen parameters.cdl -o parameters.nc && rm -f sample_sequential.nc result_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc -r result_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc && ncdump -h result_sequential.nc #&& ncview sample_sequential.nc
 #	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
 
+process_sequential_check: result_sequential.nc  sample_sequential.nc
+	ncrename -v signal,process result_sequential.nc
+	ncview sample_sequential.nc& ncview result_sequential.nc&
+	cp -p  sample_sequential.nc  all_sequential.nc && ncks -A result_sequential.nc -o all_sequential.nc && ncdump -h all_sequential.nc
+	ncap2 -s "ncoprocess=signal*2.1+123.45; diff=process-ncoprocess" all_sequential.nc -o diff_sequential.nc --overwrite && ncdump -h diff_sequential.nc
+	ncview diff_sequential.nc &
+
 #NS=123456
 send_run:
 	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 2345678
