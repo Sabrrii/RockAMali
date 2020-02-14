@@ -34,18 +34,6 @@ virtual void define_opencl_source()
     const int gid = get_global_id(0);
     output[gid]=input[gid]*2.1+123.45;
   }
-  __kernel void vMcPc2(__global const uint2*input, int size, __global float2*output)
-  {
-    const int gid = get_global_id(0);
-    output[gid]=input[gid]*2.1+123.45;
-  }
-/*
-  __kernel void vMcPc4(__global const uint4*input, int size, __global float4*output)
-  {
-    const int gid = get_global_id(0);
-    output[gid]=input[gid]*2.1+123.45;
-  }
-*/
   );//source with template
 }//define_opencl_source
 //! OpenCL program from source (with template)
@@ -89,7 +77,7 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
     this->debug=true;
     this->check_locks(lock);
     //OpenCL framework
-//    program=make_opencl_program(this->ctx);
+    program=make_opencl_program(this->ctx);
     this->class_name="CDataProcessorGPU_openclT_"+kernel_name;
     kernel_loaded=false;
   }//constructor
@@ -139,7 +127,9 @@ virtual void define_opencl_source()
   __kernel void vMcPc4(__global const uint4*input, int size, __global float4*output)
   {
     const int gid = get_global_id(0);
-    output[gid]=input[gid]*2.1+123.45;
+    const float4 mul=(float4)(2.1f,2.1f,2.1f,2.1f);
+    const float4 cst=(float4)(123.45f,123.45f,123.45f,123.45f);
+    output[gid]=input[gid]*mul+cst;
   }
   );//source with template
 }//define_opencl_source
