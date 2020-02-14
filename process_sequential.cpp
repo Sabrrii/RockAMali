@@ -247,12 +247,12 @@ int main(int argc,char **argv)
       {
         generate->iteration(access,images,0,i);
         images[0].print(generator_type.c_str());
-        store.iteration(access,images, 0,i);
         #if cimg_display!=0   
          if(show) images[0].display_graph(generator_type.c_str());
         #endif
 
         process->iteration(access,images, accessR,results, 0,i);
+        store.iteration(access,images, 0,i);
         storeR.iteration(accessR,results, 0,i);
         //check
         if(do_check)

@@ -43,7 +43,7 @@ void define_opencl_source()
 compute::program make_opencl_program(const compute::context& context)
 {
   //init. source
-  define_opencl_source();
+  this->define_opencl_source();
   //translate template
   std::string source=source_with_template;
   std::vector<std::string> str_old;str_old.push_back(    "Tdata");              str_old.push_back(    "Tproc");
