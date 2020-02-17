@@ -508,9 +508,25 @@ compute::program make_opencl_program(const compute::context& context)
     {
         output[gid]=input[gid]-alpha*input[gid-1];
         output[gid+1]=input[gid+1]-alpha*input[gid];
-    }
-    
-  }
+    }    
+  }//discri
+  __kernel void discri_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
+  {   
+    const int gid = get_global_id(0)*2;
+    if ( gid == 0) 
+    {
+	output[0] = 0;
+	//output[1] = input[1]-alpha*input[0];
+	//output[1] = -alpha*input[0] + input[1];
+	fma(-alpha,input[0], input[1]);
+    } 
+    else
+    {
+        output[gid]=input[gid]-alpha*input[gid-1];
+        output[gid+1]=input[gid+1]-alpha*input[gid];
+    }    
+  }//discri_fma
+ 
   );//source
   // create program
   return compute::program::build_with_source(source,context);
@@ -563,7 +579,7 @@ public:
   {
     if(!this->kernel_loaded)
     {//load kernel
-      this->ocl_kernel=compute::kernel(this->program,"discri");
+      this->ocl_kernel=compute::kernel(this->program,"discri_fma");
       this->ocl_kernel.set_arg(0,this->device_vector_in2.get_buffer());
       this->ocl_kernel.set_arg(1,(int)this->device_vector_in2.size());
       this->ocl_kernel.set_arg(2,this->device_vector_out2.get_buffer());
