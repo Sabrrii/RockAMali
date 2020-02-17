@@ -628,9 +628,29 @@ class CDataProcessorGPU_discri_opencl_int4 : public CDataProcessorGPU_discri_ope
 	output[gid+3]=fma(-alpha,input[gid+2], input[gid+3]);
     }    
   }//discri_fma
+
+  __kernel void discri_ls_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
+  {   
+    const int gid = get_global_id(0);//*4;
+    const float4 alpha4=(-alpha,-alpha,-alpha,-alpha);
+    // load gid -1 data
+    uint   in_  =(gid==0)?input[0]:input[(gid*4)-1];
+    float  fn_  =(gid==0)?((float)(in_)/alpha):(float)in_;
+    // load 4 gid data
+    uint4  in4  =vload4(gid,input);
+    float4 fn4  =convert_float4(in4);
+    // gid - 1 data
+    float4 fn4_ =(fn_,fn4.x,fn4.y,fn4.z);//(fn_,fn4.xyz);
+    // discri 
+    float4 out4 =fma(alpha4,fn4,fn4_);
+    // storage
+    vstore4(out4, gid, output);
+  }//discri_ls_fma
+
  
   );//source
   // create program
+  std::cout<<"source = "<<source<<std::endl;
   return compute::program::build_with_source(source,context);
 }//make_opencl_program
 
@@ -672,6 +692,7 @@ public:
     kernelGPU4(device_vector_in4,device_vector_out4);
     //copy GPU to CPU
     compute::copy(device_vector_out4.begin(), device_vector_out4.end(), out4.begin(), this->queue);
+
     //wait for completion
     this->queue.finish();
   };//kernel
@@ -681,7 +702,7 @@ public:
   {
     if(!this->kernel_loaded)
     {//load kernel
-      this->ocl_kernel=compute::kernel(this->program,"discri_fma");
+      this->ocl_kernel=compute::kernel(this->program,"discri_ls_fma");
       this->ocl_kernel.set_arg(0,this->device_vector_in4.get_buffer());
       this->ocl_kernel.set_arg(1,(int)this->device_vector_in4.size());
       this->ocl_kernel.set_arg(2,this->device_vector_out4.get_buffer());
