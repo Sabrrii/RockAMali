@@ -488,22 +488,26 @@ public:
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_discri_opencl_int2 : public CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>
 {
-  compute::vector<Tdata> device_vector_in2;
-  compute::vector<Tproc> device_vector_out2;
+  compute::vector<compute::uint2_> device_vector_in2;
+  compute::vector<compute::float2_> device_vector_out2;
+  CImg<compute::uint2_>in2;
+  CImg<compute::float2_>out2;
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha)
   {   
-    const int gid = get_global_id(0);
+    const int gid = get_global_id(0)*2;
     if ( gid == 0) 
     {
-	output[gid] = 0;
+	output[0] = 0;
+	output[1] = input[1]-alpha*input[0];
     } 
     else
     {
         output[gid]=input[gid]-alpha*input[gid-1];
+        output[gid+1]=input[gid+1]-alpha*input[gid];
     }
     
   }
@@ -523,8 +527,7 @@ public:
   , bool do_check=false
   )
   : CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
-//   ,device_vector_in2(VECTOR_SIZE/2, ctx),device_vector_out2(VECTOR_SIZE/2, ctx)
-   ,device_vector_in2(VECTOR_SIZE, this->ctx),device_vector_out2(VECTOR_SIZE, this->ctx)
+   ,device_vector_in2(VECTOR_SIZE/2, this->ctx),device_vector_out2(VECTOR_SIZE/2, this->ctx)
   {
     this->debug=true;
     this->class_name="CDataProcessorGPU_discri_opencl_int2";
@@ -533,24 +536,30 @@ public:
     this->Read_Paramaters(this->alpha);
     this->program=make_opencl_program(this->ctx);
     this->kernel_loaded=false;
+    in2._width=out2._width=VECTOR_SIZE/2;
+    in2._height=out2._height=1;
+    in2._depth=out2._depth=1;
+    in2._spectrum=out2._spectrum=1;
   }//constructor
 
   //! compution kernel for an iteration
-  virtual void kernel_in2(CImg<Tdata> &in,CImg<Tproc> &out)
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
-	//! \todo copy in2 ...
+    //share data
+    in2._data=(compute::uint2_*)in.data();
+    out2._data=(compute::float2_*)out.data();
     //copy CPU to GPU
-    compute::copy(in.begin(), in.end(), device_vector_in2.begin(), this->queue);
+    compute::copy(in2.begin(), in2.end(), device_vector_in2.begin(), this->queue);
     //compute
-    kernelGPU_in2(device_vector_in2,device_vector_out2);
+    kernelGPU2(device_vector_in2,device_vector_out2);
     //copy GPU to CPU
-    compute::copy(device_vector_out2.begin(), device_vector_out2.end(), out.begin(), this->queue);
+    compute::copy(device_vector_out2.begin(), device_vector_out2.end(), out2.begin(), this->queue);
     //wait for completion
     this->queue.finish();
-  };//kernel_in2
+  };//kernel
 
   //! compution kernel for an iteration (compution=copy, here)
-  virtual void kernelGPU_in2(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
+  virtual void kernelGPU2(compute::vector<compute::uint2_> &in,compute::vector<compute::float2_> &out)
   {
     if(!this->kernel_loaded)
     {//load kernel
@@ -566,7 +575,7 @@ public:
     uint_ tpb=16;
     uint_ workSize=this->device_vector_in2.size();
     this->queue.enqueue_1d_range_kernel(this->ocl_kernel,0,workSize,tpb);
-  };//kernelGPU_in2
+  };//kernelGPU2
 
 };//CDataProcessorGPU_discri_opencl_int2
 
