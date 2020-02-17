@@ -42,6 +42,13 @@ public:
       return new CDataProcessorGPU_function_lambda<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back      ("function_macro")  ;if(name == factory_types.back())
       return new CDataProcessorGPU_function_macro<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+//discri
+    factory_types.push_back      ("discri")          ;if(name == factory_types.back())
+      return new CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("discri_in2")          ;if(name == factory_types.back())
+      return new CDataProcessorGPU_discri_opencl_int2<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("discri_in4")          ;if(name == factory_types.back())
+      return new CDataProcessorGPU_discri_opencl_int4<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     ///CDataProcessorGPUopencl.hpp
     factory_types.push_back      ("program_template")  ;if(name == factory_types.back())
       return new CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);

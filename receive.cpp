@@ -27,7 +27,7 @@ using boost::asio::ip::udp;
 //types
 typedef unsigned char Taccess;
 typedef unsigned int  Tdata;
-typedef float         Tproc;
+typedef unsigned int         Tproc;
 
 int main(int argc,char **argv)
 {

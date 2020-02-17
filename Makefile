@@ -5,7 +5,7 @@ FRAME_SIZE=4096
 NP=1
 GEN_FCT=peak_noise
 PROC=trapeze
-USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
+USE_GPU=--use-GPU --GPU-factory discri_in4
 #USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
@@ -118,11 +118,11 @@ process_sequential_check: result_sequential.nc  sample_sequential.nc
 
 #NS=123456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 2345678
+	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 123456789
 
-#NP=4
-#NT=`echo $(NP)+3   | bc`
-#NB=`echo $(NP)*4096| bc`
+NP=1
+NT=`echo $(NP)+3   | bc`
+NB=`echo $(NP)*4096| bc`
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
