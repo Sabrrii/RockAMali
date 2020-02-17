@@ -43,6 +43,8 @@ public:
       return new CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back      ("discri_in2")          ;if(name == factory_types.back())
       return new CDataProcessorGPU_discri_opencl_int2<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("discri_in4")          ;if(name == factory_types.back())
+      return new CDataProcessorGPU_discri_opencl_int4<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
 
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;
