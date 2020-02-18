@@ -35,8 +35,8 @@ public:
     {
       CImg<Tproc> imgt;
       kernelCPU_vMcPc(img,imgt);
-//imgt.print("img check",false);
-//this->image.print("img GPU",false);
+imgt.print("img check",false);
+this->image.print("img GPU",false);
       return (this->image==imgt);
     }//do_check
     return true;
