@@ -1,7 +1,9 @@
 #!/bin/bash
 
 #get version
-make process && ./process --version | grep 'v.\..\..' | head -n 1 > VERSION
+program=process
+program=process_sequential
+make $program && ./$program --version | grep 'v.\..\..' | head -n 1 > VERSION
 
 #documentation
 ##logo

@@ -85,13 +85,13 @@ receive: receive.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DA
 	g++ -O0 -o receive receive.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) && ./receive -h -I && ./receive -v > VERSION
 	./receive -h 2> receive_help.output
 
-doc: Doxyfile.template doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
+doc: doxygen.sh Doxyfile.template doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
 	./doxygen.sh
 
-version: process.cpp process_sequential.cpp send.cpp receive.cpp
+version: versions.sh process.cpp process_sequential.cpp send.cpp receive.cpp
 	./versions.sh > VERSIONS; cat VERSIONS; echo
 
-factory: CDataGenerator.hpp $(SRC_DATA_BUFFER)
+factory: factories.sh CDataGenerator.hpp $(SRC_DATA_BUFFER)
 	./factories.sh 2>&1 > FACTORIES; cat FACTORIES; echo
 
 #NP=4
