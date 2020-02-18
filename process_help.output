@@ -12,15 +12,15 @@
  compiled types <Tdata,Tproc, Taccess>=<unsigned int,float, unsigned char>
  compilation date: (Feb 18 2020, 11:41:40)
 
-    -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
-    -d               6                        number of digit for file names[0;0;0m
-    -s               1024                     size   of udp buffer[0;0;0m
-    -n               256                      number of frames[0;0;0m
-    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
-    -c               3                        thread count (threads above 2 are processing one)[0;0;0m
-    --generator-factory count                    generator type, e.g. count, random or peak[0;0;0m
-    --CPU-factory    count                    CPU processing type, e.g. count or kernel[0;0;0m
-    --do-check       false                    do data check, e.g. test pass (or -C option)[0;0;0m
-    --help           true                     help (or -h option)[0;0;0m
-    --info           false                    show compilation options (or -I option)[0;0;0m
-    --version        false                    show version (or -v option)[0;0;0m
+    -o               sample.cimg              output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)
+    -d               6                        number of digit for file names
+    -s               1024                     size   of udp buffer
+    -n               256                      number of frames
+    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
+    -c               3                        thread count (threads above 2 are processing one)
+    --generator-factory count                    generator type, e.g. count, random or peak
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel
+    --do-check       false                    do data check, e.g. test pass (or -C option)
+    --help           true                     help (or -h option)
+    --info           false                    show compilation options (or -I option)
+    --version        false                    show version (or -v option)

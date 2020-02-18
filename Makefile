@@ -3,9 +3,9 @@
 ## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=4096
 NP=1
-GEN_FCT=peak_noise
-PROC=trapeze
-USE_GPU=--use-GPU --GPU-factory discri_in4
+GEN_FCT=count
+PROC=kernel
+USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
 #USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
