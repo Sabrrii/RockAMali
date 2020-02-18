@@ -1,0 +1,131 @@
+parse a few factory entities with data check:
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (for CDataProcessorGPU_opencl_vMcPc).
+test: pass (with CDataProcessorGPU_opencl_vMcPc)
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_vMcPc_lambda).
+test: pass (with CDataProcessorGPU_vMcPc_lambda)
+test: fail (1 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (2 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (3 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (4 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (5 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (6 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (7 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (8 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (9 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (10 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (11 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: fail (12 errors) (for CDataProcessorGPU_vMcPc_closure).
+test: pass (with CDataProcessorGPU_vMcPc_closure)
+test: fail (1 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (2 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (3 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (4 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (5 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (6 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (7 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (8 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (9 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (10 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (11 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: fail (12 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (with CDataProcessorGPU_function_vMcPc_uInt)
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
+test: pass (with CDataProcessorGPU_function_vMcPc_lambda)
+test: fail (1 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (2 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (3 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (4 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (5 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (6 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (7 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (8 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (9 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (10 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (11 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: fail (12 errors) (for CDataProcessorGPU_function_macro_vMcPc).
+test: pass (with CDataProcessorGPU_function_macro_vMcPc)
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (for CDataProcessorGPU_openclT_vMcPc).
+test: pass (with CDataProcessorGPU_openclT_vMcPc)
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4).
+test: pass (with CDataProcessorGPU_openclT4_vMcPc4)
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4xyzw).
+test: pass (with CDataProcessorGPU_openclT4_vMcPc4xyzw)
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (for CDataProcessorGPU_openclT4_vMcPc4ls_fma).
+test: pass (with CDataProcessorGPU_openclT4_vMcPc4ls_fma)

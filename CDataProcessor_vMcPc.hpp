@@ -33,7 +33,7 @@ public:
   {
     this->debug=true;
     this->class_name="CDataProcessor_kernel_vMcPc";
-std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+//std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //    pKernel4CPU=kernel4CPU;
     this->check_locks(lock);
   }//constructor

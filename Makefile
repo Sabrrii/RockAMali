@@ -116,6 +116,10 @@ process_sequential_check: result_sequential.nc  sample_sequential.nc
 	ncap2 -s "ncoprocess=signal*2.1+123.45; diff=process-ncoprocess" all_sequential.nc -o diff_sequential.nc --overwrite && ncdump -h diff_sequential.nc
 	ncview diff_sequential.nc &
 
+#data check for all factory kernels
+process_sequential_vMcPc_check:
+	./process_sequential_vMcPc_check.sh | tee process_sequential_vMcPc_check.txt | grep -e ' ' -e fail --color
+
 #NS=123456
 send_run:
 	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 123456789
