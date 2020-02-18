@@ -65,13 +65,18 @@
 * \section sectionDocumentation documentation outline
 * This is the reference documentation of 
 * <a href="http://wiki.ganil.fr/gap/">RockAMali</a> software suite, 
-* from the <a href="http://www.ganil-spiral2.eu">GANIL</a>.\n\n
+* from the <a href="http://www.ganil-spiral2.eu">GANIL</a>.
+*
+* \par Programs:
+*
 * The main functions are in several files (one source file for each process)
 * - <a href="process_8cpp.html">process</a>
 * - <a href="process__sequential_8cpp.html">process sequential</a>
 * - <a href="receive_8cpp.html">receive</a>
 * - <a href="send_8cpp.html">send</a>
-* \n
+*
+* \par Creation:
+*
 * This documentation has been automatically generated from the sources,
 * (and especially <a href="doxygen_8cpp.html">doxygen.cpp</a> for this main page -no C++ code-)
 * using the tool <a href="http://www.doxygen.org">doxygen</a>. It should be readed as HTML, LaTex and man page.\n
@@ -83,9 +88,21 @@
 *
 * \par Additional needed libraries:
 *
-* \li \c CImg
-* \li \c BOOST::ASIO
-* \li \c BOOST::compute
+* \li \c CImg : containers and CLI (and its basic operations) -CLI: Command Line Interface-
+* \li \c BOOST::ASIO : (ethernet UDP)
+* \li \c BOOST::compute : (GPU with OpenCL)
+*
+* \par Optional libraries:
+*
+* \li \c -NetCDF: Network Common Data Form-
+* \li \c CImg.Tool : data storage (.nc)
+* \li \c NetCDF.Tool : parameter file (PIF) (.cdl -> .nc) -PIF: Parameter Interface File-
+*
+* \par Optional tools:
+*
+* \li \c NetCDF: ncgen, ncdump
+* \li \c NCO: ncrename, ncap2 (NetCDF operator)
+* \li \c ncview: NetCDF visualisation
 *
 * \section sectionDoxygenSyntax make documentation using Doxygen syntax
 * Each function in the source code should be commented using \b doxygen \b syntax in the same file.
