@@ -175,7 +175,7 @@ public:
  *  \warning: Tdata should be unsigned int as function from source lock type
  *  \note: function is static code (for compute::make_function_from_source, in constructor)
 **/
-template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
+template<typename Tdata=unsigned int,typename Tproc=float, typename Taccess=unsigned char>
 class CDataProcessorGPU_function : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
   compute::function<Tproc (Tdata)> *vMcPc;
@@ -183,7 +183,7 @@ class CDataProcessorGPU_function : public CDataProcessorGPU_vMcPc_check<Tdata,Tp
   {
     static compute::function<Tproc (Tdata)> tmp=compute::make_function_from_source<Tproc (Tdata)>(
         "vMcPc",
-        "unsigned int vMcPc(unsigned int x) { return x *2.1 + 123.45; }"
+        "float vMcPc(unsigned int x) { return x *2.1f + 123.45f; }"
     );
     vMcPc=&tmp;
   }//make_OpenCL_function

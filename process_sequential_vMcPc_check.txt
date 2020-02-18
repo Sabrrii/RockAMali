@@ -38,30 +38,18 @@ test: pass (for CDataProcessorGPU_vMcPc_closure).
 test: pass (for CDataProcessorGPU_vMcPc_closure).
 test: pass (for CDataProcessorGPU_vMcPc_closure).
 test: pass (with CDataProcessorGPU_vMcPc_closure)
-t0/1 4 B00 #0000: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.449997
-test: fail (1 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0001: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.550003
-test: fail (2 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0002: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.650002
-test: fail (3 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0003: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.75
-test: fail (4 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0004: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.850006
-test: fail (5 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0005: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.949997
-test: fail (6 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0006: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.0500031
-test: fail (7 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0007: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.149994
-test: fail (8 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0008: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.25
-test: fail (9 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0009: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.350006
-test: fail (10 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0010: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.449997
-test: fail (11 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
-t0/1 4 B00 #0011: CDataProcessorGPU_vMcPc.hpp::check_data/CDataProcessorGPU_function_vMcPc_uInt(...) max. error=0.550003
-test: fail (12 errors) (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
+test: pass (for CDataProcessorGPU_function_vMcPc_uInt).
 test: pass (with CDataProcessorGPU_function_vMcPc_uInt)
 test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
 test: pass (for CDataProcessorGPU_function_vMcPc_lambda).
