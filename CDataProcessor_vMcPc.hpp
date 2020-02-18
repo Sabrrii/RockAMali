@@ -3,7 +3,7 @@
 
 #include "CDataProcessor.hpp"
 
-//! complex operation for CPU process (intended for GPU lambda)
+//! complex operation for CPU process (primary intended for GPU lambda)
 /**
  * FMA: val*cst+cst, e.g. val * 2.1 + 123.45
 **/
@@ -12,7 +12,7 @@ void kernelCPU_vMcPc(CImg<Tdata> &in,CImg<Tproc> &out)
 {
   out=in*2.1 + 123.45;
 }//kernelCPU_vMcPc
-//! complex operation for CPU process (intended for GPU lambda)
+//! complex operation for CPU process (primary intended for GPU lambda)
 /**
  * FMA: val*cst+cst
 **/
