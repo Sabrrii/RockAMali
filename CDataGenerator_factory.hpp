@@ -2,7 +2,7 @@
 #define _DATA_GENERATOR_FACTORY_
 
 #include "CDataGenerator.hpp"
-//! \todo [low] add CDataGenerator_physic: PAC_peak(+noise) (e.g. in CDataGenerator_physic.hpp)
+#include "CDataGenerator_PAC.hpp"
 
 //! factory for data generator
 /**
@@ -22,19 +22,21 @@ public:
     //reset
     factory_types.clear();
     //if
+    ///base:  CDataGenerator.hpp
     factory_types.push_back      ("count")         ;if(name == factory_types.back())
       return new CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status);
 #ifdef DO_NETCDF
     //! NetCDF enabling more classes, e.g. classes that load parameters from .CDL (i.e. .nc)
+    //noise:  CDataGenerator.hpp
     factory_types.push_back      ("signal_random")     ;if(name == factory_types.back())
-      return new CDataGenerator_Random<Tdata, Taccess>(lock,wait_status,set_status);  
+      return new CDataGenerator_Random<Tdata, Taccess>(lock,wait_status,set_status);
+    ///PAC peak:  CDataGenerator_PAC.hpp
     factory_types.push_back      ("full_random")       ;if(name == factory_types.back())
       return new CDataGenerator_Full_Random<Tdata, Taccess>(lock,wait_status,set_status);
     factory_types.push_back      ("signal_pac")        ;if(name == factory_types.back())
       return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status);
     factory_types.push_back      ("peak_noise")        ;if(name == factory_types.back())
       return new CDataGenerator_Peak_Noise<Tdata, Taccess>(lock,wait_status,set_status);
-
 #endif //NetCDF
 //    if(name == "error")
 //      return new CDataGenerator_error;
