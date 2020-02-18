@@ -221,9 +221,9 @@ template<typename Tdata,typename Tproc, typename Taccess=unsigned char>
 class CDataProcessorGPU_function_macro : public CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>
 {
 //OpenCL function for this class
-  BOOST_COMPUTE_FUNCTION(Tdata, vMcPc, (Tdata x),
+  BOOST_COMPUTE_FUNCTION(Tproc, vMcPc, (Tdata x),
   {
-    return x *2.1 + 123.45;
+    return x *2.1f + 123.45f;
   });//FUNCTION
 public:
   CDataProcessorGPU_function_macro(std::vector<omp_lock_t*> &lock
