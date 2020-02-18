@@ -33,12 +33,15 @@ public:
 //std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...)"<<std::endl;
     if(this->do_check)
     {
-      Tproc epsilon=0.001;
+      const Tproc epsilon=0.001;
       CImg<Tproc> imgt;
       kernelCPU_vMcPc(img,imgt);
 //imgt.print("img check",false);
 //this->image.print("img GPU",false);
-      return ((this->image-imgt).abs().max()<epsilon);
+      const Tproc error=(this->image-imgt).abs().max();
+      const bool no_error=(error<epsilon);
+      if(!no_error) std::cout<<__FILE__<<"::"<<__func__<<"/"<<this->class_name<<"(...) max. error="<<error<<std::endl;
+      return no_error;
     }//do_check
     return true;
   }//check_data
