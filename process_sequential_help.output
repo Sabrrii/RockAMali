@@ -5,23 +5,23 @@
  usage: ./process -h
         ./process -s 1024 -n 123 -o result.nc
 
- version: v0.6.1d
+ version: v0.6.1f
           CImg_NetCDF.v0.8.3
           CParameterNetCDF.v0.5.0
           NcTypeInfo.v0.1.2
  compiled types <Tdata,Tproc, Taccess>=<unsigned int,float, unsigned char>
- compilation date: (Feb 17 2020, 16:04:07)
+ compilation date: (Feb 18 2020, 09:21:53)
 
-    -o               samples/sample.cimg      output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)
-    -r               results/sample.cimg      result file name (e.g. "-r result.nc" or  "-r result.cimg -d 3" gives result_???.cimg)
-    -d               6                        number of digit for file names
-    -s               1024                     size   of udp buffer
-    -n               256                      number of frames
-    --generator-factory count                    generator type, e.g. count, random or peak
-    --CPU-factory    count                    CPU processing type, e.g. count or kernel
-    --use-GPU        false                    use GPU for compution (or -G option)
-    --GPU-factory    program                  GPU processing type, e.g. program or function
-    --do-check       false                    do data check, e.g. test pass (or -C option)
-    --help           true                     help (or -h option)
-    --info           false                    show compilation options (or -I option)
-    --version        false                    show version (or -v option)
+    -o               samples/sample.cimg      output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
+    -r               results/sample.cimg      result file name (e.g. "-r result.nc" or  "-r result.cimg -d 3" gives result_???.cimg)[0;0;0m
+    -d               6                        number of digit for file names[0;0;0m
+    -s               1024                     size   of udp buffer[0;0;0m
+    -n               256                      number of frames[0;0;0m
+    --generator-factory count                    generator type, e.g. count, random or peak[0;0;0m
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel[0;0;0m
+    --use-GPU        false                    use GPU for compution (or -G option)[0;0;0m
+    --GPU-factory    program                  GPU processing type, e.g. program or function[0;0;0m
+    --do-check       false                    do data check, e.g. test pass (or -C option)[0;0;0m
+    --help           true                     help (or -h option)[0;0;0m
+    --info           false                    show compilation options (or -I option)[0;0;0m
+    --version        false                    show version (or -v option)[0;0;0m
