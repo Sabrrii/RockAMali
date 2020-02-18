@@ -1,7 +1,7 @@
 #ifndef _DATA_PROCESSOR_CPU_FACTORY_
 #define _DATA_PROCESSOR_CPU_FACTORY_
 
-#include "CDataProcessor.hpp"
+#include "CDataProcessor_energy.hpp"
 //! \todo [low] add morpho one "CDataProcessor_morphomath.hpp"
 
 //! factory for data processing on CPU

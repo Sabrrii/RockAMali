@@ -1,7 +1,7 @@
 #ifndef _DATA_PROCESSOR_GPU_FACTORY_
 #define _DATA_PROCESSOR_GPU_FACTORY_
 
-#include "CDataProcessorGPU.hpp"
+#include "CDataProcessorGPU_energy.hpp"
 
 //! factory for GPU processing
 /**
