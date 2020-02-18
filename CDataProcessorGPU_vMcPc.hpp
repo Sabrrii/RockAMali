@@ -154,8 +154,8 @@ public:
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
     //compute with closure
-    Tdata mul = 2.1;
-    Tdata cst = 123.45;
+    Tproc mul = 2.1;
+    Tproc cst = 123.45;
     BOOST_COMPUTE_CLOSURE(Tproc, vMcPc, (Tdata x), (mul, cst),
     {
         return x * mul + cst;

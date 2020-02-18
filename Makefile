@@ -54,7 +54,7 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
-all: process_sequential version factory process_sequential_run
+all: process_sequential version factory process_sequential_run process_sequential_vMcPc_check
 
 #all: time_copy
 time_copy: time_copy.cpp
