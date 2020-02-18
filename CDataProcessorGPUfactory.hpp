@@ -3,6 +3,7 @@
 
 #include "CDataProcessorGPU.hpp"
 #include "CDataProcessorGPUopencl.hpp"
+#include "CDataProcessorGPU_energy.hpp"
 
 //! factory for GPU processing
 /**
