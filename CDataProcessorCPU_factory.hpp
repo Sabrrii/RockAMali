@@ -1,6 +1,9 @@
 #ifndef _DATA_PROCESSOR_CPU_FACTORY_
 #define _DATA_PROCESSOR_CPU_FACTORY_
 
+#include "CDataProcessor.hpp"
+#include "CDataProcessor_vMvPv.hpp"
+#include "CDataProcessor_vMcPc.hpp"
 #include "CDataProcessor_energy.hpp"
 //! \todo [low] add morpho one "CDataProcessor_morphomath.hpp"
 
@@ -25,12 +28,16 @@ public:
     //reset
     factory_types.clear();
     //if
+    ///base:  CDataProcessorGPU.hpp
     factory_types.push_back   ("count")               ;if(name == factory_types.back())
       return new CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    ///vMvPv: CDataProcessorGPU_vMvPv.hpp
     factory_types.push_back   ("vPvMv")               ;if(name == factory_types.back())
       return new CDataProcessor_vPvMv<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    ///vMcPc: CDataProcessorGPU_vMcPc.hpp
     factory_types.push_back   ("kernel")              ;if(name == factory_types.back())
       return new CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    ///energy: CDataProcessorGPU_energy.hpp
     factory_types.push_back   ("pac")                ;if(name == factory_types.back())
       return new CDataProcessor_Max_Min<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
 #ifdef DO_NETCDF

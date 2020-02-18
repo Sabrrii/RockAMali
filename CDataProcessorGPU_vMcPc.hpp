@@ -2,6 +2,7 @@
 #define _DATA_PROCESSOR_GPU_VMCPC_
 
 #include "CDataProcessorGPU.hpp"
+#include "CDataProcessor_vMcPc.hpp"
 
 //! vMcPc operation for GPU process
 /**
