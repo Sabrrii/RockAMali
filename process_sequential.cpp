@@ -250,13 +250,13 @@ int main(int argc,char **argv)
         #if cimg_display!=0   
          if(show) images[0].display_graph(generator_type.c_str());
         #endif
- 	std::cout<< process->class_name<<std::endl; //return CDataProcessor_Max_Min
-	std::cout<< generate->class_name<<std::endl;//return CDataGenerator"name of generator"  example : CDataGenerator_Peak_Noise	
         cimg::tic();
         process->iteration(access,images, accessR,results, 0,i);
         cimg::toc();
+        cimg::tic();
         store.iteration(access,images, 0,i);
         storeR.iteration(accessR,results, 0,i);
+        cimg::toc();
 //        std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
         //check
         if(do_check)
