@@ -7,6 +7,9 @@
 #include <boost/compute.hpp>
 #ifdef DO_GPU_PROFILING
 #include <boost/compute/async/future.hpp>
+#ifdef DO_NETCDF
+#include "CImg_NetCDF.h"
+#endif //DO_NETCDF
 #endif //DO_GPU_PROFILING
 
 //Package CImg
@@ -27,7 +30,13 @@ using compute::lambda::_1;
  * , please use queueing and dequeuing classes to have great performances.
  * This class might be used for debug or test only.
 **/
-template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
+template<typename Tdata, typename Tproc, typename Taccess=unsigned char
+#ifdef DO_GPU_PROFILING
+#ifdef DO_NETCDF
+, typename Tnetcdf=int
+#endif //DO_NETCDF
+#endif //DO_GPU_PROFILING
+>
 class CDataProcessorGPU : public CDataProcessor<Tdata,Tproc, Taccess>
 {
 public:
@@ -36,6 +45,18 @@ public:
 #ifdef DO_GPU_PROFILING
   //profiling
   compute::future<void> future;
+#ifdef DO_NETCDF
+  std::string file_name="profiling.nc";
+  CImgNetCDF<Tnetcdf> nc;
+  CImg<Tnetcdf> nc_img;//temporary image for type conversion
+  bool is_netcdf_init;
+  //dimension names
+  std::vector<std::string> dim_names;
+  std::string dim_time;
+  //variable names (and its unit)
+  std::string var_name;
+  std::string unit_name;
+#endif //DO_NETCDF
 #endif //DO_GPU_PROFILING
 
   // create vectors on the device
@@ -64,6 +85,18 @@ public:
     this->debug=true;
     this->class_name="CDataProcessorGPU";
     this->image.assign(VECTOR_SIZE);
+#ifdef DO_NETCDF
+    nc_img.assign(3);
+std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+    is_netcdf_init=false;
+    dim_time="dimF";
+    dim_names.push_back("dimP");
+    //variable names (and its unit)
+    var_name="kernel_elapsed_time";
+    unit_name="us";
+std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+#endif //NetCDF
     this->check_locks(lock);
   }//constructor
 
@@ -77,6 +110,8 @@ public:
     boost::chrono::microseconds duration=future.get_event().duration<boost::chrono::microseconds>();
     // print elapsed time in microseconds
     std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
+    nc_img(0)=duration.count();
+std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
   }//elapsed_time
   #endif //DO_GPU_PROFILING
 
