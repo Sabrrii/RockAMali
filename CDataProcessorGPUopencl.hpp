@@ -124,6 +124,8 @@ public:
   compute::vector<Tproc4> device_vector_out4;
   CImg<Tdata4> in4;
   CImg<Tproc4> out4;
+  //profiling
+  compute::future<void> future;
 
 //! OpenCL source (with template)
 /**
@@ -195,7 +197,7 @@ virtual void define_opencl_source()
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
-    compute::future<void> future=compute::copy_async(in4.begin(),in4.end(), device_vector_in4.begin(), this->queue);
+    future=compute::copy_async(in4.begin(),in4.end(), device_vector_in4.begin(), this->queue);
     //compute
     kernelGPU4(device_vector_in4,device_vector_out4);
     //copy GPU to CPU
