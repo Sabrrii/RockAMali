@@ -200,10 +200,10 @@ virtual void define_opencl_source()
     // wait for copy to finish
     future.wait();
     // get elapsed time from event profiling information
-    boost::chrono::milliseconds duration =
-        future.get_event().duration<boost::chrono::milliseconds>();
-    // print elapsed time in milliseconds
-    std::cout << "[compute] time: " << duration.count() << " ms" << std::endl;
+    boost::chrono::microseconds duration =
+        future.get_event().duration<boost::chrono::microseconds>();
+    // print elapsed time in microseconds
+    std::cout << "[compute] time: " << duration.count() << " us" << std::endl;
 
     //compute
     kernelGPU4(device_vector_in4,device_vector_out4);
