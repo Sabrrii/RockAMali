@@ -276,6 +276,17 @@ int main(int argc,char **argv)
          if(show) results[0].display_graph(processor_type.c_str());
         #endif
       }//vector loop
+
+#ifdef DO_GPU_PROFILING
+#ifdef DO_NETCDF
+//! \bug [GPU_PROFILING and NetCDF] force close of file ?!
+      {
+      CDataProcessorGPU<Tdata,Tproc, Taccess>*gpuprocess=(CDataProcessorGPU<Tdata,Tproc, Taccess>*)process;
+      gpuprocess->nc.pNCFile->close();
+      }
+#endif //DO_NETCDF
+#endif //DO_GPU_PROFILING
+
       break;
     }//sequential
   }//switch(id)

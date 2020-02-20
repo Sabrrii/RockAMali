@@ -1265,7 +1265,7 @@ INCLUDE_FILE_PATTERNS  =
 # undefined via #undef or recursively expanded use the := operator
 # instead of the = operator.
 
-PREDEFINED             = DO_NETCDF   DO_GPU DO_GPU_NO_QUEUE
+PREDEFINED             = DO_NETCDF   DO_GPU DO_GPU_NO_QUEUE DO_GPU_PROFILING
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.

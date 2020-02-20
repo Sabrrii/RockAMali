@@ -113,10 +113,6 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     nc_img(0)=duration.count();
 nc_img.print("profiling",false);
 std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
-
-//! \bug [NetCDF] force close
-nc.pNCFile->close();
-
   }//elapsed_time
   #endif //DO_GPU_PROFILING
 
