@@ -45,7 +45,7 @@ public:
   , bool do_check=false
   )
   : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
-  , ctx(device), queue(ctx, device)
+  , ctx(device), queue(ctx, device,compute::command_queue::enable_profiling)
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
   {
 //! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)

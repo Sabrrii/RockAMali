@@ -3,6 +3,8 @@
 
 #include "CDataProcessorGPU.hpp"
 
+#include <boost/compute/async/future.hpp>
+
 //! complex operation with OpenCL including template types for GPU process
 /**
  *  FMA: val * 2.1 + 123.45
@@ -192,8 +194,17 @@ virtual void define_opencl_source()
     ///share data
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
+
     //copy CPU to GPU
-    compute::copy(in4.begin(), in4.end(), device_vector_in4.begin(), this->queue);
+    compute::future<void> future = compute::copy_async(in4.begin(), in4.end(), device_vector_in4.begin(), this->queue);
+    // wait for copy to finish
+    future.wait();
+    // get elapsed time from event profiling information
+    boost::chrono::milliseconds duration =
+        future.get_event().duration<boost::chrono::milliseconds>();
+    // print elapsed time in milliseconds
+    std::cout << "[compute] time: " << duration.count() << " ms" << std::endl;
+
     //compute
     kernelGPU4(device_vector_in4,device_vector_out4);
     //copy GPU to CPU
