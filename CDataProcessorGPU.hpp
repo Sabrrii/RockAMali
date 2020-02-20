@@ -67,6 +67,19 @@ public:
     this->check_locks(lock);
   }//constructor
 
+  #ifdef DO_GPU_PROFILING
+  virtual void kernel_elapsed_time()
+  {
+    //close elapsed time
+    future.wait();
+    // get elapsed time from event profiling information
+    compute::event evt=future.get_event();
+    boost::chrono::microseconds duration=future.get_event().duration<boost::chrono::microseconds>();
+    // print elapsed time in microseconds
+    std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
+  }//elapsed_time
+  #endif //DO_GPU_PROFILING
+
   //! compution kernel for an iteration (compution=copy, here)
   virtual void kernelGPU(compute::vector<Tdata> &in,compute::vector<Tproc> &out)
   {
@@ -93,12 +106,7 @@ public:
     //wait for completion
     queue.finish();
    #ifdef DO_GPU_PROFILING
-    //close elapsed time
-    this->future.wait();
-    // get elapsed time from event profiling information
-    boost::chrono::microseconds duration=this->future.get_event().duration<boost::chrono::microseconds>();
-    // print elapsed time in microseconds
-    std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
+    kernel_elapsed_time();
    #endif //DO_GPU_PROFILING
   };//kernel
 
