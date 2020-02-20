@@ -1,0 +1,51 @@
+for((i=0;i<10;++i)); do time ./time_copy ; done &>> time_copy.txt
+time: 69 ms
+
+real	0m1.770s
+user	0m1.484s
+sys	0m0.180s
+time: 42 ms
+
+real	0m1.736s
+user	0m1.432s
+sys	0m0.208s
+time: 83 ms
+
+real	0m1.782s
+user	0m1.456s
+sys	0m0.228s
+time: 71 ms
+
+real	0m1.730s
+user	0m1.440s
+sys	0m0.188s
+time: 89 ms
+
+real	0m1.749s
+user	0m1.460s
+sys	0m0.192s
+time: 79 ms
+
+real	0m1.742s
+user	0m1.452s
+sys	0m0.180s
+time: 69 ms
+
+real	0m1.780s
+user	0m1.468s
+sys	0m0.200s
+time: 40 ms
+
+real	0m1.732s
+user	0m1.424s
+sys	0m0.200s
+time: 81 ms
+
+real	0m1.761s
+user	0m1.460s
+sys	0m0.196s
+time: 72 ms
+
+real	0m1.735s
+user	0m1.452s
+sys	0m0.184s
