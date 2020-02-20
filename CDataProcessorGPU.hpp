@@ -45,7 +45,12 @@ public:
   , bool do_check=false
   )
   : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
-  , ctx(device), queue(ctx, device,compute::command_queue::enable_profiling)
+  , ctx(device)
+  , queue(ctx, device
+   #ifdef DO_GPU_PROFILING
+    ,compute::command_queue::enable_profiling
+   #endif //DO_GPU_PROFILING
+    )
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
   {
 //! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)
