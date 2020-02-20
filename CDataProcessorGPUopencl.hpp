@@ -2,7 +2,6 @@
 #define _DATA_PROCESSOR_GPU_OPENCL_
 
 #include "CDataProcessorGPU.hpp"
-#include <boost/compute/async/future.hpp>
 
 //! complex operation with OpenCL including template types for GPU process
 /**
@@ -123,10 +122,6 @@ public:
   compute::vector<Tproc4> device_vector_out4;
   CImg<Tdata4> in4;
   CImg<Tproc4> out4;
-#ifdef DO_GPU_PROFILING
-  //profiling
-  compute::future<void> futur;
-#endif //DO_GPU_PROFILING
 
 //! OpenCL source (with template)
 /**
