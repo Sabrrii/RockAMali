@@ -199,7 +199,7 @@ virtual void define_opencl_source()
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
    #ifdef DO_GPU_PROFILING
-    future=compute::copy_async
+    this->future=compute::copy_async
    #else
     compute::copy
    #endif //DO_GPU_PROFILING
@@ -212,9 +212,10 @@ virtual void define_opencl_source()
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
     //close elapsed time
-    future.wait();
+    this->future.wait();
     // get elapsed time from event profiling information
-    boost::chrono::microseconds duration=future.get_event().duration<boost::chrono::microseconds>();
+    compute::event evt=this->future.get_event();
+    boost::chrono::microseconds duration=evt.duration<boost::chrono::microseconds>();
     // print elapsed time in microseconds
     std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
    #endif //DO_GPU_PROFILING
