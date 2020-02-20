@@ -194,23 +194,20 @@ virtual void define_opencl_source()
     ///share data
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
-
     //copy CPU to GPU
-    compute::future<void> future = compute::copy_async(in4.begin(), in4.end(), device_vector_in4.begin(), this->queue);
-    // wait for copy to finish
-    future.wait();
-    // get elapsed time from event profiling information
-    boost::chrono::microseconds duration =
-        future.get_event().duration<boost::chrono::microseconds>();
-    // print elapsed time in microseconds
-    std::cout << "[compute] time: " << duration.count() << " us" << std::endl;
-
+    compute::future<void> future=compute::copy_async(in4.begin(),in4.end(), device_vector_in4.begin(), this->queue);
     //compute
     kernelGPU4(device_vector_in4,device_vector_out4);
     //copy GPU to CPU
-    compute::copy(device_vector_out4.begin(), device_vector_out4.end(), out4.begin(), this->queue);
+    compute::copy(device_vector_out4.begin(),device_vector_out4.end(), out4.begin(), this->queue);
     //wait for completion
     this->queue.finish();
+    //close elapsed time
+    future.wait();
+    // get elapsed time from event profiling information
+    boost::chrono::microseconds duration=future.get_event().duration<boost::chrono::microseconds>();
+    // print elapsed time in microseconds
+    std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
     ///unshare data
     in4._data=NULL;
     out4._data=NULL;
