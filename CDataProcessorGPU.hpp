@@ -96,8 +96,7 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
     unit_name="us";
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
-if (!(nc.pNCvar->add_att("kernel",this->class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding kernel name attribute"<<this->class_name<<" (NC_ERROR)."<< std::endl;
-#endif //NetCDF
+#endif //DO_NETCDF
     this->check_locks(lock);
   }//constructor
 
@@ -111,10 +110,19 @@ if (!(nc.pNCvar->add_att("kernel",this->class_name.c_str()))) std::cerr<<"error:
     boost::chrono::microseconds duration=future.get_event().duration<boost::chrono::microseconds>();
     // print elapsed time in microseconds
     std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
+   #ifdef DO_NETCDF
+    if(!is_netcdf_init)
+    {
+      //add class name in NetCDF profiling file
+      if (!(nc.pNCvar->add_att("kernel",this->class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding kernel name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+      is_netcdf_init=true;
+    }//!is_netcdf_init
+    //add data to NetCDF profiling file
     nc_img(0)=duration.count();
 nc_img.print("profiling",false);
 std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
-  }//elapsed_time
+   #endif //DO_NETCDF
+  }//kernel_elapsed_time
   #endif //DO_GPU_PROFILING
 
   //! compution kernel for an iteration (compution=copy, here)
