@@ -5,7 +5,7 @@ FRAME_SIZE=4096
 NP=1
 GEN_FCT=count
 PROC=kernel
-USE_GPU=--use-GPU --GPU-factory program_T4
+USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
 #USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
@@ -108,7 +108,7 @@ process_run:
 #	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -b $(NB) -n $(NS) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
 
 process_sequential_run:
-	ncgen parameters.cdl -o parameters.nc && rm -f sample_sequential.nc result_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc -r result_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc && ncdump -h result_sequential.nc #&& ncview sample_sequential.nc
+	ncgen parameters.cdl -o parameters.nc && rm -f sample_sequential.nc result_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc -r result_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 2345 $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc && ncdump -h result_sequential.nc #&& ncview sample_sequential.nc
 #	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n 12 $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
 
 process_sequential_check: result_sequential.nc  sample_sequential.nc
