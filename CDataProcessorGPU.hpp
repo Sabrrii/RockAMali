@@ -86,7 +86,7 @@ public:
     this->class_name="CDataProcessorGPU";
     this->image.assign(VECTOR_SIZE);
 #ifdef DO_NETCDF
-    nc_img.assign(3);
+    nc_img.assign(1,1,1,1,-99);
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
     is_netcdf_init=false;
     dim_time="dimF";
@@ -111,7 +111,12 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     // print elapsed time in microseconds
     std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
     nc_img(0)=duration.count();
+nc_img.print("profiling",false);
 std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+
+//! \bug [NetCDF] force close
+nc.pNCFile->close();
+
   }//elapsed_time
   #endif //DO_GPU_PROFILING
 

@@ -8,7 +8,7 @@ using namespace cimg_library;
 //NetCDF
 #ifdef DO_NETCDF
 #include "CImg_NetCDF.h"
-#endif //NetCDF
+#endif //DO_NETCDF
 
 //thread lock
 #include "CDataBuffer.hpp"
