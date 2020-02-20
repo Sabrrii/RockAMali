@@ -2,9 +2,7 @@
 #define _DATA_PROCESSOR_GPU_OPENCL_
 
 #include "CDataProcessorGPU.hpp"
-#ifdef DO_GPU_PROFILING
 #include <boost/compute/async/future.hpp>
-#endif //DO_GPU_PROFILING
 
 //! complex operation with OpenCL including template types for GPU process
 /**
@@ -125,10 +123,6 @@ public:
   compute::vector<Tproc4> device_vector_out4;
   CImg<Tdata4> in4;
   CImg<Tproc4> out4;
-#ifdef DO_GPU_PROFILING
-  //profiling
-  compute::future<void> future;
-#endif //DO_GPU_PROFILING
 
 //! OpenCL source (with template)
 /**
@@ -201,7 +195,7 @@ virtual void define_opencl_source()
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
    #ifdef DO_GPU_PROFILING
-    future=compute::copy_async
+    this->future=compute::copy_async
    #else
     compute::copy
    #endif //DO_GPU_PROFILING
@@ -214,9 +208,9 @@ virtual void define_opencl_source()
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
     //close elapsed time
-    future.wait();
+    this->future.wait();
     // get elapsed time from event profiling information
-    boost::chrono::microseconds duration=future.get_event().duration<boost::chrono::microseconds>();
+    boost::chrono::microseconds duration=this->future.get_event().duration<boost::chrono::microseconds>();
     // print elapsed time in microseconds
     std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
    #endif //DO_GPU_PROFILING

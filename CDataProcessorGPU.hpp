@@ -5,6 +5,9 @@
 #include <vector>
 #include <iostream>
 #include <boost/compute.hpp>
+#ifdef DO_GPU_PROFILING
+#include <boost/compute/async/future.hpp>
+#endif //DO_GPU_PROFILING
 
 //Package CImg
 #include <CImg.h>
@@ -30,6 +33,10 @@ class CDataProcessorGPU : public CDataProcessor<Tdata,Tproc, Taccess>
 public:
   compute::context ctx;
   compute::command_queue queue;
+#ifdef DO_GPU_PROFILING
+  //profiling
+  compute::future<void> future;
+#endif //DO_GPU_PROFILING
 
   // create vectors on the device
   compute::vector<Tdata> device_vector_in;
@@ -73,13 +80,26 @@ public:
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     //copy CPU to GPU
-    compute::copy(in.begin(), in.end(), device_vector_in.begin(), queue);
+   #ifdef DO_GPU_PROFILING
+    this->future=compute::copy_async
+   #else
+    compute::copy
+   #endif //DO_GPU_PROFILING
+    (in.begin(), in.end(), device_vector_in.begin(), queue);
     //compute
     kernelGPU(device_vector_in,device_vector_out);
     //copy GPU to CPU
     compute::copy(device_vector_out.begin(), device_vector_out.end(), out.begin(), queue);
     //wait for completion
     queue.finish();
+   #ifdef DO_GPU_PROFILING
+    //close elapsed time
+    this->future.wait();
+    // get elapsed time from event profiling information
+    boost::chrono::microseconds duration=this->future.get_event().duration<boost::chrono::microseconds>();
+    // print elapsed time in microseconds
+    std::cout << "[compute] GPU kernel time: " << duration.count() << " us" << std::endl;
+   #endif //DO_GPU_PROFILING
   };//kernel
 
 };//CDataProcessorGPU
