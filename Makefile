@@ -9,6 +9,7 @@ USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
 #USE_GPU=
 DO_CHECK=--do-check
 #DO_CHECK=
+DO_PROFILING=-DDO_PROFILING
 
 DATA=./
 DATA=/media/temp/
@@ -78,8 +79,8 @@ process: process.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(S
 #SEQ_GPU=-DDO_GPU_SEQ_QUEUE
 SEQ_GPU=-DDO_GPU_NO_QUEUE
 process_sequential: process_sequential.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp $(SRC_NETCDF)
-	g++ -std=c++11 $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./process_sequential   -h -I && ./process_sequential   -v > VERSION
-#	g++ -std=c++11 $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
+	g++ -std=c++11 $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) $(DO_PROFILING) && ./process_sequential   -h -I && ./process_sequential   -v > VERSION
+#	g++ -std=c++11 $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) $(DO_PROFILING) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
 	./process_sequential -h 2> process_sequential_help.output
 
 send: send.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) CDataSend.hpp $(SRC_NETCDF)

@@ -5,15 +5,20 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#ifdef DO_PROFILING
 //std::chrono
 #include <ctime>
 #include <ratio>
 #include <chrono>
+#ifdef DO_NETCDF
+#include "CImg_NetCDF.h"
+#endif //DO_NETCDF
+#endif //DO_PROFILING
 
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.6.2m"
+#define VERSION "v0.6.2n"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -254,22 +259,28 @@ int main(int argc,char **argv)
         #if cimg_display!=0   
          if(show) images[0].display_graph(generator_type.c_str());
         #endif
+#ifdef DO_PROFILING
        cimg::tic();
        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+#endif //DO_PROFILING
         process->iteration(access,images, accessR,results, 0,i);
+#ifdef DO_PROFILING
        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
        cimg::toc();
        std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
        std::cout << "iteration elapsed time=" << time_span.count()*1000 << " ms.";
        cimg::tic();
        t1 = std::chrono::high_resolution_clock::now();
+#endif //DO_PROFILING
         store.iteration(access,images, 0,i);
         storeR.iteration(accessR,results, 0,i);
+#ifdef DO_PROFILING
        t2 = std::chrono::high_resolution_clock::now();
        cimg::toc();
        time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
        std::cout << "storage elapsed time=" << time_span.count()*1000 << " ms.";
 //        std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
+#endif //DO_PROFILING
         //check
         if(do_check)
         {
