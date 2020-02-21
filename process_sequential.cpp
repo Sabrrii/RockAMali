@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.6.2n"
+#define VERSION "v0.6.2o"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -251,6 +251,32 @@ int main(int argc,char **argv)
      //stores
       CDataStore<Tdata,Taccess> store(locks,    imagefilename,digit, CDataAccess::STATUS_PROCESSED);
       CDataStore<Tproc,Taccess> storeR(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);
+#ifdef DO_PROFILING
+#ifdef DO_NETCDF
+    std::string file_name="profiling_process.nc";
+    CImgListNetCDF<Tnetcdf> nc;
+    CImgList<Tnetcdf> nc_img;//temporary image for type conversion
+    //dimension names
+    std::vector<std::string> dim_names;
+    std::string dim_time;
+    //variable names (and its unit)
+    std::vector<std::string> var_names;
+    std::vector<std::string> unit_names;
+    nc_img.assign(2, 1,1,1,1, -99);
+    std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+    dim_time="dimF";
+    dim_names.push_back("dim1");
+    std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+    //variable names (and its unit)
+    var_names.push_back("iteration");
+    var_names.push_back("storage");
+    unit_names.push_back("us");
+    unit_names.push_back("us");
+std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
+
+#endif //DO_NETCDF
+#endif //DO_PROFILING
+
       //run
       for(unsigned int i=0;i<count;++i)
       {
@@ -269,6 +295,7 @@ int main(int argc,char **argv)
        cimg::toc();
        std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
        std::cout << "iteration elapsed time=" << time_span.count()*1000 << " ms.";
+       nc_img(0)(0)=time_span.count()*1000000;//us
        cimg::tic();
        t1 = std::chrono::high_resolution_clock::now();
 #endif //DO_PROFILING
@@ -279,7 +306,9 @@ int main(int argc,char **argv)
        cimg::toc();
        time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
        std::cout << "storage elapsed time=" << time_span.count()*1000 << " ms.";
+       nc_img(1)(0)=time_span.count()*1000000;//us
 //        std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
+       std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
 #endif //DO_PROFILING
         //check
         if(do_check)

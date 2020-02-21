@@ -1,7 +1,7 @@
 information: -factory- generator types are: count, signal_random, full_random, signal_pac, peak_noise.
 information: -factory- CPU processor types are: count, vPvMv, kernel, pac, filter.
 information: -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro, discri, discri_in2, discri_in4, program_template, program_T4, program_T4xyzw, program_T4ls_fma.
-v0.6.2l
+v0.6.2o
   CImg_NetCDF.v0.8.3
   CParameterNetCDF.v0.5.0
   NcTypeInfo.v0.1.2

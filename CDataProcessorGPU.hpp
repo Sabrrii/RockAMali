@@ -46,7 +46,7 @@ public:
   //profiling
   compute::future<void> future;
 #ifdef DO_NETCDF
-  std::string file_name="profiling.nc";
+  std::string file_name="profiling_gpu.nc";
   CImgNetCDF<Tnetcdf> nc;
   CImg<Tnetcdf> nc_img;//temporary image for type conversion
   bool is_netcdf_init;
