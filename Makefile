@@ -62,6 +62,9 @@ all: process_sequential version factory process_sequential_run
 time_copy: time_copy.cpp
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 
+std_high_res_clock: std_high_res_clock.cpp
+	g++ -std=c++0x std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
+
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
 	./generate.X -h 2> generateX_help.output
