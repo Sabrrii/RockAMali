@@ -23,7 +23,7 @@ public:
   )
   : CDataProcessorGPU<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU_vMcPc_check";
     this->check_locks(lock);
   }//constructor
@@ -75,7 +75,7 @@ public:
   )
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU_vMcPc_lambda";
     this->check_locks(lock);
   }//constructor
@@ -109,7 +109,7 @@ public:
   )
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU_function_vMcPc_lambda";
     this->check_locks(lock);
   }//constructor
@@ -145,7 +145,7 @@ public:
   )
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU_vMcPc_closure";
     this->check_locks(lock);
   }//constructor
@@ -188,6 +188,7 @@ class CDataProcessorGPU_function : public CDataProcessorGPU_vMcPc_check<Tdata,Tp
     vMcPc=&tmp;
   }//make_OpenCL_function
 public:
+
   CDataProcessorGPU_function(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
@@ -198,7 +199,7 @@ public:
   )
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU_function_vMcPc_uInt";
     this->check_locks(lock);
     make_OpenCL_function();
@@ -236,7 +237,7 @@ public:
   )
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU_function_macro_vMcPc";
     this->check_locks(lock);
   }//constructor
@@ -286,7 +287,7 @@ public:
   )
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU_opencl_vMcPc";
     this->check_locks(lock);
     //OpenCL framework

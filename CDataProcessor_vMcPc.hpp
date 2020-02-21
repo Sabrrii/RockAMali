@@ -31,7 +31,7 @@ public:
   )
   : CDataProcessor<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessor_kernel_vMcPc";
 //std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 //    pKernel4CPU=kernel4CPU;

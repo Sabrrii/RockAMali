@@ -82,7 +82,7 @@ public:
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
   {
 //! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)
-    this->debug=true;
+//    this->debug=true;
     this->class_name="CDataProcessorGPU";
     this->image.assign(VECTOR_SIZE);
 #ifdef DO_NETCDF
@@ -94,8 +94,8 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
     //variable names (and its unit)
     var_name="kernel_elapsed_time";
     unit_name="us";
-std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
-std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl;if(this->debug) std::cout<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl;  if(this->debug) std::cout<<std::flush;
 #endif //DO_NETCDF
     this->check_locks(lock);
   }//constructor
@@ -119,7 +119,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     }//!is_netcdf_init
     //add data to NetCDF profiling file
     nc_img(0)=duration.count();
-nc_img.print("profiling",false);
+if(this->debug) nc_img.print("profiling",false);
 std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
    #endif //DO_NETCDF
   }//kernel_elapsed_time

@@ -76,7 +76,7 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
   )
   : CDataProcessorGPU_vMcPc_check<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->check_locks(lock);
     //OpenCL framework
     program=make_opencl_program(this->ctx);
@@ -156,7 +156,7 @@ virtual void define_opencl_source()
   : CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   , device_vector_in4(VECTOR_SIZE/4, this->ctx), device_vector_out4(VECTOR_SIZE/4, this->ctx)
   {
-    this->debug=true;
+//    this->debug=true;
     this->check_locks(lock);
     in4._width=out4._width=VECTOR_SIZE/4;
     in4._height=out4._height=1;
@@ -265,7 +265,7 @@ virtual void define_opencl_source()
   )
   : CDataProcessorGPU_opencl_T4<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->check_locks(lock);
     //OpenCL framework
     this->program=this->make_opencl_program(this->ctx);
@@ -318,7 +318,7 @@ virtual void define_opencl_source()
   )
   : CDataProcessorGPU_opencl_T4<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
+//    this->debug=true;
     this->check_locks(lock);
     //OpenCL framework
     this->program=this->make_opencl_program(this->ctx);
