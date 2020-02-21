@@ -5,11 +5,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+//std::chrono
+#include <ctime>
+#include <ratio>
+#include <chrono>
 
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.6.2l"
+#define VERSION "v0.6.2m"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -250,13 +254,21 @@ int main(int argc,char **argv)
         #if cimg_display!=0   
          if(show) images[0].display_graph(generator_type.c_str());
         #endif
-        cimg::tic();
+       cimg::tic();
+       std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         process->iteration(access,images, accessR,results, 0,i);
-        cimg::toc();
-        cimg::tic();
+       std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+       cimg::toc();
+       std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+       std::cout << "iteration elapsed time=" << time_span.count()*1000 << " ms.";
+       cimg::tic();
+       t1 = std::chrono::high_resolution_clock::now();
         store.iteration(access,images, 0,i);
         storeR.iteration(accessR,results, 0,i);
-        cimg::toc();
+       t2 = std::chrono::high_resolution_clock::now();
+       cimg::toc();
+       time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+       std::cout << "storage elapsed time=" << time_span.count()*1000 << " ms.";
 //        std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
         //check
         if(do_check)

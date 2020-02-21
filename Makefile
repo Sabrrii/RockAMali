@@ -20,7 +20,7 @@ FOUT=$(FIN)
 
 #compiler options
 LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
-LIB_CIMG=-I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
+LIB_CIMG=-I../CImg -Wall -W -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 #NetCDF library (depending on target architecture)
@@ -63,7 +63,7 @@ time_copy: time_copy.cpp
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 
 std_high_res_clock: std_high_res_clock.cpp
-	g++ -std=c++0x std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
+	g++ -std=c++11 std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
@@ -78,8 +78,8 @@ process: process.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(S
 #SEQ_GPU=-DDO_GPU_SEQ_QUEUE
 SEQ_GPU=-DDO_GPU_NO_QUEUE
 process_sequential: process_sequential.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp $(SRC_NETCDF)
-	g++ $(SEQ_GPU) -O0  -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./process_sequential   -h -I && ./process_sequential   -v > VERSION
-#	g++ $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
+	g++ -std=c++11 $(SEQ_GPU) -O0 -o process_sequential   process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./process_sequential   -h -I && ./process_sequential   -v > VERSION
+#	g++ -std=c++11 $(SEQ_GPU) -O0 -o process_sequential.X  process_sequential.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./process_sequential.X -h -I && ./process_sequential.X -v > VERSION
 	./process_sequential -h 2> process_sequential_help.output
 
 send: send.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) CDataSend.hpp $(SRC_NETCDF)
