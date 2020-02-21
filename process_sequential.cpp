@@ -280,10 +280,11 @@ int main(int argc,char **argv)
 #ifdef DO_GPU_PROFILING
 #ifdef DO_NETCDF
 //! \bug [GPU_PROFILING and NetCDF] force close of file ?!
+      if(use_GPU)
       {
-      CDataProcessorGPU<Tdata,Tproc, Taccess>*gpuprocess=(CDataProcessorGPU<Tdata,Tproc, Taccess>*)process;
-      gpuprocess->nc.pNCFile->close();
-      }
+        CDataProcessorGPU<Tdata,Tproc, Taccess>*gpuprocess=(CDataProcessorGPU<Tdata,Tproc, Taccess>*)process;
+        gpuprocess->nc.pNCFile->close();
+      }//use_GPU
 #endif //DO_NETCDF
 #endif //DO_GPU_PROFILING
 
