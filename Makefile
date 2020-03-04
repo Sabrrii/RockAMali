@@ -1,15 +1,17 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
-FRAME_SIZE=4096
+FRAME_SIZE=1404
+PORT=20485
 NP=1
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
-#USE_GPU=
+USE_GPU=
 DO_CHECK=--do-check
-#DO_CHECK=
+DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
+DO_PROFILING=
 
 DATA=./
 DATA=/media/temp/
@@ -57,7 +59,8 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
-all: process_sequential version factory process_sequential_run
+#all: process_sequential version factory process_sequential_run
+all: receive version factory
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -137,7 +140,11 @@ receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 #	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
-	./receive -c $(NT) -s $(FRAME_SIZE) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -W
+	./receive -c $(NT) -s $(FRAME_SIZE) -p $(PORT) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -W
+##interface: (su)
+#iftop  -i p1p2
+#tshark -i p1p2 -c 12 -x
+#tshark -i p1p2 -c 1  -x -w /tmp/UDP_ml507 ; wc -c /tmp/UDP_ml507
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
