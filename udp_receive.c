@@ -12,6 +12,11 @@
 //! \todo [draft] check increment
 //! \todo [draft] count (and show) increment error (# and step)
 
+// UDP point to point test
+
+//! \todo add CImg for option and buffer
+//! \todo tests: ml507, RockAMali, numexo2
+
 int main()
 {
   int udpSocket, nBytes;
