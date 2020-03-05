@@ -175,7 +175,7 @@ ifeq ($(shell uname -p),x86_64)
 ##AMD64 (gan*)
 TMP=/tmp/
 udp_grab:
-	tshark -i p1p2 -f "$(FILTER)" -c $(NS) -x
+	tshark -i p1p2 -f "$(FILTER)" -c $(NS) -x | grep  -e port -e 0000 -e 0010 -e 0020 -e 0420
 	@echo "rm -f $(TMP)/UDP_ml507; tshark -i p1p2 -f \"$(FILTER)\" -c 1  -x -w $(TMP)/UDP_ml507 ; wc -c $(TMP)/UDP_ml507"
 else
 ##ARM64 (RockPro64)
