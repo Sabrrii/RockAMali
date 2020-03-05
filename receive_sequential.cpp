@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.8f"
+#define VERSION "v0.5.8g"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -192,10 +192,11 @@ int main(int argc,char **argv)
       //run
       for(unsigned int i=0;i<count;++i)
       {
-        std::cout<<"wait UDP"<<std::endl<<std::flush;
+        std::cout<<"wait UDP ..."<<std::flush;
 //        receive.iteration(access,images,0,i);
         receive.iteration(access,images,i,i);
-        images[0].print("UDP content");
+//        images[0].print("UDP content");
+        std::cout<<"i="<<images[0](0)<<std::endl;
         #if cimg_display!=0   
          if(show) images[0].display_graph("UDP content");
         #endif
