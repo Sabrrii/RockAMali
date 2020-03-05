@@ -15,7 +15,7 @@ DO_PROFILING=
 
 DATA=./
 DATA=/media/temp/
-#DATA=/tmp/
+DATA=/tmp/
 DIN=samples/
 DOUT=results/
 FIN=sample.cimg
@@ -60,7 +60,7 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
 #all: process_sequential version factory process_sequential_run
-all: send receive version factory
+all: send receive_sequential version factory
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -92,6 +92,10 @@ send: send.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) $(SRC_DATA_GENERATOR) CDataSend
 
 receive: receive.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
 	g++ -O0 -o receive receive.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./receive -h -I && ./receive -v > VERSION
+	./receive -h 2> receive_help.output
+
+receive_sequential: receive_sequential.cpp SDataTypes.hpp $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_PROCESS) CDataStore.hpp
+	g++ -O0 -o receive_sequential receive_sequential.cpp  $(LIB_CIMG) $(LIB_BOOST_ASIO) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./receive_sequential -h -I && ./receive -v > VERSION
 	./receive -h 2> receive_help.output
 
 doc: doxygen.sh Doxyfile.template doxygen.cpp VERSION VERSIONS $(HELP_OUTPUT) process.cpp process_sequential.cpp send.cpp receive.cpp  $(SRC_DATA_BUFFER) CDataReceive.hpp $(SRC_DATA_GENERATOR) $(SRC_DATA_PROCESS) CDataStore.hpp
@@ -142,6 +146,10 @@ receive_run: clear
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 #	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 	./receive -c $(NT) -s $(FRAME_SIZE) -p $(PORT) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -W
+
+receive_sequential_run: clear
+	./receive_sequential -c $(NT) -s $(FRAME_SIZE) -p $(PORT) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -W
+
 ##ganp157
 ganp_eth:
 	/sbin/ifconfig p1p2

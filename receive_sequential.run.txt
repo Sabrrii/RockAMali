@@ -1,0 +1,51 @@
+#256 samples
+
+sync; make receive_sequential_run
+
+rm -fr /tmp//samples/ /tmp//results/
+mkdir  /tmp//samples/ /tmp//results/
+rm -f sample_??????.cimg result_??????.cimg
+rm -f sample.nc sample_sequential.nc parameters.nc
+sync
+
+./receive_sequential -c `echo 1+3   | bc` -s 345 -p 20485 -b `echo 1*4096| bc` -n 16 -o /tmp/samples/sample.cimg -r /tmp/results/sample.cimg   -W
+information: -factory- CPU processor types are: count, vPvMv, kernel, pac, filter.
+image: this = 0x7f17eb9fd018, size = (345,1,1,1) [1380 b], data = (unsigned int*)0x12cf020..0x12cf583 (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+result: this = 0x7f17eb7cc018, size = (345,1,1,1) [1380 b], data = (unsigned int*)0x183f020..0x183f583 (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+access (free state): this = 0x7fff690f3b70, size = (4096,1,1,1) [4096 b], data = (unsigned char*)0x1daf020..0x1db001f (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+accessR (free state): this = 0x7fff690f3b50, size = (4096,1,1,1) [4096 b], data = (unsigned char*)0x1db0030..0x1db102f (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+information: warming up ~10 MB of RAM vv
+info: running 4 threads
+extention =.cimg
+extention =.cimg
+R0/4 4 B00 #0000 wait=1
+UDP content: this = 0x7f17eb9fd018, size = (345,1,1,1) [1380 b], data = (unsigned int*)0x12cf020..0x12cf583 (non-shared) = [ 1.64935e+08 1.64935e+08 1.64935e+08 1.64935e+08 1.64935e+08 1.64935e+08 1.64935e+08 1.64935e+08 ... 0 0 0 0 0 0 0 0 ], min = 0, max = 1.64935e+08, mean = 1.22387e+08, std = 7.22668e+07, coords_min = (256,0,0,0), coords_max = (0,0,0,0).
+^C
+
+make: *** [receive_sequential_run] Interrupt
+
+
+
+sync; make receive_sequential_run
+
+rm -fr /tmp//samples/ /tmp//results/
+mkdir  /tmp//samples/ /tmp//results/
+rm -f sample_??????.cimg result_??????.cimg
+rm -f sample.nc sample_sequential.nc parameters.nc
+sync
+
+./receive_sequential -c `echo 1+3   | bc` -s 345 -p 20485 -b `echo 1*4096| bc` -n 16 -o /tmp/samples/sample.cimg -r /tmp/results/sample.cimg   -W
+information: -factory- CPU processor types are: count, vPvMv, kernel, pac, filter.
+image: this = 0x7f8e0d6f4018, size = (345,1,1,1) [1380 b], data = (unsigned int*)0x20ba020..0x20ba583 (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+result: this = 0x7f8e0d4c3018, size = (345,1,1,1) [1380 b], data = (unsigned int*)0x262a020..0x262a583 (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+access (free state): this = 0x7fff85689360, size = (4096,1,1,1) [4096 b], data = (unsigned char*)0x2b9a020..0x2b9b01f (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+accessR (free state): this = 0x7fff85689340, size = (4096,1,1,1) [4096 b], data = (unsigned char*)0x2b9b030..0x2b9c02f (non-shared) = [ 0 0 0 0 0 0 0 0 ... 0 0 0 0 0 0 0 0 ].
+information: warming up ~10 MB of RAM vv
+info: running 4 threads
+extention =.cimg
+extention =.cimg
+wait UDP
+R0/4 4 B00 #0000 wait=1
+UDP content: this = 0x7f8e0d6f4018, size = (345,1,1,1) [1380 b], data = (unsigned int*)0x20ba020..0x20ba583 (non-shared) = [ 2.46513e+09 2.46513e+09 2.46513e+09 2.46513e+09 2.46513e+09 2.46513e+09 2.46513e+09 2.46513e+09 ... 0 0 0 0 0 0 0 0 ], min = 0, max = 2.46513e+09, mean = 1.82919e+09, std = 1.0801e+09, coords_min = (256,0,0,0), coords_max = (0,0,0,0).
+^C
+
