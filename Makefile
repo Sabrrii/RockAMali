@@ -1,7 +1,7 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
-FRAME_SIZE=4096
+FRAME_SIZE=12
 PORT=1234
 NP=1
 GEN_FCT=count
@@ -136,7 +136,7 @@ send_run:
 NP=1
 NT=`echo $(NP)+3   | bc`
 NB=`echo $(NP)*4096| bc`
-NS=12
+NS=16
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
@@ -150,19 +150,22 @@ receive_run: clear
 #rm -f /tmp/UDP_ml507; tshark -i p1p2 -c 1  -x -w /tmp/UDP_ml507 ; wc -c /tmp/UDP_ml507
 
 ##rockpro64 (sudo apt-get install tshark #yes#; sudo usermod -a -G wireshark rock64)
-#sudo /sbin/ifconfig enp1s0
-#sudo /sbin/ifconfig enp1s0 10.10.15.1/24
-#sudo /sbin/ifconfig enp1s0 down; sudo ethtool -s enp1s0 speed 10000 duplex full autoneg off; sudo /sbin/ifconfig enp1s0 up
-#ping 10.10.15.2 -c 1
+rockpro64_eth:
+	sudo /sbin/ifconfig enp1s0
+	sudo /sbin/ifconfig enp1s0 10.10.15.1/24
+	sudo /sbin/ifconfig enp1s0 down; sudo ethtool -s enp1s0 speed 10000 duplex full autoneg off; sudo /sbin/ifconfig enp1s0 up
+	ping 10.10.15.2 -c 1
+#rock64 (sudo apt-get install tshark #yes#; sudo usermod -a -G wireshark rock64)
 #sudo iftop  -i p1p2
-#tshark -i enp1s0 -c 12 -x
+#tshark -i enp1s0 -c 24 -x
 #tmp=/media/temp/; rm -f $tmp/UDP_ganl; tshark -i enp1s0 -c 1  -x -w $tmp/UDP_ganl ; wc -c $tmp/UDP_ganl
 
-##gansacq2
-#/sbin/ifconfig eth6
-#/sbin/ifconfig eth6 10.10.15.2/24
-#/sbin/ifconfig eth6 down; ethtool -s eth6 speed 10000 duplex full autoneg off; /sbin/ifconfig eth6 up
-#ping 10.10.15.1 -c 1
+##gansacq2 (su)
+gansacq2_eth:
+	/sbin/ifconfig eth6
+	/sbin/ifconfig eth6 10.10.15.2/24
+	/sbin/ifconfig eth6 down; ethtool -s eth6 speed 10000 duplex full autoneg off; /sbin/ifconfig eth6 up
+	ping 10.10.15.1 -c 1
 #iftop -i eth6
 
 clear:
