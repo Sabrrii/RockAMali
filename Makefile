@@ -1,8 +1,8 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
-FRAME_SIZE=1362
-PORT=20485
+FRAME_SIZE=4096
+PORT=1234
 NP=1
 GEN_FCT=count
 PROC=kernel
@@ -15,7 +15,7 @@ DO_PROFILING=
 
 DATA=./
 DATA=/media/temp/
-DATA=/tmp/
+#DATA=/tmp/
 DIN=samples/
 DOUT=results/
 FIN=sample.cimg
@@ -60,7 +60,7 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
 #all: process_sequential version factory process_sequential_run
-all: receive version factory
+all: send receive version factory
 
 #all: time_copy
 time_copy: time_copy.cpp
@@ -131,7 +131,7 @@ process_sequential_vMcPc_check:
 
 #NS=123456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -b  8 -n $(NS) -w 123456789
+	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -b  8 -n $(NS) -w 123456789
 
 NP=1
 NT=`echo $(NP)+3   | bc`
@@ -142,11 +142,28 @@ receive_run: clear
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 #	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 	./receive -c $(NT) -s $(FRAME_SIZE) -p $(PORT) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -W
+##ganp157
 #/sbin/ifconfig p1p2
-##interface: (su)
+# #interface: (su)
 #iftop  -i p1p2
 #tshark -i p1p2 -c 12 -x
-#tshark -i p1p2 -c 1  -x -w /tmp/UDP_ml507 ; wc -c /tmp/UDP_ml507
+#rm -f /tmp/UDP_ml507; tshark -i p1p2 -c 1  -x -w /tmp/UDP_ml507 ; wc -c /tmp/UDP_ml507
+
+##rockpro64 (sudo apt-get install tshark #yes#; sudo usermod -a -G wireshark rock64)
+#sudo /sbin/ifconfig enp1s0
+#sudo /sbin/ifconfig enp1s0 10.10.15.1/24
+#sudo /sbin/ifconfig enp1s0 down; sudo ethtool -s enp1s0 speed 10000 duplex full autoneg off; sudo /sbin/ifconfig enp1s0 up
+#ping 10.10.15.2 -c 1
+#sudo iftop  -i p1p2
+#tshark -i enp1s0 -c 12 -x
+#tmp=/media/temp/; rm -f $tmp/UDP_ganl; tshark -i enp1s0 -c 1  -x -w $tmp/UDP_ganl ; wc -c $tmp/UDP_ganl
+
+##gansacq2
+#/sbin/ifconfig eth6
+#/sbin/ifconfig eth6 10.10.15.2/24
+#/sbin/ifconfig eth6 down; ethtool -s eth6 speed 10000 duplex full autoneg off; /sbin/ifconfig eth6 up
+#ping 10.10.15.1 -c 1
+#iftop -i eth6
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
