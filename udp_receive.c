@@ -5,7 +5,15 @@
 #include <string.h>
 #include <stdlib.h>
 
-int main(){
+// UDP point to point draft test (UDP frame from ml507 at 752Mbps, i.e. 80MB/s)
+
+//! \todo [draft] show counter as uint32
+//! \todo [draft] argp for loop
+//! \todo [draft] check increment
+//! \todo [draft] count (and show) increment error (# and step)
+
+int main()
+{
   int udpSocket, nBytes;
   char buffer[2048];
   struct sockaddr_in serverAddr;
