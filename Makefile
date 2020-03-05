@@ -157,9 +157,10 @@ rockpro64_eth:
 	ping 10.10.15.2 -c 1
 #rock64 (sudo apt-get install tshark #yes#; sudo usermod -a -G wireshark rock64)
 #sudo iftop  -i p1p2
+FILTER=-f "dst port $(PORT)"
 udp_grab:
-	tshark -i enp1s0 -c 24 -x
-	#tmp=/media/temp/; rm -f $tmp/UDP_ganl; tshark -i enp1s0 -c 1  -x -w $tmp/UDP_ganl ; wc -c $tmp/UDP_ganl
+	tshark -i enp1s0 $(FILTER) -c $(NS) -x
+	echo "tmp=/media/temp/; rm -f $tmp/UDP_ganl; tshark -i enp1s0 $(FILTER) -c 1  -x -w $tmp/UDP_ganl ; wc -c $tmp/UDP_ganl"
 
 ##gansacq2 (su)
 gansacq2_eth:
