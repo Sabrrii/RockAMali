@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.8d"
+#define VERSION "v0.5.8e"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -60,7 +60,7 @@ int main(int argc,char **argv)
   ).c_str());//ouput file name for result
   const unsigned int digit=cimg_option("-d",6,  "number of digit for file names");
   const int width=cimg_option("-s",1024, "size   of udp buffer");
-  const int count=cimg_option("-n",1,  "number of vector");  //! \todo [high] should be NO count of the vectors with an infinite loop (to implement)
+  const int count=cimg_option("-n",12,  "number of vector");  //! \todo [high] should be NO count of the vectors with an infinite loop (to implement)
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
   const int threadCount=cimg_option("-c",2,"thread count (2 for receiving only or threads above 3 are processing one)");
   const unsigned short port=cimg_option("-p", 1234, "port where the packets are sent on the receiving device");
@@ -193,14 +193,17 @@ int main(int argc,char **argv)
       for(unsigned int i=0;i<count;++i)
       {
         std::cout<<"wait UDP"<<std::endl<<std::flush;
-        receive.iteration(access,images,0,i);
+//        receive.iteration(access,images,0,i);
+        receive.iteration(access,images,i,i);
         images[0].print("UDP content");
         #if cimg_display!=0   
          if(show) images[0].display_graph("UDP content");
         #endif
+/*
         store.iteration(access,images, 0,i);
         process->iteration(access,images, accessR,results, 0,i);
         storeR.iteration(accessR,results, 0,i);
+*/
       }
       break;
     }//sequential
