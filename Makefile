@@ -1,8 +1,8 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
-FRAME_SIZE=12
-PORT=1234
+FRAME_SIZE=345
+PORT=20485
 NP=1
 GEN_FCT=count
 PROC=kernel
@@ -174,7 +174,7 @@ TMP=/media/temp/
 udp_grab:
 	tshark -i enp1s0 -f "$(FILTER)" -c $(NS) -x
 	@echo "rm -f $(TMP)/UDP_ganl; tshark -i enp1s0 -f \"$(FILTER)\" -c 1  -x -w $(TMP)/UDP_ganl ; wc -c $(TMP)/UDP_ganl"
-endif #NetCDF
+endif #UPD grab
 #}UPD grab
 
 
