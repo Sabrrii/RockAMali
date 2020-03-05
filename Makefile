@@ -2,6 +2,7 @@
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=345
+FRAME_SIZE=256
 PORT=20485
 NP=1
 GEN_FCT=count
