@@ -143,7 +143,9 @@ receive_run: clear
 #	./receive -c 4 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
 	./receive -c $(NT) -s $(FRAME_SIZE) -p $(PORT) -b $(NB) -n $(NS) -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -W
 ##ganp157
-#/sbin/ifconfig p1p2
+ganp_eth:
+	/sbin/ifconfig p1p2
+	ping 10.10.17.202 -c 1
 # #interface: (su)
 #iftop  -i p1p2
 #tshark -i p1p2 -c 12 -x
@@ -157,11 +159,24 @@ rockpro64_eth:
 	ping 10.10.15.2 -c 1
 #rock64 (sudo apt-get install tshark #yes#; sudo usermod -a -G wireshark rock64)
 #sudo iftop  -i p1p2
+
+#UPD grab{
 FILTER=dst port $(PORT)
+ifeq ($(shell uname -p),x86_64)
+##AMD64 (gan*)
+TMP=/tmp/
+udp_grab:
+	tshark -i p1p2 -f "$(FILTER)" -c $(NS) -x
+	@echo "rm -f $(TMP)/UDP_ml507; tshark -i p1p2 -f \"$(FILTER)\" -c 1  -x -w $(TMP)/UDP_ml507 ; wc -c $(TMP)/UDP_ml507"
+else
+##ARM64 (RockPro64)
 TMP=/media/temp/
 udp_grab:
 	tshark -i enp1s0 -f "$(FILTER)" -c $(NS) -x
 	@echo "rm -f $(TMP)/UDP_ganl; tshark -i enp1s0 -f \"$(FILTER)\" -c 1  -x -w $(TMP)/UDP_ganl ; wc -c $(TMP)/UDP_ganl"
+endif #NetCDF
+#}UPD grab
+
 
 ##gansacq2 (su)
 gansacq2_eth:
