@@ -73,7 +73,7 @@ time_copy: time_copy.cpp
 std_high_res_clock: std_high_res_clock.cpp
 	g++ -std=c++11 std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
 
-udp_receive:
+udp_receive: udp_receive.c
 	gcc -std=c99 udp_receive.c -o udp_receive  && ./udp_receive
 
 gui: main.cpp

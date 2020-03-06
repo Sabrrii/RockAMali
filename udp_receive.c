@@ -7,10 +7,10 @@
 
 // UDP point to point draft test (UDP frame from ml507 at 752Mbps, i.e. 80MB/s)
 
-//! \todo [draft] . show counter as uint32
 //! \todo [draft] argp for loop
-//! \todo [draft] check increment
+//! \todo [draft] . check increment
 //! \todo [draft] count (and show) increment error (# and step)
+//! \todo [draft] swap endianness depending of arch.
 
 // UDP point to point test
 
@@ -40,13 +40,18 @@ int main()
   /*Initialize size variable to be used later on*/
   addr_size = sizeof serverStorage;
 
+  //index
+  unsigned int index=0;
+  unsigned int prev_index=0;
+  //index increment
+  long inc=0;
 //  while(1)
-  for(unsigned int i=0;i<1234;++i)
+  for(unsigned int i=0;i<12;++i)
   {
     /* Try to receive any incoming UDP datagram. Address and port of 
       requesting client will be stored on serverStorage variable */
 //    nBytes = recvfrom(udpSocket,buffer,2048,0,(struct sockaddr *)&serverStorage, &addr_size);
-buffer[0]=0x12;
+buffer[0]=0x12+i;
 buffer[1]=0x34;
 buffer[2]=0x56;
 buffer[3]=0x78;
@@ -55,7 +60,14 @@ buffer[3]=0x78;
     //print frame index as 4 bytes
     for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
     //print frame index as uint32
-    {const unsigned int *b=buffer; printf("% 9d",*b);}
+    {const unsigned int *b=(unsigned int *)buffer; printf("% 9d",*b);}
+    //get frame index as first uint32 of buffer content
+    {const unsigned int *b=(unsigned int *)buffer; index=*b;}//! \todo endianess
+    //check increment
+    inc=(long)index-(long)prev_index;
+    if(inc!=1) {printf(" % 11ld",inc);}
+    //next loop
+    prev_index=index;
   }//loop
   printf("\n");
   return 0;
