@@ -73,8 +73,8 @@ time_copy: time_copy.cpp Makefile
 std_high_res_clock: std_high_res_clock.cpp Makefile
 	g++ -std=c++11 std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
 
-udp_receive: udp_receive.c Makefile
-	gcc -std=c99 udp_receive.c -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
+udp_receive: udp_receive.cpp Makefile
+	g++ -Wall udp_receive.cpp -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
 	/sbin/ifconfig p1p2 | grep RX | grep dropped; time ./udp_receive -i 1234567; /sbin/ifconfig p1p2 | grep RX | grep dropped

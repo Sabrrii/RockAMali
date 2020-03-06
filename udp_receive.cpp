@@ -16,7 +16,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0"
+#define VERSION "v0.1.1d"
 
 //Program option/documentation
 //{argp
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
   const unsigned long max_iter=arguments.integer;
 
   //UDP related
-  int udpSocket, nBytes;
+  int udpSocket, nBytes=4;
   char buffer[2048];
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
@@ -237,8 +237,9 @@ int main(int argc, char **argv)
   }//loop
   printf("\n");
   //summary of drops
-  if(count_drops==0) printf("test pass: zero drop\n");
-  else printf("test fail: in total, % 12ld drops, % 12ld index drops\n",count_drop,count_drops);
+  if(count_drops==0) printf("test pass: zero drop");
+  else printf("test fail: in total, % 12ld drops, % 12ld index drops",count_drop,count_drops);
+  printf(" on %d BoF (Bytes of Frame).\n",nBytes);
   return 0;
 }//main
 
