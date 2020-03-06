@@ -11,8 +11,7 @@
 
 // UDP point to point draft test (UDP frame from ml507 at 752Mbps, i.e. 80MB/s)
 
-//! \todo [draft] . count (and show) increment error (# and step)
-//! \todo [draft] swap endianness depending of arch.
+//! \todo [draft] v swap endianness depending of arch.
 
 // UDP point to point test
 
@@ -20,7 +19,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0e"
+#define VERSION "v0.1.0f"
 
 //Program option/documentation
 //{argp
@@ -58,6 +57,8 @@ struct arguments
 {
   //! verbose mode (boolean)
   int verbose;
+  //! swap endianess mode (boolean)
+  int endian;
   //! integer value
   int integer;
   //! string value
@@ -75,6 +76,9 @@ parse_option(int key, char *arg, struct argp_state *state)
     case 'v':
       arguments->verbose=1;
       break;
+    case 'e':
+      arguments->endian=1;
+      break;
     case 'i':
       arguments->integer=atoi(arg);
       break;
@@ -91,8 +95,9 @@ parse_option(int key, char *arg, struct argp_state *state)
 //! [argp] print argument values
 void print_args(struct arguments *p_arguments)
 {
-  printf (".verbose=%s\n.integer=%d\n.string=%s\n"
+  printf (".verbose=%s\n.endianess=%s\n.count=%d\n.string=%s\n"
   , p_arguments->verbose?"yes":"no"
+  , p_arguments->endian?"yes":"no"
   , p_arguments->integer
   , p_arguments->string
   );
@@ -109,6 +114,7 @@ int main(int argc, char **argv)
   //CLI arguments
   struct arguments arguments;
   arguments.verbose=0;
+  arguments.endian=0;
   arguments.integer=123;
   arguments.string="ABC";
 
@@ -130,10 +136,11 @@ int main(int argc, char **argv)
   }//print default option values
 
   //! behaviour booleans
-  char udp=0;
-  char debug=0;
+  const char udp=0;
+  const char debug=0;
 
   const unsigned long max_iter=arguments.integer;
+  const char endian_swap=arguments.endian;
 
   //UDP related
   int udpSocket, nBytes;
@@ -176,23 +183,23 @@ int main(int argc, char **argv)
     else
     {//draft simulation
       //! increment frame index (on first byte only), and simulate a frame drop at loop index 123 (note: looping over size of byte yield to -255 step)
-      buffer[0]=0x12+(unsigned char)((i<123)?i:i+12);
+      buffer[0]=0x12;
       buffer[1]=0x34;
       buffer[2]=0x56;
-      buffer[3]=0x78;
+      buffer[3]=0x78+(unsigned char)((i<123)?i:i+12);
     }//simulation
     //get frame index as first uint32 of buffer content
-    {const unsigned int *b=(unsigned int *)buffer; index=*b;}//! \todo endianess
+    {const unsigned int *b=(unsigned int *)buffer;index=(endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
     //check increment
     inc=(long)index-(long)prev_index;
     if( (inc!=1) || debug)
     {
       //print loop index
       printf("\n#% 12ld: ",i);
-      //print frame index as 4 bytes
+      //print frame index as 4 bytes (as is in net buffer)
       for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
-      //print frame index as uint32
-      {const unsigned int *b=(unsigned int *)buffer; printf("% 9d",*b);}
+      //print frame index as uint32 (with endianess swap)
+      printf("% 9d",index);
     }//drop|debug
     if(inc!=1)
     {//frame drop
