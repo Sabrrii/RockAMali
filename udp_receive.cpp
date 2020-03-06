@@ -1,6 +1,11 @@
 //CoolImage
 #include "CImg.h"
+//C++ base
+#include <iostream>
+#include <string>
+#include <vector>
 
+//C base
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -15,11 +20,13 @@
 // UDP point to point test
 
 //! \todo drop of exactly 2^32 should not be taken into drops
-//! \todo add CImg   for option and buffer
+//! \todo . add CImg   for option and buffer
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.1e"
+#define VERSION "v0.1.1f"
+
+using namespace cimg_library;
 
 //Program option/documentation
 //{argp
@@ -141,6 +148,22 @@ int main(int argc, char **argv)
     printf("default values:\n");
     print_args(&arguments);
   }//print default option values
+
+  ///command arguments, i.e. CLI option
+  cimg_usage(std::string("receive UDP frame.\n" \
+  " It uses different GNU libraries (see --info option)\n\n" \
+  " usage: ./receive -h\n" \
+  "        ./receive -s 1024 -n 123 -o result.nc\n" \
+  "\n version: "+std::string(VERSION) + 
+#ifdef DO_NETCDF
+  "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
+  "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
+  "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
+#endif //NetCDF
+  "\n compilation date:" \
+  ).c_str());//cimg_usage
+
+  const int width=cimg_option("-s",1024, "size   of udp buffer");
 
 //! - Parse arguments (see parse_option) and eventually show usage, help or version and exit for these lasts
   argp_parse(&argp, argc, argv, 0, 0, &arguments);
