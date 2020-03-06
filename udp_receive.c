@@ -19,7 +19,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0f"
+#define VERSION "v0.1.0g"
 
 //Program option/documentation
 //{argp
@@ -207,7 +207,7 @@ int main(int argc, char **argv)
       if(i>0)
       {
         ++count_drop;
-        count_drops+=abs(inc);
+        count_drops+=abs(inc-1);//normal increment is 1
       }
       //print drop related
       printf(" % 11ld",inc);
