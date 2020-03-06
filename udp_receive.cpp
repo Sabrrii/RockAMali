@@ -24,7 +24,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.1g"
+#define VERSION "v0.1.1h"
 
 using namespace cimg_library;
 
@@ -184,7 +184,10 @@ int main(int argc, char **argv)
 
   //UDP related
   int udpSocket, nBytes=4;
-  CImg<char> buffer(width);
+  //content buffer (as char)
+  CImg<unsigned char> buffer(width);
+  //buffer as index (shared with buffer), i.e. cast to uint32
+  CImg<unsigned int>  bindex(buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
@@ -229,12 +232,15 @@ int main(int argc, char **argv)
     else
     {//draft simulation
       //! increment frame index (on first byte only), and simulate a frame drop at loop index 123 (note: looping over size of byte yield to -255 step)
-      buffer.assign(nBytes);
+      //resize and share
+      if(i==0) {buffer.assign(nBytes);bindex.assign(buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);}//shared data
+      //simulation of value change
       buffer(0)=0x12;
       buffer(1)=0x34;
       buffer(2)=0x56;
       buffer(3)=0x78+(unsigned char)((i<123)?i:i+12);
       if(debug) buffer.print("buffer",false);
+      if(debug) bindex.print("bindex",false);
     }//simulation
     //get frame index as first uint32 of buffer content
     {const unsigned int *b=(unsigned int *)buffer.data();index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
