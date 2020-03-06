@@ -1,7 +1,7 @@
-[coudert@ganp157 rockamali]# rm -f /space/users/coudert/temp//UDP_ml507_grab ; tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /space/users/coudert/temp//UDP_ml507_grab ; chmod a+r /space/users/coudert/temp//UDP_ml507_grab ; wc -c /space/users/coudert/temp//UDP_ml507_grab
+rm -f /dev/shm//UDP_ml507_grab ; tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab ; chmod a+r /dev/shm//UDP_ml507_grab ; wc -c /dev/shm//UDP_ml507_grab
 Running as user "root" and group "root". This could be dangerous.
 Capturing on p1p2
 1234567 
-985 packets dropped
-1358024024 /space/users/coudert/temp//UDP_ml507_grab
+691 packets dropped
+1358024024 /dev/shm//UDP_ml507_grab
 
