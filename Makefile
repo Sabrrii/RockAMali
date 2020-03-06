@@ -75,9 +75,10 @@ std_high_res_clock: std_high_res_clock.cpp Makefile
 
 udp_receive: udp_receive.c Makefile
 	gcc -std=c99 udp_receive.c -o udp_receive && ./udp_receive --help && ./udp_receive -i 1234 --verbose
+	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
 	/sbin/ifconfig p1p2 | grep RX | grep dropped; time ./udp_receive -i 1234567; /sbin/ifconfig p1p2 | grep RX | grep dropped
-	@echo "sync; make udp_receive_run 2>&1 | tee udp_receive.txt"
+	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION

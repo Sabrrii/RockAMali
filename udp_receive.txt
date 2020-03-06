@@ -1,86 +1,92 @@
 /sbin/ifconfig p1p2 | grep RX | grep dropped; time ./udp_receive -i 1234567; /sbin/ifconfig p1p2 | grep RX | grep dropped
-          RX packets:1265813457 errors:0 dropped:95 overruns:0 frame:0
+          RX packets:1642877792 errors:0 dropped:95 overruns:0 frame:0
 
-#           0: 0a b7 69 c6  179792326   179792326
-#        7249: 0a b7 86 1c  179799580           6 drop:            1 drops,            6 index drops
-#       21101: 0a b7 bc 54  179813460          29 drop:            2 drops,           35 index drops
-#       25959: 0a b7 cf 57  179818327          10 drop:            3 drops,           45 index drops
-#       38189: 0a b7 ff 1e  179830558           2 drop:            4 drops,           47 index drops
-#       67932: 0a b8 73 64  179860324          24 drop:            5 drops,           71 index drops
-#      100908: 0a b8 f4 37  179893303           4 drop:            6 drops,           75 index drops
-#      114834: 0a b9 2a b0  179907248          20 drop:            7 drops,           95 index drops
-#      131848: 0a b9 6d 27  179924263           2 drop:            8 drops,           97 index drops
-#      175859: 0a ba 19 17  179968279           6 drop:            9 drops,          103 index drops
-#      177597: 0a ba 1f ff  179970047          31 drop:           10 drops,          134 index drops
-#      208501: 0a ba 98 d4  180000980          30 drop:           11 drops,          164 index drops
-#      231960: 0a ba f4 8b  180024459          21 drop:           12 drops,          185 index drops
-#      232010: 0a ba f4 c2  180024514           6 drop:           13 drops,          191 index drops
-#      250752: 0a bb 3d f9  180043257           2 drop:           14 drops,          193 index drops
-#      255284: 0a bb 4f bb  180047803          15 drop:           15 drops,          208 index drops
-#      269479: 0a bb 87 33  180062003           6 drop:           16 drops,          214 index drops
-#      288217: 0a bb d0 6a  180080746           6 drop:           17 drops,          220 index drops
-#      288218: 0a bb d0 6c  180080748           2 drop:           18 drops,          222 index drops
-#      302159: 0a bc 06 f6  180094710          22 drop:           19 drops,          244 index drops
-#      306936: 0a bc 19 a4  180099492           6 drop:           20 drops,          250 index drops
-#      319113: 0a bc 49 36  180111670           2 drop:           21 drops,          252 index drops
-#      325583: 0a bc 62 93  180118163          24 drop:           22 drops,          276 index drops
-#      325584: 0a bc 62 95  180118165           2 drop:           23 drops,          278 index drops
-#      336296: 0a bc 8c 77  180128887          11 drop:           24 drops,          289 index drops
-#      344387: 0a bc ac 15  180136981           4 drop:           25 drops,          293 index drops
-#      348963: 0a bc be 0a  180141578          22 drop:           26 drops,          315 index drops
-#      364811: 0a bc fc 0e  180157454          29 drop:           27 drops,          344 index drops
-#      381820: 0a bd 3e 86  180174470           8 drop:           28 drops,          352 index drops
-#      412724: 0a bd b7 41  180205377           4 drop:           29 drops,          356 index drops
-#      419196: 0a bd d0 9e  180211870          22 drop:           30 drops,          378 index drops
-#      419279: 0a bd d0 f6  180211958           6 drop:           31 drops,          384 index drops
-#      438021: 0a be 1a 2f  180230703           4 drop:           32 drops,          388 index drops
-#      442614: 0a be 2c 33  180235315          20 drop:           33 drops,          408 index drops
-#      442615: 0a be 2c 35  180235317           2 drop:           34 drops,          410 index drops
-#      489525: 0a be e3 81  180282241          15 drop:           35 drops,          425 index drops
-#      489527: 0a be e3 84  180282244           2 drop:           36 drops,          427 index drops
-#      506360: 0a bf 25 46  180299078           2 drop:           37 drops,          429 index drops
-#      512835: 0a bf 3e a8  180305576          24 drop:           38 drops,          453 index drops
-#      512836: 0a bf 3e aa  180305578           2 drop:           39 drops,          455 index drops
-#      512935: 0a bf 3f 10  180305680           4 drop:           40 drops,          459 index drops
-#      512936: 0a bf 3f 12  180305682           2 drop:           41 drops,          461 index drops
-#      512996: 0a bf 3f 4f  180305743           2 drop:           42 drops,          463 index drops
-#      587908: 0a c0 63 f4  180380660           6 drop:           43 drops,          469 index drops
-#      606651: 0a c0 ad 2c  180399404           2 drop:           44 drops,          471 index drops
-#      625394: 0a c0 f6 64  180418148           2 drop:           45 drops,          473 index drops
-#      630071: 0a c1 08 be  180422846          22 drop:           46 drops,          495 index drops
-#      662861: 0a c1 88 d5  180455637           2 drop:           47 drops,          497 index drops
-#      676977: 0a c1 c0 0c  180469772          20 drop:           48 drops,          517 index drops
-#      693688: 0a c2 01 57  180486487           5 drop:           49 drops,          522 index drops
-#      700322: 0a c2 1b 46  180493126           6 drop:           50 drops,          528 index drops
-#      719060: 0a c2 64 7d  180511869           6 drop:           51 drops,          534 index drops
-#      719061: 0a c2 64 7f  180511871           2 drop:           52 drops,          536 index drops
-#      737803: 0a c2 ad b7  180530615           3 drop:           53 drops,          539 index drops
-#      756545: 0a c2 f6 f0  180549360           4 drop:           54 drops,          543 index drops
-#      770714: 0a c3 2e 53  180563539          11 drop:           55 drops,          554 index drops
-#      775274: 0a c3 40 28  180568104           6 drop:           56 drops,          560 index drops
-#      793846: 0a c3 88 c7  180586695          20 drop:           57 drops,          580 index drops
-#      850232: 0a c4 65 0a  180643082           2 drop:           58 drops,          582 index drops
-#      868969: 0a c4 ae 42  180661826           8 drop:           59 drops,          590 index drops
-#      881034: 0a c4 dd 66  180673894           4 drop:           60 drops,          594 index drops
-#      887521: 0a c4 f6 d0  180680400          20 drop:           61 drops,          614 index drops
-#      887685: 0a c4 f7 79  180680569           6 drop:           62 drops,          620 index drops
-#      906424: 0a c5 40 b2  180699314           7 drop:           63 drops,          627 index drops
-#      911253: 0a c5 53 a9  180704169          27 drop:           64 drops,          654 index drops
-#      958162: 0a c6 0a ff  180751103          26 drop:           65 drops,          680 index drops
-#      974656: 0a c6 4b 70  180767600           4 drop:           66 drops,          684 index drops
-#      981345: 0a c6 65 93  180774291           3 drop:           67 drops,          687 index drops
-#     1037577: 0a c7 41 3e  180830526           4 drop:           68 drops,          691 index drops
-#     1068352: 0a c7 b9 76  180861302           2 drop:           69 drops,          693 index drops
-#     1068353: 0a c7 b9 78  180861304           2 drop:           70 drops,          695 index drops
-#     1131290: 0a c8 af 58  180924248           8 drop:           71 drops,          703 index drops
-#     1162044: 0a c9 27 7e  180955006           5 drop:           72 drops,          708 index drops
-#     1168534: 0a c9 40 ed  180961517          22 drop:           73 drops,          730 index drops
-#     1168750: 0a c9 41 c8  180961736           4 drop:           74 drops,          734 index drops
-#     1187491: 0a c9 8b 00  180980480           4 drop:           75 drops,          738 index drops
-#     1192470: 0a c9 9e a3  180985507          49 drop:           76 drops,          787 index drops
-#     1206185: 0a c9 d4 39  180999225           4 drop:           77 drops,          791 index drops
+#           0: 21 30 24 6d  556803181   556803181
+#           9: 21 30 24 7a  556803194           5 drop:            1 drops,            4 index drops
+#       10555: 21 30 4d dc  556813788          49 drop:            2 drops,           52 index drops
+#       13969: 21 30 5b 3c  556817212          11 drop:            3 drops,           62 index drops
+#       43298: 21 30 cd ce  556846542           2 drop:            4 drops,           63 index drops
+#       51449: 21 30 ed ad  556854701           9 drop:            5 drops,           71 index drops
+#       57471: 21 31 05 4b  556860747          25 drop:            6 drops,           95 index drops
+#       57472: 21 31 05 4d  556860749           2 drop:            7 drops,           96 index drops
+#       70167: 21 31 36 e6  556873446           3 drop:            8 drops,           98 index drops
+#       91614: 21 31 8a ae  556894894           2 drop:            9 drops,           99 index drops
+#      122906: 21 32 05 01  556926209          24 drop:           10 drops,          122 index drops
+#      126371: 21 32 12 8f  556929679           6 drop:           11 drops,          127 index drops
+#      145111: 21 32 5b c6  556948422           4 drop:           12 drops,          130 index drops
+#      163857: 21 32 a5 01  556967169           2 drop:           13 drops,          131 index drops
+#      185284: 21 32 f8 b5  556988597           2 drop:           14 drops,          132 index drops
+#      185285: 21 32 f8 b7  556988599           2 drop:           15 drops,          133 index drops
+#      201337: 21 33 37 70  557004656           6 drop:           16 drops,          138 index drops
+#      216576: 21 33 73 0c  557019916          22 drop:           17 drops,          159 index drops
+#      231011: 21 33 ab 92  557034386          36 drop:           18 drops,          194 index drops
+#      257511: 21 34 13 1b  557060891           6 drop:           19 drops,          199 index drops
+#      276250: 21 34 5c 53  557079635           6 drop:           20 drops,          204 index drops
+#      278915: 21 34 66 c4  557082308           9 drop:           21 drops,          212 index drops
+#      291636: 21 34 98 8d  557095053          25 drop:           22 drops,          236 index drops
+#      313704: 21 34 ee c4  557117124           4 drop:           23 drops,          239 index drops
+#      338577: 21 35 50 07  557142023          27 drop:           24 drops,          265 index drops
+#      369910: 21 35 ca 6d  557173357           2 drop:           25 drops,          266 index drops
+#      385394: 21 36 07 01  557188865          25 drop:           26 drops,          290 index drops
+#      385395: 21 36 07 03  557188867           2 drop:           27 drops,          291 index drops
+#      388628: 21 36 13 a5  557192101           2 drop:           28 drops,          292 index drops
+#      403830: 21 36 4f 1e  557207326          24 drop:           29 drops,          315 index drops
+#      407345: 21 36 5c dd  557210845           5 drop:           30 drops,          319 index drops
+#      426087: 21 36 a6 16  557229590           4 drop:           31 drops,          322 index drops
+#      466205: 21 37 42 d3  557269715           8 drop:           32 drops,          329 index drops
+#      479101: 21 37 75 4f  557282639          29 drop:           33 drops,          357 index drops
+#      501026: 21 37 ca f9  557304569           6 drop:           34 drops,          362 index drops
+#      525996: 21 38 2c 98  557329560          22 drop:           35 drops,          383 index drops
+#      525997: 21 38 2c 9b  557329563           3 drop:           36 drops,          385 index drops
+#      538490: 21 38 5d 6b  557342059           4 drop:           37 drops,          388 index drops
+#      575972: 21 38 ef dc  557379548           8 drop:           38 drops,          395 index drops
+#      605590: 21 39 63 af  557409199          34 drop:           39 drops,          428 index drops
+#      613420: 21 39 82 4c  557417036           8 drop:           40 drops,          435 index drops
+#      650907: 21 3a 14 be  557454526           4 drop:           41 drops,          438 index drops
+#      650998: 21 3a 15 1f  557454623           7 drop:           42 drops,          444 index drops
+#      669639: 21 3a 5d f7  557473271           8 drop:           43 drops,          451 index drops
+#      684792: 21 3a 99 3c  557488444          21 drop:           44 drops,          471 index drops
+#      688359: 21 3a a7 2e  557492014           4 drop:           45 drops,          474 index drops
+#      714979: 21 3b 0f 35  557518645          12 drop:           46 drops,          485 index drops
+#      725832: 21 3b 39 a0  557529504           7 drop:           47 drops,          491 index drops
+#      747148: 21 3b 8c e6  557550822           3 drop:           48 drops,          493 index drops
+#      763312: 21 3b cc 11  557566993           8 drop:           49 drops,          500 index drops
+#      778444: 21 3c 07 44  557582148          24 drop:           50 drops,          523 index drops
+#      800771: 21 3c 5e 82  557604482           8 drop:           51 drops,          530 index drops
+#      807091: 21 3c 77 4a  557610826          25 drop:           52 drops,          554 index drops
+#      808665: 21 3c 7d 76  557612406           7 drop:           53 drops,          560 index drops
+#      819484: 21 3c a7 bc  557623228           4 drop:           54 drops,          563 index drops
+#      840779: 21 3c fa ec  557644524           2 drop:           55 drops,          564 index drops
+#      840780: 21 3c fa ee  557644526           2 drop:           56 drops,          565 index drops
+#      853892: 21 3d 2e 42  557657666          29 drop:           57 drops,          593 index drops
+#      872060: 21 3d 75 4f  557675855          22 drop:           58 drops,          614 index drops
+#      875665: 21 3d 83 65  557679461           2 drop:           59 drops,          615 index drops
+#      894407: 21 3d cc 9e  557698206           4 drop:           60 drops,          618 index drops
+#      900768: 21 3d e5 8c  557704588          22 drop:           61 drops,          639 index drops
+#      913125: 21 3e 15 d6  557716950           6 drop:           62 drops,          644 index drops
+#      947580: 21 3e 9c 85  557751429          25 drop:           63 drops,          668 index drops
+#      969330: 21 3e f1 7f  557773183           5 drop:           64 drops,          672 index drops
+#      980128: 21 3f 1b cd  557784013          33 drop:           65 drops,          704 index drops
+#      980130: 21 3f 1b d0  557784016           2 drop:           66 drops,          705 index drops
+#      988036: 21 3f 3a b9  557791929           8 drop:           67 drops,          712 index drops
+#      994448: 21 3f 53 da  557798362          22 drop:           68 drops,          733 index drops
+#     1028017: 21 3f d6 fc  557831932           2 drop:           69 drops,          734 index drops
+#     1041267: 21 40 0a d8  557845208          27 drop:           70 drops,          760 index drops
+#     1062960: 21 40 5f 9a  557866906           6 drop:           71 drops,          765 index drops
+#     1100448: 21 40 f2 0b  557904395           2 drop:           72 drops,          766 index drops
+#     1137930: 21 41 84 7c  557941884           8 drop:           73 drops,          773 index drops
+#     1167436: 21 41 f7 df  557971423          34 drop:           74 drops,          806 index drops
+#     1181897: 21 42 30 5d  557985885           2 drop:           75 drops,          807 index drops
+#     1181898: 21 42 30 60  557985888           3 drop:           76 drops,          809 index drops
+#     1181910: 21 42 30 70  557985904           5 drop:           77 drops,          813 index drops
+#     1183137: 21 42 35 45  557987141          11 drop:           78 drops,          823 index drops
+#     1228716: 21 42 e7 6a  558032746          27 drop:           79 drops,          849 index drops
+#     1228717: 21 42 e7 6c  558032748           2 drop:           80 drops,          850 index drops
+#     1231572: 21 42 f2 98  558035608           6 drop:           81 drops,          855 index drops
+#     1231625: 21 42 f2 d3  558035667           7 drop:           82 drops,          861 index drops
 
-real	0m13.184s
-user	0m0.516s
-sys	0m4.639s
-          RX packets:1267031606 errors:0 dropped:95 overruns:0 frame:0
+real	0m13.186s
+user	0m0.483s
+sys	0m4.705s
+          RX packets:1644095941 errors:0 dropped:95 overruns:0 frame:0
+sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt
