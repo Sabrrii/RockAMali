@@ -46,26 +46,30 @@ int main()
   //index increment
   long inc=0;
 //  while(1)
-  for(unsigned int i=0;i<12;++i)
+  for(unsigned int i=0;i<256;++i)
   {
     /* Try to receive any incoming UDP datagram. Address and port of 
       requesting client will be stored on serverStorage variable */
 //    nBytes = recvfrom(udpSocket,buffer,2048,0,(struct sockaddr *)&serverStorage, &addr_size);
-buffer[0]=0x12+i;
+//! increment frame index (on first byte only), and simulate a frame drop at loop index 123 (note: looping over size of byte yield to -255 step)
+buffer[0]=0x12+((i<123)?i:i+12);
 buffer[1]=0x34;
 buffer[2]=0x56;
 buffer[3]=0x78;
-    //print loop index
-    printf("\n#% 9d: ",i);
-    //print frame index as 4 bytes
-    for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
-    //print frame index as uint32
-    {const unsigned int *b=(unsigned int *)buffer; printf("% 9d",*b);}
     //get frame index as first uint32 of buffer content
     {const unsigned int *b=(unsigned int *)buffer; index=*b;}//! \todo endianess
     //check increment
     inc=(long)index-(long)prev_index;
-    if(inc!=1) {printf(" % 11ld",inc);}
+    if(inc!=1)
+    {//frame drop
+      //print loop index
+      printf("\n#% 9d: ",i);
+      //print frame index as 4 bytes
+      for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
+      //print frame index as uint32
+      {const unsigned int *b=(unsigned int *)buffer; printf("% 9d",*b);}
+      printf(" % 11ld",inc);
+    }//drop
     //next loop
     prev_index=index;
   }//loop
