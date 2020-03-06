@@ -24,7 +24,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.1f"
+#define VERSION "v0.1.1g"
 
 using namespace cimg_library;
 
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const int width=cimg_option("-s",1024, "size   of udp buffer");
+  const int width=cimg_option("-u",2048, "size of UDP buffer");
 
 //! - Parse arguments (see parse_option) and eventually show usage, help or version and exit for these lasts
   argp_parse(&argp, argc, argv, 0, 0, &arguments);
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
 
   //UDP related
   int udpSocket, nBytes=4;
-  char buffer[2048];
+  CImg<char> buffer(width);
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
@@ -223,18 +223,21 @@ int main(int argc, char **argv)
     {//receiving UDP frame
       if(debug) printf("\ndebug: wait for UDP frame");
       //! receive any incoming UDP datagram. Address and port of requesting client will be stored on serverStorage variable
-      nBytes = recvfrom(udpSocket,buffer,2048,0,(struct sockaddr *)&serverStorage, &addr_size);
+      nBytes = recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size);
+      //! \todo check nBytes buffer.width()
     }//UDP
     else
     {//draft simulation
       //! increment frame index (on first byte only), and simulate a frame drop at loop index 123 (note: looping over size of byte yield to -255 step)
-      buffer[0]=0x12;
-      buffer[1]=0x34;
-      buffer[2]=0x56;
-      buffer[3]=0x78+(unsigned char)((i<123)?i:i+12);
+      buffer.assign(nBytes);
+      buffer(0)=0x12;
+      buffer(1)=0x34;
+      buffer(2)=0x56;
+      buffer(3)=0x78+(unsigned char)((i<123)?i:i+12);
+      if(debug) buffer.print("buffer",false);
     }//simulation
     //get frame index as first uint32 of buffer content
-    {const unsigned int *b=(unsigned int *)buffer;index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
+    {const unsigned int *b=(unsigned int *)buffer.data();index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
     //check increment
     inc=(long)index-(long)prev_index;
     if( (inc!=1) || debug)
@@ -242,7 +245,7 @@ int main(int argc, char **argv)
       //print loop index
       printf("\n#% 12ld: ",i);
       //print frame index as 4 bytes (as is in net buffer)
-      for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
+      for(unsigned int b=0;b<4;++b){unsigned char o=buffer(b); printf("%02x ",o);}
       //print frame index as uint32 (with endianess swap)
       printf("% 10u",index);
     }//drop|debug
