@@ -7,7 +7,7 @@
 
 // UDP point to point draft test (UDP frame from ml507 at 752Mbps, i.e. 80MB/s)
 
-//! \todo [draft] show counter as uint32
+//! \todo [draft] . show counter as uint32
 //! \todo [draft] argp for loop
 //! \todo [draft] check increment
 //! \todo [draft] count (and show) increment error (# and step)
@@ -45,9 +45,17 @@ int main()
   {
     /* Try to receive any incoming UDP datagram. Address and port of 
       requesting client will be stored on serverStorage variable */
-    nBytes = recvfrom(udpSocket,buffer,2048,0,(struct sockaddr *)&serverStorage, &addr_size);
+//    nBytes = recvfrom(udpSocket,buffer,2048,0,(struct sockaddr *)&serverStorage, &addr_size);
+buffer[0]=0x12;
+buffer[1]=0x34;
+buffer[2]=0x56;
+buffer[3]=0x78;
+    //print loop index
     printf("\n#% 9d: ",i);
+    //print frame index as 4 bytes
     for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
+    //print frame index as uint32
+    {const unsigned int *b=buffer; printf("% 9d",*b);}
   }//loop
   printf("\n");
   return 0;

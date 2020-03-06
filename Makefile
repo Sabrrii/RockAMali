@@ -57,18 +57,24 @@ SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessorGPU.hpp CDataProcessorGPUopenc
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 
+##RockAMali
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
 #all: process_sequential version factory process_sequential_run
-all: send receive_sequential version factory
+#all: send receive_sequential version factory
 
+##lib. code test
 #all: time_copy
+all: udp_receive
 time_copy: time_copy.cpp
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 
 std_high_res_clock: std_high_res_clock.cpp
 	g++ -std=c++11 std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
+
+udp_receive:
+	gcc -std=c99 udp_receive.c -o udp_receive  && ./udp_receive
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
