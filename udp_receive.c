@@ -11,11 +11,12 @@
 
 // UDP point to point test
 
+//! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo add CImg   for option and buffer
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0i"
+#define VERSION "v0.1.0j"
 
 //Program option/documentation
 //{argp
@@ -187,6 +188,8 @@ int main(int argc, char **argv)
   unsigned long i=0;
   if(arguments.verbose) if(!endian_swap) printf("information: NO swap endianess\n");
   if(arguments.verbose) printf("information: simulate UDP frame\n");
+  if(arguments.verbose) printf("information: increment on first frame is supposed to be ok (not counted as a drop)\n");
+  printf("#% 12s: % 11s % 10s % 11s; drop: % 12s      , % 12s","index iter.","frame hex","dec.","increment","drop","index drops");
 //  while(1)
   for(;i<max_iter;++i)
   {
@@ -215,7 +218,7 @@ int main(int argc, char **argv)
       //print frame index as 4 bytes (as is in net buffer)
       for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
       //print frame index as uint32 (with endianess swap)
-      printf("% 9d",index);
+      printf("% 10u",index);
     }//drop|debug
     if(inc!=1)
     {//frame drop
@@ -227,7 +230,7 @@ int main(int argc, char **argv)
       }
       //print drop related
       printf(" % 11ld",inc);
-      if(count_drop>0) printf(" drop: % 12ld drops, % 12ld index drops",count_drop,count_drops);
+      if(count_drop>0) printf("; drop: % 12lu drops, % 12lu index drops",count_drop,count_drops);
     }//drop
     //next loop
     prev_index=index;
