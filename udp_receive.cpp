@@ -24,7 +24,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.1h"
+#define VERSION "v0.1.1i"
 
 using namespace cimg_library;
 
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  const int width=cimg_option("-u",2048, "size of UDP buffer");
+  unsigned int width=cimg_option("-u",2048, "size of UDP buffer");
 
 //! - Parse arguments (see parse_option) and eventually show usage, help or version and exit for these lasts
   argp_parse(&argp, argc, argv, 0, 0, &arguments);
@@ -184,10 +184,13 @@ int main(int argc, char **argv)
 
   //UDP related
   int udpSocket, nBytes=4;
+  if(!udp){nBytes=width=4;}
   //content buffer (as char)
   CImg<unsigned char> buffer(width);
   //buffer as index (shared with buffer), i.e. cast to uint32
-  CImg<unsigned int>  bindex(buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);
+  CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
+  const unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
+  bindex._data=(unsigned int*)buffer.data();//share
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
@@ -232,8 +235,6 @@ int main(int argc, char **argv)
     else
     {//draft simulation
       //! increment frame index (on first byte only), and simulate a frame drop at loop index 123 (note: looping over size of byte yield to -255 step)
-      //resize and share
-      if(i==0) {buffer.assign(nBytes);bindex.assign(buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);}//shared data
       //simulation of value change
       buffer(0)=0x12;
       buffer(1)=0x34;
@@ -275,6 +276,8 @@ int main(int argc, char **argv)
   if(count_drops==0) printf("test pass: zero drop");
   else printf("test fail: in total, % 12ld drops, % 12ld index drops",count_drop,count_drops);
   printf(" on %d BoF (Bytes of Frame).\n",nBytes);
+  //put back memory pointer (for freeing)
+  bindex._data=bindex_data;
   return 0;
 }//main
 
