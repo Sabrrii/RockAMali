@@ -16,7 +16,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0j"
+#define VERSION "v0.1.0"
 
 //Program option/documentation
 //{argp

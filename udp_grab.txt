@@ -1,7 +1,26 @@
-rm -f /dev/shm//UDP_ml507_grab; tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab; chmod a+r /dev/shm//UDP_ml507_grab; wc -c /dev/shm//UDP_ml507_grab 
+rm -f /dev/shm//UDP_ml507_grab ; sync ; time tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab -B 4 ; chmod a+r /dev/shm//UDP_ml507_grab ; wc -c /dev/shm//UDP_ml507_grab
 Running as user "root" and group "root". This could be dangerous.
 Capturing on p1p2
 1234567 
-740 packets dropped
+101 packets dropped
+3.292u 4.540s 0:13.57 57.7%	0+0k 0+8io 0pf+0w
+1358024024 /dev/shm//UDP_ml507_grab
+
+
+rm -f /dev/shm//UDP_ml507_grab ; sync ; time tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab -B 4 ; chmod a+r /dev/shm//UDP_ml507_grab ; wc -c /dev/shm//UDP_ml507_grab
+Running as user "root" and group "root". This could be dangerous.
+Capturing on p1p2
+1234567 
+550 packets dropped
+3.196u 4.047s 0:13.61 53.1%	0+0k 0+0io 0pf+0w
+1358024024 /dev/shm//UDP_ml507_grab
+
+
+rm -f /dev/shm//UDP_ml507_grab ; sync ; time tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab -B 4 ; chmod a+r /dev/shm//UDP_ml507_grab ; wc -c /dev/shm//UDP_ml507_grab
+Running as user "root" and group "root". This could be dangerous.
+Capturing on p1p2
+1234567 
+563 packets dropped
+3.247u 5.143s 0:13.58 61.7%	0+0k 0+8io 0pf+0w
 1358024024 /dev/shm//UDP_ml507_grab
 
