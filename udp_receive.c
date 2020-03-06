@@ -15,7 +15,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0h"
+#define VERSION "v0.1.0i"
 
 //Program option/documentation
 //{argp
@@ -233,6 +233,9 @@ int main(int argc, char **argv)
     prev_index=index;
   }//loop
   printf("\n");
+  //summary of drops
+  if(count_drops==0) printf("test pass: zero drop\n");
+  else printf("test fail: in total, % 12ld drops, % 12ld index drops\n",count_drop,count_drops);
   return 0;
 }//main
 
