@@ -20,10 +20,10 @@
 // UDP point to point test
 
 //! \todo drop of exactly 2^32 should not be taken into drops
-//! \todo add NetCDF for storing both frame index and increment in loop
+//! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.1"
+#define VERSION "v0.1.2d"
 
 using namespace cimg_library;
 
@@ -38,8 +38,6 @@ int main(int argc, char **argv)
   "\n version: "+std::string(VERSION) + 
 #ifdef DO_NETCDF
   "\n          CImg_NetCDF."+std::string(CIMG_NETCDF_VERSION) + 
-  "\n          CParameterNetCDF."+std::string(CDL_PARAMETER_VERSION)+
-  "\n          NcTypeInfo."+std::string(NETCDF_TYPE_INFO_VERSION)+
 #endif //NetCDF
   "\n compilation date:" \
   ).c_str());//cimg_usage
@@ -80,9 +78,9 @@ int main(int argc, char **argv)
   //UDP related
   int udpSocket, nBytes=4;
   if(!udp){nBytes=width=4;}
-  //content buffer (as char)
+  //! content buffer (as char)
   CImg<unsigned char> buffer(width);
-  //buffer as index (shared with buffer), i.e. cast to uint32
+  //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
   CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
   const unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
   bindex._data=(unsigned int*)buffer.data();//share
@@ -125,7 +123,7 @@ int main(int argc, char **argv)
       if(debug) printf("\ndebug: wait for UDP frame");
       //! receive any incoming UDP datagram. Address and port of requesting client will be stored on serverStorage variable
       nBytes = recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size);
-      //! \todo check nBytes buffer.width()
+      //! \todo check nBytes buffer.width() ; add (lazy) resize ?
     }//UDP
     else
     {//draft simulation
