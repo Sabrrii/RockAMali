@@ -20,135 +20,16 @@
 // UDP point to point test
 
 //! \todo drop of exactly 2^32 should not be taken into drops
-//! \todo . add CImg   for option and buffer
-//! \todo add NetCDF for storing both frame index and increment
+//! \todo add NetCDF for storing both frame index and increment in loop
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.1i"
+#define VERSION "v0.1.1"
 
 using namespace cimg_library;
-
-//Program option/documentation
-//{argp
-//! [argp] version of program
-const char *argp_program_version=VERSION;
-//! [argp] author of program
-const char *argp_program_bug_address="sebastien.coudert@ganil.fr";
-//! [argp] documentation of program
-static char doc[]=
-   "ArgParse: ArgP minimal/template program\
-\n  ArgParse."VERSION"\
-\n\
-examples:\n\
-  ArgParse --help\n\
-  ArgParse -v -i 1234\n\
-  ArgParse -v -i 12 -s -e\n\
-  ArgParse -V\n\
-  ArgParse --usage";
-
-//! [argp] A description of the arguments
-static char args_doc[] = "";
-
-//! [argp] The options and its description
-static struct argp_option options[]=
-{
-  {"verbose",   'v', 0, 0,        "Produce verbose output" },
-  {"endian",    'e', 0, 0,        "do not swap endianess, by default it is done if needed (arch. dep.)" },
-  {"simulation",'s', 0, 0,        "frame simulation" },
-  {"debug",     'D', 0, 0,        "debug output" },
-  {"integer",   'i', "VALUE",  0, "number of iteration" },
-  {"string",    'S', "STRING", 0, "get string" },
-//default options
-  { 0 }
-};//options (CLI)
-
-//! [argp] Used by main to communicate with parse_option
-struct arguments
-{
-  //! verbose mode (boolean)
-  int verbose;
-  //! swap endianess mode (boolean)
-  int no_endian;
-  //! simulation mode (boolean)
-  int simulation;
-  //! debug mode (boolean)
-  int debug;
-  //! integer value
-  int integer;
-  //! string value
-  char* string;
-};//arguments (CLI)
-
-//! [argp] Parse a single option
-static error_t
-parse_option(int key, char *arg, struct argp_state *state)
-{
-  //Get the input argument from argp_parse
-  struct arguments *arguments=(struct arguments *)(state->input);
-  switch (key)
-  {
-    case 'v':
-      arguments->verbose=1;
-      break;
-    case 'e':
-      arguments->no_endian=1;
-      break;
-    case 's':
-      arguments->simulation=1;
-      break;
-    case 'D':
-      arguments->debug=1;
-      break;
-    case 'i':
-      arguments->integer=atoi(arg);
-      break;
-    case 'S':
-      arguments->string=arg;
-      break;
-    default:
-      return ARGP_ERR_UNKNOWN;
-  }//switch
-  return 0;
-}//parse_option
-
-
-//! [argp] print argument values
-void print_args(struct arguments *p_arguments)
-{
-  printf (".verbose=%s\n.swap_endianess=%s\n.simulation=%s\n.debug=%s\n.count=%d\n.string=%s\n"
-  , p_arguments->verbose?"yes":"no"
-  , p_arguments->no_endian?"no":"yes"
-  , p_arguments->simulation?"yes":"no"
-  , p_arguments->debug?"yes":"no"
-  , p_arguments->integer
-  , p_arguments->string
-  );
-}//print_args
-
-//! [argp] setup argp parser
-static struct argp argp = { options, parse_option, args_doc, doc };
-
-//}argp
 
 //! CLI option parse and ...
 int main(int argc, char **argv)
 {
-  //CLI arguments
-  struct arguments arguments;
-  arguments.verbose=0;
-  arguments.no_endian=0;
-  arguments.simulation=0;
-  arguments.debug=0;
-  arguments.integer=123;
-  arguments.string="ABC";
-
-//! - print default option values (static)
-  if(0)//0 or 1
-  {
-    printf("default values:\n");
-    print_args(&arguments);
-  }//print default option values
-
   ///command arguments, i.e. CLI option
   cimg_usage(std::string("receive UDP frame.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
@@ -163,24 +44,38 @@ int main(int argc, char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  unsigned int width=cimg_option("-u",2048, "size of UDP buffer");
+  unsigned int width=cimg_option("-s",2048, "size of UDP buffer");
+  const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
+  const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
+  const bool verbose=cimg_option("--verbose",false,"Produce verbose output");
+  const bool udp=!cimg_option("--simulation",false,"frame simulation, by default UDP frame are received");
+  const bool debug=cimg_option("--debug",false,"debug output");
 
-//! - Parse arguments (see parse_option) and eventually show usage, help or version and exit for these lasts
-  argp_parse(&argp, argc, argv, 0, 0, &arguments);
-
-  ///print option values
-  if(arguments.verbose)
+  ///standard options
+  #if cimg_display!=0
+  const bool show_X=cimg_option("-X",false,NULL);//-X hidden option
+  bool show=cimg_option("--show",show_X,"show GUI (or -X option)");show=show_X|show;//same --show or -X option
+  #endif
+  const bool show_h   =cimg_option("-h",    false,NULL);//-h hidden option
+        bool show_help=cimg_option("--help",show_h,"help (or -h option)");show_help=show_h|show_help; //same --help or -h option
+  bool show_info=cimg_option("-I",false,NULL);//-I hidden option
+  if( cimg_option("--info",show_info,"show compilation options (or -I option)") ) {show_info=true;cimg_library::cimg::info();}//same --info or -I option
+  bool show_version=cimg_option("-v",false,NULL);//-v hidden option
+  if( cimg_option("--version",show_version,"show version (or -v option)") )
   {
-    printf("command line option values:\n");
-    print_args(&arguments);
-  }//print default option values
+    show_version=true;
+    std::cout<<VERSION<<std::endl;
+#ifdef DO_NETCDF
+    std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
+    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
+    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
+#endif //NetCDF
+    std::cout<<std::endl;return 0;
+  }//same --version or -v option
 
-  //! behaviour booleans
-  const char endian_swap=!arguments.no_endian;
-  const char udp=!arguments.simulation;
-  const char debug=arguments.debug;
-  //! number of iteration
-  const unsigned long max_iter=arguments.integer;
+  if(show_help) {/*print_help(std::cerr);*/return 0;}
+  //}CLI option
+
 
   //UDP related
   int udpSocket, nBytes=4;
@@ -218,9 +113,9 @@ int main(int argc, char **argv)
   unsigned long count_drops=0;
   //loop index
   unsigned long i=0;
-  if(arguments.verbose) if(!endian_swap) printf("information: NO swap endianess\n");
-  if(arguments.verbose) printf("information: simulate UDP frame\n");
-  if(arguments.verbose) printf("information: increment on first frame is supposed to be ok (not counted as a drop)\n");
+  if(verbose) if(!endian_swap) printf("information: NO swap endianess\n");
+  if(verbose) printf("information: simulate UDP frame\n");
+  if(verbose) printf("information: increment on first frame is supposed to be ok (not counted as a drop)\n");
   printf("#% 12s: % 11s % 10s % 11s; drop: % 12s      , % 12s","index iter.","frame hex","dec.","increment","drop","index drops");
 //  while(1)
   for(;i<max_iter;++i)
@@ -277,7 +172,7 @@ int main(int argc, char **argv)
   else printf("test fail: in total, % 12ld drops, % 12ld index drops",count_drop,count_drops);
   printf(" on %d BoF (Bytes of Frame).\n",nBytes);
   //put back memory pointer (for freeing)
-  bindex._data=bindex_data;
+  bindex._data=(unsigned int*)bindex_data;
   return 0;
 }//main
 
