@@ -74,7 +74,9 @@ std_high_res_clock: std_high_res_clock.cpp Makefile
 	g++ -std=c++11 std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
 
 udp_receive: udp_receive.cpp Makefile
-	g++ -Wall udp_receive.cpp -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
+#	g++ -Wall udp_receive.cpp -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
+	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I && ./udp_receive -V > VERSION && ./udp_receive -i 12 -D -s --verbose
+#	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
 	/sbin/ifconfig p1p2 | grep RX | grep dropped; time ./udp_receive -i 1234567; /sbin/ifconfig p1p2 | grep RX | grep dropped

@@ -1,3 +1,6 @@
+//CoolImage
+#include "CImg.h"
+
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -16,7 +19,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.1d"
+#define VERSION "v0.1.1e"
 
 //Program option/documentation
 //{argp
