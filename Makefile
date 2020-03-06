@@ -166,8 +166,8 @@ ganp_eth:
 	/sbin/ifconfig p1p2
 	ping 10.10.17.202 -c 1
 # #interface: (su)
-#iftop  -i p1p2
-#tshark -i p1p2 -c 12 -x
+#iftop -B -i p1p2
+#tshark   -i p1p2 -c 12 -x
 #rm -f /tmp/UDP_ml507; tshark -i p1p2 -c 1  -x -w /tmp/UDP_ml507 ; wc -c /tmp/UDP_ml507
 
 ##rockpro64 (sudo apt-get install tshark #yes#; sudo usermod -a -G wireshark rock64)
@@ -177,7 +177,7 @@ rockpro64_eth:
 	sudo /sbin/ifconfig enp1s0 down; sudo ethtool -s enp1s0 speed 10000 duplex full autoneg off; sudo /sbin/ifconfig enp1s0 up
 	ping 10.10.15.2 -c 1
 #rock64 (sudo apt-get install tshark #yes#; sudo usermod -a -G wireshark rock64)
-#sudo iftop  -i p1p2
+#sudo iftop -B -i p1p2
 
 #UPD grab{
 FILTER=dst port $(PORT)
@@ -206,7 +206,7 @@ gansacq2_eth:
 	/sbin/ifconfig eth6 10.10.15.2/24
 	/sbin/ifconfig eth6 down; ethtool -s eth6 speed 10000 duplex full autoneg off; /sbin/ifconfig eth6 up
 	ping 10.10.15.1 -c 1
-#iftop -i eth6
+#iftop -B -i eth6
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
