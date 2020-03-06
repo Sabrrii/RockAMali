@@ -119,7 +119,7 @@ int main(int argc, char **argv)
   arguments.string="ABC";
 
 //! - print default option values (static)
-  if(1)//0 or 1
+  if(0)//0 or 1
   {
     printf("default values:\n");
     print_args(&arguments);
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
   }//print default option values
 
   //! behaviour booleans
-  const char udp=0;
+  const char udp=1;
   const char debug=0;
 
   const unsigned long max_iter=arguments.integer;
