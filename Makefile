@@ -183,9 +183,11 @@ FILTER=dst port $(PORT)
 ifeq ($(shell uname -p),x86_64)
 ##AMD64 (gan*)
 TMP=/tmp/
+TMP=/space/users/coudert/temp/
 udp_grab:
 	tshark -i p1p2 -f "$(FILTER)" -c $(NS) -x | grep  -e port -e 0000 -e 0010 -e 0020 -e 0420
-	@echo "rm -f $(TMP)/UDP_ml507; tshark -i p1p2 -f \"$(FILTER)\" -c 1  -x -w $(TMP)/UDP_ml507 ; wc -c $(TMP)/UDP_ml507"
+	@echo "rm -f $(TMP)/UDP_ml507; tshark -i p1p2 -f \"$(FILTER)\" -c 1  -x -w $(TMP)/UDP_ml507; chmod a+r $(TMP)/UDP_ml507; wc -c $(TMP)/UDP_ml507"
+	@echo "rm -f $(TMP)/UDP_ml507_grab; tshark -i p1p2 -f \"$(FILTER)\" -c 1234567 -w $(TMP)/UDP_ml507_grab; chmod a+r $(TMP)/UDP_ml507_grab; wc -c $(TMP)/UDP_ml507_grab"
 else
 ##ARM64 (RockPro64)
 TMP=/media/temp/
