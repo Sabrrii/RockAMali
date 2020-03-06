@@ -67,14 +67,14 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 ##lib. code test
 #all: time_copy
 all: udp_receive
-time_copy: time_copy.cpp
+time_copy: time_copy.cpp Makefile
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 
-std_high_res_clock: std_high_res_clock.cpp
+std_high_res_clock: std_high_res_clock.cpp Makefile
 	g++ -std=c++11 std_high_res_clock.cpp -o std_high_res_clock && ./std_high_res_clock
 
-udp_receive: udp_receive.c
-	gcc -std=c99 udp_receive.c -o udp_receive  && ./udp_receive
+udp_receive: udp_receive.c Makefile
+	gcc -std=c99 udp_receive.c -o udp_receive && ./udp_receive --help && ./udp_receive -i 1234 --verbose
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
