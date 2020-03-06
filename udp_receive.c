@@ -11,8 +11,7 @@
 
 // UDP point to point draft test (UDP frame from ml507 at 752Mbps, i.e. 80MB/s)
 
-//! \todo [draft] . argp for loop
-//! \todo [draft] count (and show) increment error (# and step)
+//! \todo [draft] . count (and show) increment error (# and step)
 //! \todo [draft] swap endianness depending of arch.
 
 // UDP point to point test
@@ -21,7 +20,7 @@
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0d"
+#define VERSION "v0.1.0e"
 
 //Program option/documentation
 //{argp
@@ -162,6 +161,8 @@ int main(int argc, char **argv)
   unsigned int prev_index=0;
   //index increment
   long inc=0;
+  unsigned long count_drop=0;
+  unsigned long count_drops=0;
   //loop index
   unsigned long i=0;
 //  while(1)
@@ -192,10 +193,18 @@ int main(int argc, char **argv)
       for(unsigned int b=0;b<4;++b){unsigned char o=buffer[b]; printf("%02x ",o);}
       //print frame index as uint32
       {const unsigned int *b=(unsigned int *)buffer; printf("% 9d",*b);}
-    }
+    }//drop|debug
     if(inc!=1)
     {//frame drop
+      //drops
+      if(i>0)
+      {
+        ++count_drop;
+        count_drops+=abs(inc);
+      }
+      //print drop related
       printf(" % 11ld",inc);
+      if(count_drop>0) printf(" drop: % 12ld drops, % 12ld index drops",count_drop,count_drops);
     }//drop
     //next loop
     prev_index=index;
