@@ -9,17 +9,13 @@
 #include <error.h>
 #include <argp.h>
 
-// UDP point to point draft test (UDP frame from ml507 at 752Mbps, i.e. 80MB/s)
-
-//! \todo [draft] v swap endianness depending of arch.
-
 // UDP point to point test
 
 //! \todo add CImg   for option and buffer
 //! \todo add NetCDF for storing both frame index and increment
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.0g"
+#define VERSION "v0.1.0h"
 
 //Program option/documentation
 //{argp
@@ -34,8 +30,8 @@ static char doc[]=
 \n\
 examples:\n\
   ArgParse --help\n\
-  ArgParse -v\n\
-  ArgParse -v -i 12 -s XYZ\n\
+  ArgParse -v -i 1234\n\
+  ArgParse -v -i 12 -s -e\n\
   ArgParse -V\n\
   ArgParse --usage";
 
@@ -45,9 +41,12 @@ static char args_doc[] = "";
 //! [argp] The options and its description
 static struct argp_option options[]=
 {
-  {"verbose",  'v', 0, 0,           "Produce verbose output" },
-  {"integer",  'i', "VALUE", 0,     "get integer value" },
-  {"string",   's', "STRING", 0,    "get string" },
+  {"verbose",   'v', 0, 0,        "Produce verbose output" },
+  {"endian",    'e', 0, 0,        "do not swap endianess, by default it is done if needed (arch. dep.)" },
+  {"simulation",'s', 0, 0,        "frame simulation" },
+  {"debug",     'D', 0, 0,        "debug output" },
+  {"integer",   'i', "VALUE",  0, "number of iteration" },
+  {"string",    'S', "STRING", 0, "get string" },
 //default options
   { 0 }
 };//options (CLI)
@@ -58,7 +57,11 @@ struct arguments
   //! verbose mode (boolean)
   int verbose;
   //! swap endianess mode (boolean)
-  int endian;
+  int no_endian;
+  //! simulation mode (boolean)
+  int simulation;
+  //! debug mode (boolean)
+  int debug;
   //! integer value
   int integer;
   //! string value
@@ -77,12 +80,18 @@ parse_option(int key, char *arg, struct argp_state *state)
       arguments->verbose=1;
       break;
     case 'e':
-      arguments->endian=1;
+      arguments->no_endian=1;
+      break;
+    case 's':
+      arguments->simulation=1;
+      break;
+    case 'D':
+      arguments->debug=1;
       break;
     case 'i':
       arguments->integer=atoi(arg);
       break;
-    case 's':
+    case 'S':
       arguments->string=arg;
       break;
     default:
@@ -95,9 +104,11 @@ parse_option(int key, char *arg, struct argp_state *state)
 //! [argp] print argument values
 void print_args(struct arguments *p_arguments)
 {
-  printf (".verbose=%s\n.endianess=%s\n.count=%d\n.string=%s\n"
+  printf (".verbose=%s\n.swap_endianess=%s\n.simulation=%s\n.debug=%s\n.count=%d\n.string=%s\n"
   , p_arguments->verbose?"yes":"no"
-  , p_arguments->endian?"yes":"no"
+  , p_arguments->no_endian?"no":"yes"
+  , p_arguments->simulation?"yes":"no"
+  , p_arguments->debug?"yes":"no"
   , p_arguments->integer
   , p_arguments->string
   );
@@ -114,7 +125,9 @@ int main(int argc, char **argv)
   //CLI arguments
   struct arguments arguments;
   arguments.verbose=0;
-  arguments.endian=0;
+  arguments.no_endian=0;
+  arguments.simulation=0;
+  arguments.debug=0;
   arguments.integer=123;
   arguments.string="ABC";
 
@@ -136,11 +149,11 @@ int main(int argc, char **argv)
   }//print default option values
 
   //! behaviour booleans
-  const char udp=1;
-  const char debug=0;
-
+  const char endian_swap=!arguments.no_endian;
+  const char udp=!arguments.simulation;
+  const char debug=arguments.debug;
+  //! number of iteration
   const unsigned long max_iter=arguments.integer;
-  const char endian_swap=arguments.endian;
 
   //UDP related
   int udpSocket, nBytes;
@@ -172,11 +185,14 @@ int main(int argc, char **argv)
   unsigned long count_drops=0;
   //loop index
   unsigned long i=0;
+  if(arguments.verbose) if(!endian_swap) printf("information: NO swap endianess\n");
+  if(arguments.verbose) printf("information: simulate UDP frame\n");
 //  while(1)
   for(;i<max_iter;++i)
   {
     if(udp)
     {//receiving UDP frame
+      if(debug) printf("\ndebug: wait for UDP frame");
       //! receive any incoming UDP datagram. Address and port of requesting client will be stored on serverStorage variable
       nBytes = recvfrom(udpSocket,buffer,2048,0,(struct sockaddr *)&serverStorage, &addr_size);
     }//UDP
@@ -189,7 +205,7 @@ int main(int argc, char **argv)
       buffer[3]=0x78+(unsigned char)((i<123)?i:i+12);
     }//simulation
     //get frame index as first uint32 of buffer content
-    {const unsigned int *b=(unsigned int *)buffer;index=(endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
+    {const unsigned int *b=(unsigned int *)buffer;index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
     //check increment
     inc=(long)index-(long)prev_index;
     if( (inc!=1) || debug)
