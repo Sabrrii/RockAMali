@@ -1,26 +1,17 @@
-rm -f /dev/shm//UDP_ml507_grab ; sync ; time tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab -B 4 ; chmod a+r /dev/shm//UDP_ml507_grab ; wc -c /dev/shm//UDP_ml507_grab
-Running as user "root" and group "root". This could be dangerous.
-Capturing on p1p2
-1234567 
-101 packets dropped
-3.292u 4.540s 0:13.57 57.7%	0+0k 0+8io 0pf+0w
-1358024024 /dev/shm//UDP_ml507_grab
+13345 packets dropped
+123456 packets captured
+10% dropped !
 
 
-rm -f /dev/shm//UDP_ml507_grab ; sync ; time tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab -B 4 ; chmod a+r /dev/shm//UDP_ml507_grab ; wc -c /dev/shm//UDP_ml507_grab
-Running as user "root" and group "root". This could be dangerous.
-Capturing on p1p2
-1234567 
-550 packets dropped
-3.196u 4.047s 0:13.61 53.1%	0+0k 0+0io 0pf+0w
-1358024024 /dev/shm//UDP_ml507_grab
 
+  7 0.001479165   10.10.15.2 -> 10.10.15.1   IPv4 1514 Fragmented IP protocol (proto=UDP 17, off=0, ID=bf1d)
+  8 0.001484068   10.10.15.2 -> 10.10.15.1   IPv4 1514 Fragmented IP protocol (proto=UDP 17, off=1480, ID=bf1d)
+  9 0.001486148   10.10.15.2 -> 10.10.15.1   IPv4 1514 Fragmented IP protocol (proto=UDP 17, off=2960, ID=bf1d)
+ 10 0.001488135   10.10.15.2 -> 10.10.15.1   IPv4 1514 Fragmented IP protocol (proto=UDP 17, off=4440, ID=bf1d)
+ 11 0.001490142   10.10.15.2 -> 10.10.15.1   IPv4 1514 Fragmented IP protocol (proto=UDP 17, off=5920, ID=bf1d)
+ 12 0.001491906   10.10.15.2 -> 10.10.15.1   UDP 834 Source port: 34138  Destination port: 20485
 
-rm -f /dev/shm//UDP_ml507_grab ; sync ; time tshark -i p1p2 -f "dst port 20485" -c 1234567 -w /dev/shm//UDP_ml507_grab -B 4 ; chmod a+r /dev/shm//UDP_ml507_grab ; wc -c /dev/shm//UDP_ml507_grab
-Running as user "root" and group "root". This could be dangerous.
-Capturing on p1p2
-1234567 
-563 packets dropped
-3.247u 5.143s 0:13.58 61.7%	0+0k 0+8io 0pf+0w
-1358024024 /dev/shm//UDP_ml507_grab
+1 UDP frame is 6 UDPs
+
+nc via TCP is 230MB/s
 
