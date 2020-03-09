@@ -23,7 +23,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2f"
+#define VERSION "v0.1.2g"
 
 using namespace cimg_library;
 
@@ -42,12 +42,14 @@ int main(int argc, char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  unsigned int width=cimg_option("-s",2048, "size of UDP buffer");
+  unsigned int width=cimg_option("-s",2048, "size of UDP buffer [byte]");
   const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
   const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
   const bool verbose=cimg_option("--verbose",false,"Produce verbose output");
   const bool udp=!cimg_option("--simulation",false,"frame simulation, by default UDP frame are received");
   const bool debug=cimg_option("--debug",false,"debug output");
+  const unsigned short port=cimg_option("-p",20485,"port where the packets are send on the receiving device");
+  const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the receiver");
 
   ///standard options
   #if cimg_display!=0
@@ -93,8 +95,8 @@ int main(int argc, char **argv)
 
   //configure settings in address struct
   serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(20485);
-  serverAddr.sin_addr.s_addr = inet_addr("10.10.15.1");//"10.10.17.202");
+  serverAddr.sin_port = htons(port);
+  serverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
   memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
 
   //bind socket with address struct

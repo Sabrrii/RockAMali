@@ -3,8 +3,9 @@
 ## uint   = 4uchar: 2048*2 = 8192BoF
 FRAME_SIZE=2048
 #FRAME_SIZE=256
-PORT=20485
 DST_IP=10.10.15.1
+PORT=20485
+NS=123456
 NP=1
 GEN_FCT=count
 PROC=kernel
@@ -81,7 +82,7 @@ udp_receive: udp_receive.cpp Makefile
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
-	/sbin/ifconfig enp1s0 | grep RX | grep dropped; ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -n 123456 --no-endian-swap; /sbin/ifconfig enp1s0 | grep RX | grep dropped
+	/sbin/ifconfig enp1s0 | grep RX | grep dropped; ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) --no-endian-swap; /sbin/ifconfig enp1s0 | grep RX | grep dropped
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 
 gui: main.cpp
@@ -127,8 +128,8 @@ NT=`echo $(NP)+2   | bc`
 #NB=`echo $(NP)*4096| bc`
 #NS=`echo $(NP)*8192| bc`
 
-NB=`echo $(NP)*4| bc`
-NS=`echo $(NP)*8| bc`
+#NB=`echo $(NP)*4| bc`
+#NS=`echo $(NP)*8| bc`
 process_run:
 	ncgen parameters.cdl -o parameters.nc && rm -f sample.nc; ./process -c $(NT) -s $(FRAME_SIZE) -o sample.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -b $(NB) -n $(NS) $(USE_GPU) $(DO_CHECK) 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color && ncdump -h sample.nc
 #	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -b $(NB) -n $(NS) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
@@ -148,15 +149,11 @@ process_sequential_check: result_sequential.nc  sample_sequential.nc
 process_sequential_vMcPc_check:
 	./process_sequential_vMcPc_check.sh | tee process_sequential_vMcPc_check.txt | grep -e ' ' -e fail --color
 
-#NS=123456
 send_run:
 	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -i $(DST_IP) -b  8 -n `echo $(NS)+1 | bc` -w 123456
 
-NP=1
-NT=`echo $(NP)+3   | bc`
-NB=`echo $(NP)*4096| bc`
-NS=1234
-NS=123456
+#NT=`echo $(NP)+3   | bc`
+#NB=`echo $(NP)*4096| bc`
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
