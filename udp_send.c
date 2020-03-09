@@ -17,7 +17,7 @@ int main()
   //Configure settings in address struct
   serverAddr.sin_family = AF_INET;
 serverAddr.sin_port = htons(20485);
-serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+serverAddr.sin_addr.s_addr = inet_addr("10.10.15.1");
   memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
 
   //Initialize size variable to be used later on
@@ -29,7 +29,7 @@ serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
   printf("size=%d.\n",nBytes);
 
 //  while(1)
-  for(int i=0;i<1234;++i)
+  for(int i=0;i<123456;++i)
   {
 printf("i=%d\r",i);
       buffer[0]=0x12;
@@ -38,6 +38,7 @@ printf("i=%d\r",i);
       buffer[3]=0x78+(unsigned char)((i<123)?i:i+12);
     //Send message to server
     sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddr,addr_size);
+usleep(1234);
   }
 printf("\n");
   return 0;
