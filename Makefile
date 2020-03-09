@@ -10,16 +10,17 @@ PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
 USE_GPU=
 DO_CHECK=--do-check
-DO_CHECK=
+#DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
 DO_PROFILING=
 
 DATA=./
 DATA=/media/temp/
-DATA=/tmp/
+#DATA=/tmp/
 DIN=samples/
 DOUT=results/
 FIN=sample.cimg
+#FIN=sample.nc
 FOUT=$(FIN)
 
 #compiler options
@@ -38,7 +39,7 @@ endif #NetCDF
 
 ##do compile
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF)
-DO_NETCDF=
+#DO_NETCDF=
 #DO_GPU (depending on target architecture)
 ifeq ($(shell uname -p),x86_64)
 ##AMD64 (gan*)
