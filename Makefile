@@ -148,7 +148,7 @@ process_sequential_vMcPc_check:
 
 #NS=123456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -b  8 -n $(NS) -w 123456
+	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -b  8 -n $(NS) -w 12345
 
 NP=1
 NT=`echo $(NP)+3   | bc`
