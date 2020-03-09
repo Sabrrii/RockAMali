@@ -23,7 +23,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2d"
+#define VERSION "v0.1.2e"
 
 using namespace cimg_library;
 
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
   //configure settings in address struct
   serverAddr.sin_family = AF_INET;
   serverAddr.sin_port = htons(20485);
-  serverAddr.sin_addr.s_addr = inet_addr("10.10.17.202");
+  serverAddr.sin_addr.s_addr = inet_addr("10.10.15.1");//"10.10.17.202");
   memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
 
   //bind socket with address struct

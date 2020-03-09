@@ -4,6 +4,7 @@
 FRAME_SIZE=345
 FRAME_SIZE=256
 PORT=20485
+DST_IP=10.10.15.1
 NP=1
 GEN_FCT=count
 PROC=kernel
@@ -39,7 +40,7 @@ endif #NetCDF
 
 ##do compile
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF)
-#DO_NETCDF=
+DO_NETCDF=
 #DO_GPU (depending on target architecture)
 ifeq ($(shell uname -p),x86_64)
 ##AMD64 (gan*)
@@ -80,7 +81,7 @@ udp_receive: udp_receive.cpp Makefile
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
-	/sbin/ifconfig p1p2 | grep RX | grep dropped; time ./udp_receive -i 1234567; /sbin/ifconfig p1p2 | grep RX | grep dropped
+	/sbin/ifconfig enp1s0 | grep RX | grep dropped; ./udp_receive -n 123456 --no-endian-swap; /sbin/ifconfig enp1s0 | grep RX | grep dropped
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 
 gui: main.cpp
@@ -149,7 +150,7 @@ process_sequential_vMcPc_check:
 
 #NS=123456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -b  8 -n $(NS) -w 12345
+	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -i $(DST_IP) -b  8 -n `echo $(NS)+1 | bc` -w 123456
 
 NP=1
 NT=`echo $(NP)+3   | bc`
