@@ -148,12 +148,13 @@ process_sequential_vMcPc_check:
 
 #NS=123456
 send_run:
-	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -b  8 -n $(NS) -w 123456789
+	./send    -c 2 -s $(FRAME_SIZE) -p $(PORT) -b  8 -n $(NS) -w 123456
 
 NP=1
 NT=`echo $(NP)+3   | bc`
 NB=`echo $(NP)*4096| bc`
 NS=1234
+NS=123456
 receive_run: clear
 #	./receive -c 2 -s $(FRAME_SIZE) -b 128 -n 12345 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) -C -E -W
 #	./receive -c 3 -s $(FRAME_SIZE) -b 16 -n 123 -o $(DATA)$(DIN)$(FIN) -r $(DATA)$(DOUT)$(FOUT) $(USE_GPU) $(DO_CHECK) -E -W
@@ -196,7 +197,7 @@ else
 ##ARM64 (RockPro64)
 TMP=/media/temp/
 udp_grab:
-	tshark -i enp1s0 -f "$(FILTER)" -c $(NS) -x
+	tshark -i enp1s0 -f "$(FILTER)" -c $(NS) #-x
 	@echo "rm -f $(TMP)/UDP_ganl; tshark -i enp1s0 -f \"$(FILTER)\" -c 1  -x -w $(TMP)/UDP_ganl ; wc -c $(TMP)/UDP_ganl"
 endif #UPD grab
 #}UPD grab
