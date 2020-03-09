@@ -1,105 +1,17 @@
-/sbin/ifconfig p1p2 | grep RX | grep dropped; time ./udp_receive -i 1234567; /sbin/ifconfig p1p2 | grep RX | grep dropped
-          RX packets:2410368614 errors:0 dropped:113 overruns:0 frame:0
-# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops
-#           0: 04 85 5f a5   75849637    75849637
-#       28685: 04 85 cf cc   75878348          27; drop:            1 drops,           26 index drops
-#       28686: 04 85 cf cf   75878351           3; drop:            2 drops,           28 index drops
-#       37432: 04 85 f2 00   75887104           8; drop:            3 drops,           35 index drops
-#       50659: 04 86 25 c3   75900355          25; drop:            4 drops,           59 index drops
-#       74895: 04 86 84 70   75924592           2; drop:            5 drops,           60 index drops
-#       75556: 04 86 87 1a   75925274          22; drop:            6 drops,           81 index drops
-#       75557: 04 86 87 1d   75925277           3; drop:            7 drops,           83 index drops
-#       92744: 04 86 ca 59   75942489          26; drop:            8 drops,          108 index drops
-#       93586: 04 86 cd a8   75943336           6; drop:            9 drops,          113 index drops
-#       98530: 04 86 e0 fb   75948283           4; drop:           10 drops,          116 index drops
-#      112322: 04 87 16 e0   75962080           6; drop:           11 drops,          121 index drops
-#      122329: 04 87 3e 0e   75972110          24; drop:           12 drops,          144 index drops
-#      131044: 04 87 60 1a   75980826           2; drop:           13 drops,          145 index drops
-#      149786: 04 87 a9 51   75999569           2; drop:           14 drops,          146 index drops
-#      186393: 04 88 38 63   76036195          20; drop:           15 drops,          165 index drops
-#      187250: 04 88 3b c1   76037057           6; drop:           16 drops,          170 index drops
-#      192177: 04 88 4f 02   76041986           3; drop:           17 drops,          172 index drops
-#      205992: 04 88 84 fa   76055802           2; drop:           18 drops,          173 index drops
-#      224736: 04 88 ce 33   76074547           2; drop:           19 drops,          174 index drops
-#      237931: 04 89 01 de   76087774          33; drop:           20 drops,          206 index drops
-#      262188: 04 89 60 a4   76112036           6; drop:           21 drops,          211 index drops
-#      280032: 04 89 a6 6e   76129902          23; drop:           22 drops,          233 index drops
-#      280908: 04 89 a9 dd   76130781           4; drop:           23 drops,          236 index drops
-#      285814: 04 89 bd 11   76135697          11; drop:           24 drops,          246 index drops
-#      285815: 04 89 bd 14   76135700           3; drop:           25 drops,          248 index drops
-#      374613: 04 8b 17 f5   76224501           4; drop:           26 drops,          251 index drops
-#      403515: 04 8b 88 f5   76253429          27; drop:           27 drops,          277 index drops
-#      412076: 04 8b aa 67   76261991           2; drop:           28 drops,          278 index drops
-#      430819: 04 8b f3 a0   76280736           3; drop:           29 drops,          280 index drops
-#      449561: 04 8c 3c d7   76299479           2; drop:           30 drops,          281 index drops
-#      450429: 04 8c 40 40   76300352           6; drop:           31 drops,          286 index drops
-#      450430: 04 8c 40 43   76300355           3; drop:           32 drops,          288 index drops
-#      473171: 04 8c 99 1d   76323101           6; drop:           33 drops,          293 index drops
-#      487035: 04 8c cf 48   76336968           4; drop:           34 drops,          296 index drops
-#      497208: 04 8c f7 31   76347185          45; drop:           35 drops,          340 index drops
-#      497209: 04 8c f7 33   76347187           2; drop:           36 drops,          341 index drops
-#      505733: 04 8d 18 82   76355714           4; drop:           37 drops,          344 index drops
-#      544151: 04 8d ae a8   76394152          21; drop:           38 drops,          364 index drops
-#      566799: 04 8e 07 21   76416801           2; drop:           39 drops,          365 index drops
-#      566800: 04 8e 07 24   76416804           3; drop:           40 drops,          367 index drops
-#      566920: 04 8e 07 a4   76416932           9; drop:           41 drops,          375 index drops
-#      580675: 04 8e 3d 62   76430690           4; drop:           42 drops,          378 index drops
-#      590959: 04 8e 65 a4   76440996          23; drop:           43 drops,          400 index drops
-#      599392: 04 8e 86 9a   76449434           6; drop:           44 drops,          405 index drops
-#      618136: 04 8e cf d5   76468181           4; drop:           45 drops,          408 index drops
-#      637873: 04 8f 1d 04   76487940          23; drop:           46 drops,          430 index drops
-#      654637: 04 8f 5e 95   76504725          22; drop:           47 drops,          451 index drops
-#      660414: 04 8f 75 2e   76510510           9; drop:           48 drops,          459 index drops
-#      674312: 04 8f ab 7d   76524413           6; drop:           49 drops,          464 index drops
-#      693050: 04 8f f4 b4   76543156           6; drop:           50 drops,          469 index drops
-#      730533: 04 90 87 25   76580645           7; drop:           51 drops,          475 index drops
-#      748298: 04 90 cc a1   76598433          24; drop:           52 drops,          498 index drops
-#      752104: 04 90 db c4   76602308          70; drop:           53 drops,          567 index drops
-#      754003: 04 90 e3 30   76604208           2; drop:           54 drops,          568 index drops
-#      754004: 04 90 e3 33   76604211           3; drop:           55 drops,          570 index drops
-#      767926: 04 91 19 96   76618134           2; drop:           56 drops,          571 index drops
-#      778314: 04 91 42 42   76628546          25; drop:           57 drops,          595 index drops
-#      786640: 04 91 62 cf   76636879           8; drop:           58 drops,          602 index drops
-#      799729: 04 91 96 32   76650034          67; drop:           59 drops,          668 index drops
-#      799731: 04 91 96 35   76650037           2; drop:           60 drops,          669 index drops
-#      805311: 04 91 ac 08   76655624           8; drop:           61 drops,          676 index drops
-#      825139: 04 91 f9 8f   76675471          20; drop:           62 drops,          695 index drops
-#      825140: 04 91 f9 92   76675474           3; drop:           63 drops,          697 index drops
-#      841780: 04 92 3a ab   76692139          26; drop:           64 drops,          722 index drops
-#      842751: 04 92 3e 79   76693113           4; drop:           65 drops,          725 index drops
-#      847550: 04 92 51 3b   76697915           4; drop:           66 drops,          728 index drops
-#      861487: 04 92 87 b1   76711857           6; drop:           67 drops,          733 index drops
-#      917717: 04 93 63 5a   76768090           4; drop:           68 drops,          736 index drops
-#      935453: 04 93 a8 b5   76785845          20; drop:           69 drops,          755 index drops
-#      936441: 04 93 ac 92   76786834           2; drop:           70 drops,          756 index drops
-#      955183: 04 93 f5 cb   76805579           4; drop:           71 drops,          759 index drops
-#      973924: 04 94 3f 03   76824323           4; drop:           72 drops,          762 index drops
-#      986972: 04 94 72 1c   76837404          34; drop:           73 drops,          795 index drops
-#      992635: 04 94 88 3c   76843068           2; drop:           74 drops,          796 index drops
-#      992636: 04 94 88 3e   76843070           2; drop:           75 drops,          797 index drops
-#     1029094: 04 95 16 bf   76879551          24; drop:           76 drops,          820 index drops
-#     1030096: 04 95 1a ac   76880556           4; drop:           77 drops,          823 index drops
-#     1034858: 04 95 2d 4b   76885323           6; drop:           78 drops,          828 index drops
-#     1067574: 04 95 ad 1c   76918044           6; drop:           79 drops,          833 index drops
-#     1067645: 04 95 ad 65   76918117           3; drop:           80 drops,          835 index drops
-#     1086313: 04 95 f6 56   76936790           6; drop:           81 drops,          840 index drops
-#     1105055: 04 96 3f 8e   76955534           3; drop:           82 drops,          842 index drops
-#     1106279: 04 96 44 70   76956784          27; drop:           83 drops,          868 index drops
-#     1122734: 04 96 84 ca   76973258          20; drop:           84 drops,          887 index drops
-#     1123753: 04 96 88 c6   76974278           2; drop:           85 drops,          888 index drops
-#     1153075: 04 96 fb 67   77003623          24; drop:           86 drops,          911 index drops
-#     1153076: 04 96 fb 6a   77003626           3; drop:           87 drops,          913 index drops
-#     1161210: 04 97 1b 36   77011766           7; drop:           88 drops,          919 index drops
-#     1179953: 04 97 64 70   77030512           4; drop:           89 drops,          922 index drops
-#     1198692: 04 97 ad a8   77049256           6; drop:           90 drops,          927 index drops
-#     1199969: 04 97 b2 b7   77050551          19; drop:           91 drops,          945 index drops
-#     1216356: 04 97 f2 d3   77066963          26; drop:           92 drops,          970 index drops
-#     1222119: 04 98 09 57   77072727           2; drop:           93 drops,          971 index drops
-#     1222120: 04 98 09 5a   77072730           3; drop:           94 drops,          973 index drops
-test fail: in total,           94 drops,          973 index drops
+30MB/s
+2 drops,            3 index drops
+over 123456 frames (8192 BoF)
 
-real	0m13.187s
-user	0m0.537s
-sys	0m4.589s
-          RX packets:2411586762 errors:0 dropped:113 overruns:0 frame:0
-sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt
+
+make udp_receive_run
+/sbin/ifconfig enp1s0 | grep RX | grep dropped; ./udp_receive -s `echo 2048*4 | bc` -n 123456 --no-endian-swap; /sbin/ifconfig enp1s0 | grep RX | grep dropped
+        RX errors 0  dropped 5  overruns 0  frame 0
+# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops
+#           0: 00 00 00 00          0           0
+#       61472: 22 f0 00 00      61474           3; drop:            1 drops,            2 index drops
+#       99551: e2 84 01 00      99554           2; drop:            2 drops,            3 index drops
+#      123454: 00 00 00 00          0     -123456; drop:            3 drops,       123460 index drops #last sends to close the loop
+test fail: in total,            3 drops,       123460 index drops on 8192 BoF (Bytes of Frame). #bad index drops : good is "3 index drops"
+        RX errors 0  dropped 5  overruns 0  frame 0
+
+
