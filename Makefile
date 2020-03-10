@@ -84,10 +84,10 @@ udp_receive: udp_receive.cpp Makefile
 udp_receive_run:
 	/sbin/ifconfig enp1s0 | grep RX | grep dropped; ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS); /sbin/ifconfig enp1s0 | grep RX | grep dropped
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
-udp_send: udp_send.c Makefile
-	gcc udp_send.c  -o udp_send -std=c99
+udp_send: udp_send.cpp Makefile
+	g++ -O0 -o udp_send  udp_send.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_send --help -I && ./udp_send -v > VERSION && ./udp_send -n 12
 udp_send_run:
-	./udp_send
+	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) --verbose; /sbin/ifconfig eth6 | grep TX | grep dropped
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION

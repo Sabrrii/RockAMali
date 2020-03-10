@@ -13,10 +13,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-//ArgP
-#include <error.h>
-#include <argp.h>
-
 // UDP point to point test
 
 //! \todo drop of exactly 2^32 should not be taken into drops
@@ -48,8 +44,8 @@ int main(int argc, char **argv)
   const bool verbose=cimg_option("--verbose",false,"Produce verbose output");
   const bool udp=!cimg_option("--simulation",false,"frame simulation, by default UDP frame are received");
   const bool debug=cimg_option("--debug",false,"debug output");
-  const unsigned short port=cimg_option("-p",20485,"port where the packets are send on the receiving device");
-  const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the receiver");
+  const unsigned short port=cimg_option("-p",20485,"port where the packets are received");
+  const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the sender");
 
   ///standard options
   #if cimg_display!=0
