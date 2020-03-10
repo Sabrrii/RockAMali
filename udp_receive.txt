@@ -1,17 +1,22 @@
-30MB/s
-2 drops,            3 index drops
-over 123456 frames (8192 BoF)
-
-
-make udp_receive_run
-/sbin/ifconfig enp1s0 | grep RX | grep dropped; ./udp_receive -s `echo 2048*4 | bc` -n 123456 --no-endian-swap; /sbin/ifconfig enp1s0 | grep RX | grep dropped
-        RX errors 0  dropped 5  overruns 0  frame 0
+make udp_receive && make udp_receive_runmake: 'udp_receive' is up to date.
+/sbin/ifconfig enp1s0 | grep RX | grep dropped; ./udp_receive -s `echo 2048*4 | bc` -i 10.10.15.1 -p 20485 -n 123456 --do-warmup; /sbin/ifconfig enp1s0 | grep RX | grep dropped
+        RX errors 0  dropped 10  overruns 0  frame 0
+information: do warmup.
 # index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops
 #           0: 00 00 00 00          0           0
-#       61472: 22 f0 00 00      61474           3; drop:            1 drops,            2 index drops
-#       99551: e2 84 01 00      99554           2; drop:            2 drops,            3 index drops
-#      123454: 00 00 00 00          0     -123456; drop:            3 drops,       123460 index drops #last sends to close the loop
-test fail: in total,            3 drops,       123460 index drops on 8192 BoF (Bytes of Frame). #bad index drops : good is "3 index drops"
-        RX errors 0  dropped 5  overruns 0  frame 0
+test pass: zero drop on 8192 BoF (Bytes of Frame).
+        RX errors 0  dropped 10  overruns 0  frame 0
+sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt
+
+
+
+sync; make udp_send && make udp_send_run
+make: `udp_send' is up to date.
+/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo 2048*4 | bc` -i 10.10.15.1 -p 20485 -n `echo 123456+1 | bc` -w 92 --do-warmup --do-ramp; /sbin/ifconfig eth6 | grep TX | grep dropped
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+information: do memory warmup.
+information: do rate ramp on first 256 frames.
+i=123456
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 
 

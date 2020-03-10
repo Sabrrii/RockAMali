@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.2i"
+#define VERSION "v0.1.2j"
 
 using namespace cimg_library;
 
@@ -44,6 +44,8 @@ int main(int argc, char **argv)
   const int twait=cimg_option("-w", 123, "waiting time between udp frames [us]");
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
+  const bool do_ramp_R=cimg_option("-R",false,NULL);//-R hidden option
+  bool do_ramp=cimg_option("--do-ramp",do_ramp_R,"do rate ramp on first 256 frames, e.g. ethernet rate raise to requested (or -R option)");do_ramp=do_ramp_R|do_ramp;//same --do-ramp or -R option
 
   ///standard options
   #if cimg_display!=0
@@ -95,7 +97,8 @@ int main(int argc, char **argv)
   //randomise content of buffer
   if(verbose) printf("rnd\r");
   buffer.rand(0,255);
-  if(do_warmup) {printf("information: do warmup.\n");buffer.rand(0,255);bindex.max();}
+  if(do_warmup) {printf("information: do memory warmup.\n");buffer.rand(0,255);bindex.max();}
+  if(do_ramp)   {printf("information: do rate ramp on first 256 frames.\n");}
 
 //  while(1)
   for(int i=0;i<max_iter;++i)
@@ -105,7 +108,9 @@ int main(int argc, char **argv)
     bindex(0)=(!endian_swap)?i:ntohl(i);
     //send buffer to receiver
     sendto(clientSocket,buffer,width,0,(struct sockaddr *)&receiverAddr,addr_size);
-    usleep(twait);
+    //control data rate
+    if(do_ramp) {if(i<256) usleep(twait*(256-i)); else usleep(twait);}
+    else usleep(twait);
   }//for loop
   printf("\n");
   //put back memory pointer (for freeing)
