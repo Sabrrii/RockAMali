@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.2j"
+#define VERSION "v0.1.2k"
 
 using namespace cimg_library;
 
@@ -103,13 +103,13 @@ int main(int argc, char **argv)
 //  while(1)
   for(int i=0;i<max_iter;++i)
   {
-    printf("i=%d\r",i);
+    printf("i=%d\r",i);if(i==0) fflush(stdout);
     //update loop index in UDP buffer
     bindex(0)=(!endian_swap)?i:ntohl(i);
     //send buffer to receiver
     sendto(clientSocket,buffer,width,0,(struct sockaddr *)&receiverAddr,addr_size);
     //control data rate
-    if(do_ramp) {if(i<256) usleep(twait*(256-i)); else usleep(twait);}
+    if(do_ramp) {if(i<256) {const int tw=twait*(256-i);if(verbose) printf("wait=%dus\n",tw); usleep(tw);} else usleep(twait);}
     else usleep(twait);
   }//for loop
   printf("\n");
