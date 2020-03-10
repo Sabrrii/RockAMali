@@ -7,7 +7,7 @@
 int main()
 {
   int clientSocket, portNum, nBytes;
-  char buffer[1024];
+  char buffer[8192];
   struct sockaddr_in serverAddr;
   socklen_t addr_size;
 
@@ -23,13 +23,14 @@ serverAddr.sin_addr.s_addr = inet_addr("10.10.15.1");
   //Initialize size variable to be used later on
   addr_size = sizeof serverAddr;
 
-    for(int i=0;i<1024;++i) buffer[i]=(char)i+1;
-    buffer[1023]='\0';
+    for(int i=0;i<8192;++i) buffer[i]=(char)i+1;
+    buffer[8191]='\0';
     nBytes = strlen(buffer) + 1;
+nBytes=8192;
   printf("size=%d.\n",nBytes);
 
 //  while(1)
-  for(int i=0;i<123456;++i)
+  for(int i=0;i<12345678;++i)
   {
 printf("i=%d\r",i);
       buffer[0]=0x12;
@@ -38,7 +39,7 @@ printf("i=%d\r",i);
       buffer[3]=0x78+(unsigned char)((i<123)?i:i+12);
     //Send message to server
     sendto(clientSocket,buffer,nBytes,0,(struct sockaddr *)&serverAddr,addr_size);
-usleep(1234);
+usleep(1);
   }
 printf("\n");
   return 0;
