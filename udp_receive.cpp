@@ -19,7 +19,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2g"
+#define VERSION "v0.1.2h"
 
 using namespace cimg_library;
 
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
   CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
   const unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
   bindex._data=(unsigned int*)buffer.data();//share
-  struct sockaddr_in serverAddr;
+  struct sockaddr_in receiverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
 
@@ -90,13 +90,13 @@ int main(int argc, char **argv)
   udpSocket = socket(PF_INET, SOCK_DGRAM, 0);
 
   //configure settings in address struct
-  serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(port);
-  serverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
-  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
+  receiverAddr.sin_family = AF_INET;
+  receiverAddr.sin_port = htons(port);
+  receiverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
+  memset(receiverAddr.sin_zero, '\0', sizeof receiverAddr.sin_zero);  
 
   //bind socket with address struct
-  bind(udpSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
+  bind(udpSocket, (struct sockaddr *) &receiverAddr, sizeof(receiverAddr));
   //initialize size variable to be used later on
   addr_size = sizeof serverStorage;
 

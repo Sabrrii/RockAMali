@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.0e"
+#define VERSION "v0.1.2h"
 
 using namespace cimg_library;
 
@@ -77,17 +77,17 @@ int main(int argc, char **argv)
 
   //UDP related
   int clientSocket, portNum;
-  struct sockaddr_in serverAddr;
+  struct sockaddr_in receiverAddr;
   socklen_t addr_size;
   //Create UDP socket
   clientSocket = socket(PF_INET, SOCK_DGRAM, 0);
   //Configure settings in address struct
-  serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(port);
-  serverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
-  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
+  receiverAddr.sin_family = AF_INET;
+  receiverAddr.sin_port = htons(port);
+  receiverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
+  memset(receiverAddr.sin_zero, '\0', sizeof receiverAddr.sin_zero);  
   //Initialize size variable to be used later on
-  addr_size = sizeof serverAddr;
+  addr_size = sizeof receiverAddr;
 
   if(verbose) if(!endian_swap) printf("information: NO swap endianess\n");
   //randomise content of buffer
@@ -98,9 +98,10 @@ int main(int argc, char **argv)
   for(int i=0;i<max_iter;++i)
   {
     printf("i=%d\r",i);
+    //update loop index in UDP buffer
     bindex(0)=(!endian_swap)?i:ntohl(i);
-    //Send message to server
-    sendto(clientSocket,buffer,width,0,(struct sockaddr *)&serverAddr,addr_size);
+    //send buffer to receiver
+    sendto(clientSocket,buffer,width,0,(struct sockaddr *)&receiverAddr,addr_size);
     usleep(twait);
   }//for loop
   printf("\n");
