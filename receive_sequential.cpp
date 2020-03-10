@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.8g"
+#define VERSION "v0.5.8h"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -81,7 +81,7 @@ int main(int argc,char **argv)
   const bool do_check_CE=cimg_option("-E",false,NULL);//-E hidden option
         bool do_check_exit=cimg_option("--do-check-exit",do_check_CE,"do data check exit on first error (or -E option)");do_check_exit=do_check_CE|do_check_exit;//same --do-check_exit or -E option
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
-        bool do_warmup=cimg_option("--do-warmup",do_check_C,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
+        bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 
   ///standard options
   #if cimg_display!=0

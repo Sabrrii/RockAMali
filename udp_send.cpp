@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.2h"
+#define VERSION "v0.1.2i"
 
 using namespace cimg_library;
 
@@ -42,6 +42,8 @@ int main(int argc, char **argv)
   const unsigned short port=cimg_option("-p",20485,"port where the packets are send on the receiving device");
   const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the receiver");
   const int twait=cimg_option("-w", 123, "waiting time between udp frames [us]");
+  const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
+  bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 
   ///standard options
   #if cimg_display!=0
@@ -93,6 +95,7 @@ int main(int argc, char **argv)
   //randomise content of buffer
   if(verbose) printf("rnd\r");
   buffer.rand(0,255);
+  if(do_warmup) {printf("information: do warmup.\n");buffer.rand(0,255);bindex.max();}
 
 //  while(1)
   for(int i=0;i<max_iter;++i)

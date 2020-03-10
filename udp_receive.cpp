@@ -19,7 +19,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2h"
+#define VERSION "v0.1.2i"
 
 using namespace cimg_library;
 
@@ -46,6 +46,8 @@ int main(int argc, char **argv)
   const bool debug=cimg_option("--debug",false,"debug output");
   const unsigned short port=cimg_option("-p",20485,"port where the packets are received");
   const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the sender");
+  const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
+  bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 
   ///standard options
   #if cimg_display!=0
@@ -99,6 +101,8 @@ int main(int argc, char **argv)
   bind(udpSocket, (struct sockaddr *) &receiverAddr, sizeof(receiverAddr));
   //initialize size variable to be used later on
   addr_size = sizeof serverStorage;
+
+  if(do_warmup) {printf("information: do warmup.\n");buffer.rand(0,255);bindex.max();}
 
   //index
   unsigned int index=0;
