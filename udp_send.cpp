@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.0d"
+#define VERSION "v0.1.0e"
 
 using namespace cimg_library;
 
@@ -90,6 +90,9 @@ int main(int argc, char **argv)
   addr_size = sizeof serverAddr;
 
   if(verbose) if(!endian_swap) printf("information: NO swap endianess\n");
+  //randomise content of buffer
+  if(verbose) printf("rnd\r");
+  buffer.rand(0,255);
 
 //  while(1)
   for(int i=0;i<max_iter;++i)
