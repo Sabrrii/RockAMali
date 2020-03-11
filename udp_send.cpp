@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.2m"
+#define VERSION "v0.1.2n"
 
 using namespace cimg_library;
 

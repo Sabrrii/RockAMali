@@ -17,13 +17,13 @@
 
 // UDP point to point test
 
-//! \todo [high] time out of a few second (for i>0), in case of drops
+//! \todo rate
 
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2m"
+#define VERSION "v0.1.2n"
 
 using namespace cimg_library;
 
@@ -89,14 +89,13 @@ int main(int argc, char **argv)
 
   #pragma omp single
   {
-  if(tn<2) {printf("error: run error, this process need at least 2 threads (presently only %d available)\n",tn);exit(2);}
+  if(tn<2) {fprintf(stderr,"error: run error, this process need at least 2 threads (presently only %d available)\n",tn);exit(2);}
   else {printf("\ninfo: running %d threads\n",tn);fflush(stdout);}
   }//single
 
   //run threads
   switch(id)
   {
-/*
     case 0:
     {//watchdog
       unsigned int  count=0;
@@ -105,22 +104,22 @@ int main(int argc, char **argv)
       {
         //locked section
         {
-          omp_set_lock(lock);
+          omp_set_lock(&lock);
           //get currently received
           count=received;
           i=current_i;
           //reset received frame counter
           received=0;
-          omp_unset_lock(lock);
+          omp_unset_lock(&lock);
         }//lock
         //compute rate
         //! \todo compute rate
+        fprintf(stderr,"information: i=%d, received=%d.\n",i,count);
+        fflush(stderr);
+        sleep(3);
       }//infinite loop
-      printf("information: timeout reached.\n");
-      
       break;
     }//watchdog
-*/
     case 1:
     {//receive
 
@@ -143,7 +142,7 @@ int main(int argc, char **argv)
   struct timeval tv;
   tv.tv_sec = twait;
   tv.tv_usec = 0;
-  if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {printf("error: while setting timeout to %d.\n",twait);exit(2);}
+  if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d.\n",twait);exit(2);}
 
   //configure settings in address struct
   receiverAddr.sin_family = AF_INET;
@@ -183,29 +182,27 @@ int main(int argc, char **argv)
       {
         while((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
         {
-          printf(".");fflush(stdout);
+          fprintf(stderr,".");fflush(stderr);
         }//wait infinitely for first frame
       }//first frame
       else
       {//! timeout for others frames
         if((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
         {
-          printf("\nerror: receiving frame timeout %d s (i.e. -w option ; see recvfrom).\n",twait);
+          fprintf(stderr,"\nerror: receiving frame timeout %d s (i.e. -w option ; see recvfrom).\n",twait);fflush(stderr);
           break;
         }//timeout
       }//other frames
       //! \todo check nBytes buffer.width() ; add (lazy) resize ?
-/*
       //!rate
       //locked section
       {
-        omp_set_lock(lock);
+        omp_set_lock(&lock);
         //increment received frame counter
         ++received;
         current_i=i;
-        omp_unset_lock(lock);
+        omp_unset_lock(&lock);
       }//lock
-*/
     }//UDP
     else
     {//draft simulation
@@ -255,6 +252,8 @@ int main(int argc, char **argv)
   printf(".\n");
   //put back memory pointer (for freeing)
   bindex._data=(unsigned int*)bindex_data;
+      //kill other thread
+      //! \todo finish other thread
       break;
     }//receive
   }//switch(id)
