@@ -23,7 +23,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2n"
+#define VERSION "v0.1.2o"
 
 using namespace cimg_library;
 
@@ -81,9 +81,9 @@ int main(int argc, char **argv)
 
   //OpenMP locks
   omp_lock_t lock;omp_init_lock(&lock);
-  unsigned int received=0; unsigned long current_i=0;
+  unsigned int received=0; unsigned long current_i=0;bool done=false;
 
-  #pragma omp parallel shared(lock, received,current_i)
+  #pragma omp parallel shared(lock, received,current_i,done)
   {
   int id=omp_get_thread_num(),tn=omp_get_num_threads();
 
@@ -114,9 +114,17 @@ int main(int argc, char **argv)
         }//lock
         //compute rate
         //! \todo compute rate
-        fprintf(stderr,"information: i=%d, received=%d.\n",i,count);
+        if(i>0) fprintf(stderr,"information: i=%d, received=%d.\n",i,count);
         fflush(stderr);
         sleep(3);
+        //! exit if work done
+        //locked section
+        {
+          omp_set_lock(&lock);
+          //exit
+          if(done) break;
+          omp_unset_lock(&lock);
+        }//lock
       }//infinite loop
       break;
     }//watchdog
@@ -252,8 +260,14 @@ int main(int argc, char **argv)
   printf(".\n");
   //put back memory pointer (for freeing)
   bindex._data=(unsigned int*)bindex_data;
-      //kill other thread
-      //! \todo finish other thread
+      //! work done exiting
+      //locked section
+      {
+        omp_set_lock(&lock);
+        //work done (for all threads)
+        done=true;
+        omp_unset_lock(&lock);
+      }//lock
       break;
     }//receive
   }//switch(id)
