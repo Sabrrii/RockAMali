@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+//OpenMP
+#include <omp.h>
 
 //C base
 #include <stdio.h>
@@ -15,11 +17,13 @@
 
 // UDP point to point test
 
+//! \todo [high] time out of a few second (for i>0), in case of drops
+
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2k"
+#define VERSION "v0.1.2l"
 
 using namespace cimg_library;
 
@@ -46,6 +50,7 @@ int main(int argc, char **argv)
   const bool debug=cimg_option("--debug",false,"debug output");
   const unsigned short port=cimg_option("-p",20485,"port where the packets are received");
   const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the sender");
+  const int twait=cimg_option("-w", 3, "time out for receiving next frame [s]");
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 
@@ -74,6 +79,50 @@ int main(int argc, char **argv)
   if(show_help) {/*print_help(std::cerr);*/return 0;}
   //}CLI option
 
+  //OpenMP locks
+  omp_lock_t lock;omp_init_lock(&lock);
+  unsigned int received=0; unsigned long current_i=0;
+
+  #pragma omp parallel shared(lock, received,current_i)
+  {
+  int id=omp_get_thread_num(),tn=omp_get_num_threads();
+
+  #pragma omp single
+  {
+  if(tn<2) {printf("error: run error, this process need at least 2 threads (presently only %d available)\n",tn);exit(2);}
+  else {printf("\ninfo: running %d threads\n",tn);fflush(stdout);}
+  }//single
+
+  //run threads
+  switch(id)
+  {
+/*
+    case 0:
+    {//watchdog
+      unsigned int  count=0;
+      unsigned long i=0;
+      for(;;)
+      {
+        //locked section
+        {
+          omp_set_lock(lock);
+          //get currently received
+          count=received;
+          i=current_i;
+          //reset received frame counter
+          received=0;
+          omp_unset_lock(lock);
+        }//lock
+        //compute rate
+        //! \todo compute rate
+      }//infinite loop
+      printf("information: timeout reached.\n");
+      
+      break;
+    }//watchdog
+*/
+    case 1:
+    {//receive
 
   //UDP related
   int udpSocket, nBytes=4;
@@ -90,6 +139,12 @@ int main(int argc, char **argv)
 
   //create UDP socket
   udpSocket = socket(PF_INET, SOCK_DGRAM, 0);
+
+//timeout
+struct timeval tv;
+tv.tv_sec = twait;
+tv.tv_usec = 0;
+if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {printf("error: while setting timeout");exit(2);}
 
   //configure settings in address struct
   receiverAddr.sin_family = AF_INET;
@@ -124,8 +179,23 @@ int main(int argc, char **argv)
     {//receiving UDP frame
       if(debug) printf("\ndebug: wait for UDP frame");
       //! receive any incoming UDP datagram. Address and port of requesting client will be stored on serverStorage variable
-      nBytes = recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size);
+      if((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
+      {
+        printf("error: receiving frame timeout (see recvfrom)\n");
+        break;
+      }
       //! \todo check nBytes buffer.width() ; add (lazy) resize ?
+/*
+      //!rate
+      //locked section
+      {
+        omp_set_lock(lock);
+        //increment received frame counter
+        ++received;
+        current_i=i;
+        omp_unset_lock(lock);
+      }//lock
+*/
     }//UDP
     else
     {//draft simulation
@@ -175,6 +245,11 @@ int main(int argc, char **argv)
   printf(".\n");
   //put back memory pointer (for freeing)
   bindex._data=(unsigned int*)bindex_data;
+      break;
+    }//receive
+  }//switch(id)
+  }//parallel section
+
   return 0;
 }//main
 
