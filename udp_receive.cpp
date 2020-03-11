@@ -23,7 +23,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2l"
+#define VERSION "v0.1.2m"
 
 using namespace cimg_library;
 
@@ -139,12 +139,11 @@ int main(int argc, char **argv)
 
   //create UDP socket
   udpSocket = socket(PF_INET, SOCK_DGRAM, 0);
-
-//timeout
-struct timeval tv;
-tv.tv_sec = twait;
-tv.tv_usec = 0;
-if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {printf("error: while setting timeout");exit(2);}
+  //timeout
+  struct timeval tv;
+  tv.tv_sec = twait;
+  tv.tv_usec = 0;
+  if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {printf("error: while setting timeout to %d.\n",twait);exit(2);}
 
   //configure settings in address struct
   receiverAddr.sin_family = AF_INET;
@@ -179,11 +178,22 @@ if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {printf("
     {//receiving UDP frame
       if(debug) printf("\ndebug: wait for UDP frame");
       //! receive any incoming UDP datagram. Address and port of requesting client will be stored on serverStorage variable
-      if((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
+      //! - wait infinitely for first frame
+      if(i==0)
       {
-        printf("error: receiving frame timeout (see recvfrom)\n");
-        break;
-      }
+        while((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
+        {
+          printf(".");fflush(stdout);
+        }//wait infinitely for first frame
+      }//first frame
+      else
+      {//! timeout for others frames
+        if((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
+        {
+          printf("\nerror: receiving frame timeout %d s (i.e. -w option ; see recvfrom).\n",twait);
+          break;
+        }//timeout
+      }//other frames
       //! \todo check nBytes buffer.width() ; add (lazy) resize ?
 /*
       //!rate
@@ -240,7 +250,7 @@ if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {printf("
   //summary of drops
   if(count_drops==0) printf("test pass: zero drop");
   else printf("test fail: in total, % 12ld drops, % 12ld index drops",count_drop,count_drops);
-  printf(" on %d BoF (Bytes of Frame)",nBytes);
+  printf(" on %d BoF (Bytes of Frame)",width);
   if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
   printf(".\n");
   //put back memory pointer (for freeing)
