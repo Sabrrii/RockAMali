@@ -23,7 +23,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2o"
+#define VERSION "v0.1.2p"
 
 using namespace cimg_library;
 
@@ -100,6 +100,7 @@ int main(int argc, char **argv)
     {//watchdog
       unsigned int  count=0;
       unsigned long i=0;
+      cimg::tic();
       for(;;)
       {
         //locked section
@@ -113,9 +114,11 @@ int main(int argc, char **argv)
           omp_unset_lock(&lock);
         }//lock
         //compute rate
-        //! \todo compute rate
-        if(i>0) fprintf(stderr,"information: i=%d, received=%d.\n",i,count);
+        const unsigned long dt=cimg::toc();//delta time in ms
+        const float rate=(count*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
+        if(i>0) fprintf(stderr,"information: i=%d, received=%d, dt=%d, rate=%06.3fMB/s.\n",i,count,dt,rate);
         fflush(stderr);
+        cimg::tic();
         sleep(3);
         //! exit if work done
         //locked section
