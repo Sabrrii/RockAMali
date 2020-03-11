@@ -17,13 +17,11 @@
 
 // UDP point to point test
 
-//! \todo rate
-
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2p"
+#define VERSION "v0.1.2"
 
 using namespace cimg_library;
 
@@ -100,9 +98,11 @@ int main(int argc, char **argv)
     {//watchdog
       unsigned int  count=0;
       unsigned long i=0;
-      cimg::tic();
+      unsigned long t0=cimg::time();
+      unsigned long t1;
       for(;;)
       {
+        fflush(stdout);
         //locked section
         {
           omp_set_lock(&lock);
@@ -114,11 +114,12 @@ int main(int argc, char **argv)
           omp_unset_lock(&lock);
         }//lock
         //compute rate
-        const unsigned long dt=cimg::toc();//delta time in ms
+        t1=t0;
+        t0=cimg::time();
+        const unsigned long dt=t0-t1;//delta time in ms
         const float rate=(count*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
-        if(i>0) fprintf(stderr,"information: i=%d, received=%d, dt=%d, rate=%06.3fMB/s.\n",i,count,dt,rate);
+        if(i>0) fprintf(stderr,"\ninformation: i=%d, received=%d, dt=%dms, rate=%06.3fMB/s.",i,count,dt,rate);
         fflush(stderr);
-        cimg::tic();
         sleep(3);
         //! exit if work done
         //locked section
@@ -134,135 +135,135 @@ int main(int argc, char **argv)
     case 1:
     {//receive
 
-  //UDP related
-  int udpSocket, nBytes=4;
-  if(!udp){nBytes=width=4;}
-  //! content buffer (as char)
-  CImg<unsigned char> buffer(width);
-  //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
-  CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
-  const unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
-  bindex._data=(unsigned int*)buffer.data();//share
-  struct sockaddr_in receiverAddr;
-  struct sockaddr_storage serverStorage;
-  socklen_t addr_size;
+      //UDP related
+      int udpSocket, nBytes=4;
+      if(!udp){nBytes=width=4;}
+      //! content buffer (as char)
+      CImg<unsigned char> buffer(width);
+      //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
+      CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
+      const unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
+      bindex._data=(unsigned int*)buffer.data();//share
+      struct sockaddr_in receiverAddr;
+      struct sockaddr_storage serverStorage;
+      socklen_t addr_size;
 
-  //create UDP socket
-  udpSocket = socket(PF_INET, SOCK_DGRAM, 0);
-  //timeout
-  struct timeval tv;
-  tv.tv_sec = twait;
-  tv.tv_usec = 0;
-  if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d.\n",twait);exit(2);}
+      //create UDP socket
+      udpSocket = socket(PF_INET, SOCK_DGRAM, 0);
+      //timeout
+      struct timeval tv;
+      tv.tv_sec = twait;
+      tv.tv_usec = 0;
+      if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d.\n",twait);exit(2);}
 
-  //configure settings in address struct
-  receiverAddr.sin_family = AF_INET;
-  receiverAddr.sin_port = htons(port);
-  receiverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
-  memset(receiverAddr.sin_zero, '\0', sizeof receiverAddr.sin_zero);  
+      //configure settings in address struct
+      receiverAddr.sin_family = AF_INET;
+      receiverAddr.sin_port = htons(port);
+      receiverAddr.sin_addr.s_addr = inet_addr(ip.c_str());
+      memset(receiverAddr.sin_zero, '\0', sizeof receiverAddr.sin_zero);  
 
-  //bind socket with address struct
-  bind(udpSocket, (struct sockaddr *) &receiverAddr, sizeof(receiverAddr));
-  //initialize size variable to be used later on
-  addr_size = sizeof serverStorage;
+      //bind socket with address struct
+      bind(udpSocket, (struct sockaddr *) &receiverAddr, sizeof(receiverAddr));
+      //initialize size variable to be used later on
+      addr_size = sizeof serverStorage;
 
-  if(do_warmup) {printf("information: do warmup.\n");buffer.rand(0,255);bindex.max();}
+      if(do_warmup) {printf("information: do warmup.\n");buffer.rand(0,255);bindex.max();}
 
-  //index
-  unsigned int index=0;
-  unsigned int prev_index=0;
-  //index increment
-  long inc=0;
-  unsigned long count_drop=0;
-  unsigned long count_drops=0;
-  //loop index
-  unsigned long i=0;
-  if(verbose) if(!endian_swap) printf("information: NO swap endianess\n");
-  if(verbose) printf("information: simulate UDP frame\n");
-  if(verbose) printf("information: increment on first frame is supposed to be ok (not counted as a drop)\n");
-  printf("#% 12s: % 11s % 10s % 11s; drop: % 12s      , % 12s","index iter.","frame hex","dec.","increment","drop","index drops");
-//  while(1)
-  for(;i<max_iter;++i)
-  {
-    if(udp)
-    {//receiving UDP frame
-      if(debug) printf("\ndebug: wait for UDP frame");
-      //! receive any incoming UDP datagram. Address and port of requesting client will be stored on serverStorage variable
-      //! - wait infinitely for first frame
-      if(i==0)
+      //index
+      unsigned int index=0;
+      unsigned int prev_index=0;
+      //index increment
+      long inc=0;
+      unsigned long count_drop=0;
+      unsigned long count_drops=0;
+      //loop index
+      unsigned long i=0;
+      if(verbose) if(!endian_swap) printf("information: NO swap endianess\n");
+      if(verbose) printf("information: simulate UDP frame\n");
+      if(verbose) printf("information: increment on first frame is supposed to be ok (not counted as a drop)\n");
+      printf("#% 12s: % 11s % 10s % 11s; drop: % 12s      , % 12s","index iter.","frame hex","dec.","increment","drop","index drops");
+    //while(1)
+      for(;i<max_iter;++i)
       {
-        while((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
+        if(udp)
+        {//receiving UDP frame
+          if(debug) printf("\ndebug: wait for UDP frame");
+          //! receive any incoming UDP datagram. Address and port of requesting client will be stored on serverStorage variable
+          //! - wait infinitely for first frame
+          if(i==0)
+          {
+            while((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
+            {
+              fprintf(stderr,".");fflush(stderr);
+            }//wait infinitely for first frame
+          }//first frame
+          else
+          {//! timeout for others frames
+            if((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
+            {
+              fprintf(stderr,"\nerror: receiving frame timeout %d s (i.e. -w option ; see recvfrom).\n",twait);fflush(stderr);
+              break;
+            }//timeout
+          }//other frames
+          //! \todo check nBytes buffer.width() ; add (lazy) resize ?
+          //!rate
+          //locked section
+          {
+            omp_set_lock(&lock);
+            //increment received frame counter
+            ++received;
+            current_i=i;
+            omp_unset_lock(&lock);
+          }//lock
+        }//UDP
+        else
+        {//draft simulation
+          //! increment frame index (on first byte only), and simulate a frame drop at loop index 123 (note: looping over size of byte yield to -255 step)
+          //simulation of value change
+          buffer(0)=0x12;
+          buffer(1)=0x34;
+          buffer(2)=0x56;
+          buffer(3)=0x78+(unsigned char)((i<123)?i:i+12);
+          if(debug) buffer.print("buffer",false);
+          if(debug) bindex.print("bindex",false);
+        }//simulation
+        //get frame index as first uint32 of buffer content
+        {const unsigned int *b=(unsigned int *)buffer.data();index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
+        //check increment
+        inc=(long)index-(long)prev_index;
+        if( (inc!=1) || debug)
         {
-          fprintf(stderr,".");fflush(stderr);
-        }//wait infinitely for first frame
-      }//first frame
-      else
-      {//! timeout for others frames
-        if((nBytes=recvfrom(udpSocket,buffer.data(),buffer.width(),0,(struct sockaddr *)&serverStorage, &addr_size))<0)
-        {
-          fprintf(stderr,"\nerror: receiving frame timeout %d s (i.e. -w option ; see recvfrom).\n",twait);fflush(stderr);
-          break;
-        }//timeout
-      }//other frames
-      //! \todo check nBytes buffer.width() ; add (lazy) resize ?
-      //!rate
-      //locked section
-      {
-        omp_set_lock(&lock);
-        //increment received frame counter
-        ++received;
-        current_i=i;
-        omp_unset_lock(&lock);
-      }//lock
-    }//UDP
-    else
-    {//draft simulation
-      //! increment frame index (on first byte only), and simulate a frame drop at loop index 123 (note: looping over size of byte yield to -255 step)
-      //simulation of value change
-      buffer(0)=0x12;
-      buffer(1)=0x34;
-      buffer(2)=0x56;
-      buffer(3)=0x78+(unsigned char)((i<123)?i:i+12);
-      if(debug) buffer.print("buffer",false);
-      if(debug) bindex.print("bindex",false);
-    }//simulation
-    //get frame index as first uint32 of buffer content
-    {const unsigned int *b=(unsigned int *)buffer.data();index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
-    //check increment
-    inc=(long)index-(long)prev_index;
-    if( (inc!=1) || debug)
-    {
-      //print loop index
-      printf("\n#% 12ld: ",i);
-      //print frame index as 4 bytes (as is in net buffer)
-      for(unsigned int b=0;b<4;++b){unsigned char o=buffer(b); printf("%02x ",o);}
-      //print frame index as uint32 (with endianess swap)
-      printf("% 10u",index);
-    }//drop|debug
-    if(inc!=1)
-    {//frame drop
-      //drops
-      if(i>0)
-      {
-        ++count_drop;
-        count_drops+=abs(inc-1);//normal increment is 1
-      }
-      //print drop related
-      printf(" % 11ld",inc);
-      if(count_drop>0) printf("; drop: % 12lu drops, % 12lu index drops",count_drop,count_drops);
-    }//drop
-    //next loop
-    prev_index=index;
-  }//loop
-  printf("\n");
-  //summary of drops
-  if(count_drops==0) printf("test pass: zero drop");
-  else printf("test fail: in total, % 12ld drops, % 12ld index drops",count_drop,count_drops);
-  printf(" on %d BoF (Bytes of Frame)",width);
-  if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
-  printf(".\n");
-  //put back memory pointer (for freeing)
-  bindex._data=(unsigned int*)bindex_data;
+          //print loop index
+          printf("\n#% 12ld: ",i);
+          //print frame index as 4 bytes (as is in net buffer)
+          for(unsigned int b=0;b<4;++b){unsigned char o=buffer(b); printf("%02x ",o);}
+          //print frame index as uint32 (with endianess swap)
+          printf("% 10u",index);
+        }//drop|debug
+        if(inc!=1)
+        {//frame drop
+          //drops
+          if(i>0)
+          {
+            ++count_drop;
+            count_drops+=abs(inc-1);//normal increment is 1
+          }
+          //print drop related
+          printf(" % 11ld",inc);
+          if(count_drop>0) printf("; drop: % 12lu drops, % 12lu index drops",count_drop,count_drops);
+        }//drop
+        //next loop
+        prev_index=index;
+      }//loop
+      printf("\n");
+      //summary of drops
+      if(count_drops==0) printf("test pass: zero drop");
+      else printf("test fail: in total, % 12ld drops, % 12ld index drops",count_drop,count_drops);
+      printf(" on %d BoF (Bytes of Frame)",width);
+      if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
+      printf(".\n");
+      //put back memory pointer (for freeing)
+      bindex._data=(unsigned int*)bindex_data;
       //! work done exiting
       //locked section
       {
@@ -275,7 +276,6 @@ int main(int argc, char **argv)
     }//receive
   }//switch(id)
   }//parallel section
-
   return 0;
 }//main
 
