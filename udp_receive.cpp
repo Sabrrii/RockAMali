@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.3f"
+#define VERSION "v0.1.3g"
 
 using namespace cimg_library;
 
@@ -278,7 +278,7 @@ int main(int argc, char **argv)
       printf("\n");
       //summary of drops
       if(count_drops==0) printf("test pass: zero drop");
-      else printf("test fail: in total, % 12ld drops, % 12ld index drops",count_drop,count_drops);
+      else printf("test fail: in total, % 12ld drops, % 12ld index drops (i.e. %6.4f%%)",count_drop,count_drops,count_drops*100.0/(float)max_iter);
       printf(" on %d BoF (Bytes of Frame)",width);
       if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
       printf(".\n");
