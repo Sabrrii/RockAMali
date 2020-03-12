@@ -1,18 +1,22 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
+##RockAMali <- gansacq2
 FRAME_SIZE=2048
 DST_IP=10.10.15.1
-FRAME_SIZE=256
-DST_IP=10.10.17.202
+ETH=enp1s0
+##ml507 -> ganp157
+#FRAME_SIZE=256
+#DST_IP=10.10.17.202
+#ETH=p1p2
 PORT=20485
-NS=12345678
+NS=12
 NP=1
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
 USE_GPU=
-DO_CHECK=--do-check
+DO_CHECK=--do-check --do-fill
 #DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
 DO_PROFILING=
@@ -83,12 +87,12 @@ udp_receive: udp_receive.cpp Makefile
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
-	/sbin/ifconfig p1p2 | grep RX | grep dropped; ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) --do-warmup 2>&1 | tee udp_receive.txt; /sbin/ifconfig p1p2 | grep RX | grep dropped
+	/sbin/ifconfig $(ETH) | grep RX | grep dropped; ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup 2>&1 | tee udp_receive.txt; /sbin/ifconfig $(ETH) | grep RX | grep dropped
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_send: udp_send.cpp Makefile
 	g++ -O0 -o udp_send  udp_send.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_send --help -I && ./udp_send -v > VERSION && ./udp_send -n 12
 udp_send_run:
-	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w 32 --do-warmup --do-ramp --verbose; /sbin/ifconfig eth6 | grep TX | grep dropped
+	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w 32 --do-warmup --do-ramp $(DO_CHECK) --verbose; /sbin/ifconfig eth6 | grep TX | grep dropped
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION

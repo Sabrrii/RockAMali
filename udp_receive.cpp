@@ -40,9 +40,11 @@ int main(int argc, char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  unsigned int width=cimg_option("-s",1024, "size of UDP buffer [byte]");
+  unsigned int width=cimg_option("-s",1024, "size of UDP buffer [byte], might be schrunk (but not expanded !)");
   const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
   const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
+  const bool do_check_C=cimg_option("-C",false,NULL);//-C hidden option
+        bool do_check=cimg_option("--do-check",do_check_C,"do data check, e.g. test pass (or -C option)");do_check=do_check_C|do_check;//same --do-check or -C option
   const bool verbose=cimg_option("--verbose",false,"Produce verbose output");
   const bool udp=!cimg_option("--simulation",false,"frame simulation, by default UDP frame are received");
   const bool debug=cimg_option("--debug",false,"debug output");
@@ -169,6 +171,7 @@ int main(int argc, char **argv)
       addr_size = sizeof serverStorage;
 
       if(do_warmup) {printf("information: do warmup.\n");buffer.rand(0,255);bindex.max();}
+      if(do_check) std::cout<<"information: checking data, i.e. test, activated (slow process !)\n";
 
       //index
       unsigned int index=0;
@@ -206,7 +209,7 @@ int main(int argc, char **argv)
               break;
             }//timeout
           }//other frames
-          //! \todo . check nBytes buffer.width() ; add (lazy) resize ?
+          //may resize (if width was bigger than first received frame)
           if(i==0) if(nBytes!=width)
           {
 //! \todo try assign with pointer and shared flag
@@ -242,9 +245,9 @@ int main(int argc, char **argv)
           if(debug) buffer.print("buffer",false);
           if(debug) bindex.print("bindex",false);
         }//simulation
-        //get frame index as first uint32 of buffer content
+        //! get frame index as first uint32 of buffer content
         {const unsigned int *b=(unsigned int *)buffer.data();index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
-        //check increment
+        //! check increment
         inc=(long)index-(long)prev_index;
         if( (inc!=1) || debug)
         {
@@ -267,9 +270,12 @@ int main(int argc, char **argv)
           printf(" % 11ld",inc);
           if(count_drop>0) printf("; drop: % 12lu drops, % 12lu index drops",count_drop,count_drops);
         }//drop
-//! \todo check full content
-        
-
+        //! check full content
+        if(do_check)
+        {
+          const unsigned int sindex=(!endian_swap)?(index):ntohl(index);
+          if(bindex!=sindex) {std::cout<<"check: full content check failed for #"<<index<<", i.e. "<<sindex<<"with net endian."<<std::endl;bindex.print("b index");}
+        }//check
         //next loop
         prev_index=index;
       }//loop

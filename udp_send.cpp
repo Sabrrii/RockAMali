@@ -37,6 +37,8 @@ int main(int argc, char **argv)
   unsigned int width=cimg_option("-s",8192, "size of UDP buffer [byte]");
   const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
   const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
+  const bool do_fill_F=cimg_option("-C",false,NULL);//-C hidden option
+        bool do_fill=cimg_option("--do-fill",do_fill_F,"do fill entire frame, this slow process (or -F option)");do_fill=do_fill_F|do_fill;//same --do-fill or -F option
   const bool verbose=cimg_option("--verbose",false,"Produce verbose output");
   const bool debug=cimg_option("--debug",false,"debug output");
   const unsigned short port=cimg_option("-p",20485,"port where the packets are send on the receiving device");
@@ -105,7 +107,8 @@ int main(int argc, char **argv)
   {
     printf("i=%d\r",i);if(i==0) fflush(stdout);
     //update loop index in UDP buffer
-    bindex(0)=(!endian_swap)?i:ntohl(i);
+    if(do_fill) bindex=(!endian_swap)?i:ntohl(i);//slow
+    else     bindex(0)=(!endian_swap)?i:ntohl(i);//fast
     //send buffer to receiver
     sendto(clientSocket,buffer,width,0,(struct sockaddr *)&receiverAddr,addr_size);
     //control data rate
