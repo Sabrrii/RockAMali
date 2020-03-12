@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.3e"
+#define VERSION "v0.1.3f"
 
 using namespace cimg_library;
 
@@ -140,13 +140,10 @@ int main(int argc, char **argv)
       //UDP related
       int udpSocket, nBytes=4;
       if(!udp){nBytes=width=4;}
-//! \todo try assign with pointer and shared flag
       //! content buffer (as char)
       CImg<unsigned char> buffer(width);
       //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
-      CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
-      unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
-      bindex._data=(unsigned int*)buffer.data();//share
+      CImg<unsigned int>  bindex((unsigned int*)buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);
       struct sockaddr_in receiverAddr;
       struct sockaddr_storage serverStorage;
       socklen_t addr_size;
@@ -212,17 +209,12 @@ int main(int argc, char **argv)
           //may resize (if width was bigger than first received frame)
           if(i==0) if(nBytes!=width)
           {
-//! \todo try assign with pointer and shared flag
             //set new size for containers
             width=nBytes;
             fprintf(stderr,"\nwarning: resizing containers as received frame is %dBoF.\n",width);fflush(stderr);
-            //put back memory pointer (for freeing)
-            bindex._data=(unsigned int*)bindex_data;
             //resize
             buffer.assign(width);
-            bindex.assign(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
-            bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
-            bindex._data=(unsigned int*)buffer.data();//share
+            bindex.assign((unsigned int*)buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);//shared
           }//resize
           //!rate
           //locked section
@@ -274,7 +266,11 @@ int main(int argc, char **argv)
         if(do_check)
         {
           const unsigned int sindex=(!endian_swap)?(index):ntohl(index);
-          if(bindex!=sindex) {std::cout<<"check: full content check failed for #"<<index<<", i.e. "<<sindex<<"with net endian."<<std::endl;bindex.print("b index");}
+          if(bindex!=sindex)
+          {
+            std::cout<<"check: full content check failed for #"<<index<<", i.e. "<<sindex<<"with net endian."<<std::endl;
+            if(debug) bindex.print("b index");
+          }
         }//check
         //next loop
         prev_index=index;
@@ -286,9 +282,6 @@ int main(int argc, char **argv)
       printf(" on %d BoF (Bytes of Frame)",width);
       if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
       printf(".\n");
-      //put back memory pointer (for freeing)
-//! \todo try assign with pointer and shared flag
-      bindex._data=(unsigned int*)bindex_data;
       //! work done exiting
       //locked section
       {
