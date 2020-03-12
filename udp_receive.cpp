@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.3h"
+#define VERSION "v0.1.3i"
 
 using namespace cimg_library;
 
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
         t0=cimg::time();
         const unsigned long dt=t0-t1;//delta time in ms
         const float rate=(count*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
-        if(i>0) fprintf(stderr,"\ninformation: i=%d, received=%d, dt=%dms, rate=%06.3fMB/s.",i,count,dt,rate);
+        if(i>0) fprintf(stderr,"\ninformation: i=%ld, received=%d, dt=%ldms, rate=%06.3fMB/s.",i,count,dt,rate);
         fflush(stderr);
         sleep(3);
         //! exit if work done
@@ -136,7 +136,8 @@ int main(int argc, char **argv)
     }//watchdog
     case 1:
     {//receive
-
+      //rate related
+      unsigned long t0,t1;
       //UDP related
       int udpSocket, nBytes=4;
       if(!udp){nBytes=width=4;}
@@ -197,6 +198,7 @@ int main(int argc, char **argv)
             {
               fprintf(stderr,".");fflush(stderr);
             }//wait infinitely for first frame
+            t0=cimg::time();
           }//first frame
           else
           {//! timeout for others frames
@@ -275,6 +277,7 @@ int main(int argc, char **argv)
         //next loop
         prev_index=index;
       }//loop
+      t1=cimg::time();
       printf("\n");
       //summary of drops
       if(count_drops==0) printf("test pass: zero drop");
@@ -282,6 +285,10 @@ int main(int argc, char **argv)
       printf(" on %d BoF (Bytes of Frame)",width);
       if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
       printf(".\n");
+      //full run rate
+      const unsigned long dt=t1-t0;
+      const float rate=(max_iter*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
+      printf("count=%ld, elapsed time: %ldms, rate=%06.3fMB/s.\n",max_iter,dt,rate);
       //! work done exiting
       //locked section
       {
