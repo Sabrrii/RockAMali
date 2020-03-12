@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.2"
+#define VERSION "v0.1.3d"
 
 using namespace cimg_library;
 
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   "\n compilation date:" \
   ).c_str());//cimg_usage
 
-  unsigned int width=cimg_option("-s",2048, "size of UDP buffer [byte]");
+  unsigned int width=cimg_option("-s",1024, "size of UDP buffer [byte]");
   const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
   const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
   const bool verbose=cimg_option("--verbose",false,"Produce verbose output");
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
       CImg<unsigned char> buffer(width);
       //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
       CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
-      const unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
+      unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
       bindex._data=(unsigned int*)buffer.data();//share
       struct sockaddr_in receiverAddr;
       struct sockaddr_storage serverStorage;
@@ -205,7 +205,20 @@ int main(int argc, char **argv)
               break;
             }//timeout
           }//other frames
-          //! \todo check nBytes buffer.width() ; add (lazy) resize ?
+          //! \todo . check nBytes buffer.width() ; add (lazy) resize ?
+          if(i==0) if(nBytes!=width)
+          {
+            //set new size for containers
+            width=nBytes;
+            fprintf(stderr,"\nwarning: resizing containers as received frame is %dBoF.\n",width);fflush(stderr);
+            //put back memory pointer (for freeing)
+            bindex._data=(unsigned int*)bindex_data;
+            //resize
+            buffer.assign(width);
+            bindex.assign(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
+            bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
+            bindex._data=(unsigned int*)buffer.data();//share
+          }//resize
           //!rate
           //locked section
           {
