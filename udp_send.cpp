@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.3h"
+#define VERSION "v0.1.3i"
 
 using namespace cimg_library;
 
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
   //! content buffer (as char)
   CImg<unsigned char> buffer(width);
   //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
-  CImg<unsigned int>  bindex((unsigned int*)buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());//share
+  CImg<unsigned int>  bindex((unsigned int*)buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);//share
 
   //UDP related
   int clientSocket, portNum;
