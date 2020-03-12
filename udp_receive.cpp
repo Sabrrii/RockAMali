@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.3d"
+#define VERSION "v0.1.3e"
 
 using namespace cimg_library;
 
@@ -138,6 +138,7 @@ int main(int argc, char **argv)
       //UDP related
       int udpSocket, nBytes=4;
       if(!udp){nBytes=width=4;}
+//! \todo try assign with pointer and shared flag
       //! content buffer (as char)
       CImg<unsigned char> buffer(width);
       //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
@@ -208,6 +209,7 @@ int main(int argc, char **argv)
           //! \todo . check nBytes buffer.width() ; add (lazy) resize ?
           if(i==0) if(nBytes!=width)
           {
+//! \todo try assign with pointer and shared flag
             //set new size for containers
             width=nBytes;
             fprintf(stderr,"\nwarning: resizing containers as received frame is %dBoF.\n",width);fflush(stderr);
@@ -265,6 +267,9 @@ int main(int argc, char **argv)
           printf(" % 11ld",inc);
           if(count_drop>0) printf("; drop: % 12lu drops, % 12lu index drops",count_drop,count_drops);
         }//drop
+//! \todo check full content
+        
+
         //next loop
         prev_index=index;
       }//loop
@@ -276,6 +281,7 @@ int main(int argc, char **argv)
       if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
       printf(".\n");
       //put back memory pointer (for freeing)
+//! \todo try assign with pointer and shared flag
       bindex._data=(unsigned int*)bindex_data;
       //! work done exiting
       //locked section
