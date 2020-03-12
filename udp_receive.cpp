@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.3g"
+#define VERSION "v0.1.3h"
 
 using namespace cimg_library;
 
@@ -29,7 +29,7 @@ using namespace cimg_library;
 int main(int argc, char **argv)
 {
   ///command arguments, i.e. CLI option
-  cimg_usage(std::string("receive UDP frame.\n" \
+  cimg_usage(std::string("receive UDP frame with increment (i.e. index) as first uint32 of content. If full content contains index, it could be checked.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./receive -h\n" \
   "        ./receive -s 1024 -n 123 -o result.nc\n" \

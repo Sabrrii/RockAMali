@@ -15,7 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.3g"
+#define VERSION "v0.1.3h"
 
 using namespace cimg_library;
 
@@ -23,7 +23,7 @@ using namespace cimg_library;
 int main(int argc, char **argv)
 {
   ///command arguments, i.e. CLI option
-  cimg_usage(std::string("send UDP frame.\n" \
+  cimg_usage(std::string("send UDP frame with increment (i.e. index) as first uint32 of content, the rest is either with random content or this index.\n" \
   " It uses different GNU libraries (see --info option)\n\n" \
   " usage: ./send -h\n" \
   "        ./send -s 1024 -n 123\n" \
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
   const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
   const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
   const bool do_fill_F=cimg_option("-C",false,NULL);//-C hidden option
-        bool do_fill=cimg_option("--do-fill",do_fill_F,"do fill entire frame, this slow process (or -F option)");do_fill=do_fill_F|do_fill;//same --do-fill or -F option
+        bool do_fill=cimg_option("--do-fill",do_fill_F,"do fill entire frame with index -this is slow process- (or -F option) otherwise single random content frame is sent except first uint32 that get current index");do_fill=do_fill_F|do_fill;//same --do-fill or -F option
   const bool verbose=cimg_option("--verbose",false,"Produce verbose output");
   const bool debug=cimg_option("--debug",false,"debug output");
   const unsigned short port=cimg_option("-p",20485,"port where the packets are send on the receiving device");
@@ -77,9 +77,7 @@ int main(int argc, char **argv)
   //! content buffer (as char)
   CImg<unsigned char> buffer(width);
   //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
-  CImg<unsigned int>  bindex(buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());
-  const unsigned int* bindex_data=bindex._data;//keep memory of allocation place, before get shared data (for freeing)
-  bindex._data=(unsigned int*)buffer.data();//share
+  CImg<unsigned int>  bindex((unsigned int*)buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum());//share
 
   //UDP related
   int clientSocket, portNum;
@@ -116,8 +114,6 @@ int main(int argc, char **argv)
     else usleep(twait);
   }//for loop
   printf("\n");
-  //put back memory pointer (for freeing)
-  bindex._data=(unsigned int*)bindex_data;
   return 0;
 }//main
 
