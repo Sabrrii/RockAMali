@@ -3,7 +3,7 @@
 ## uint   = 4uchar: 2048*2 = 8192BoF
 ##RockAMali <- gansacq2
 FRAME_SIZE=8192
-WAIT4RATE=123
+WAIT4RATE=345
 DST_IP=10.10.15.1
 ETH=enp1s0
 ###ganp484 <- gansacq2 (10GEth copper)
@@ -14,14 +14,14 @@ ETH=enp1s0
 #DST_IP=10.10.17.202
 #ETH=p1p2
 PORT=20485
-NS=1234567
+NS=123456
 NP=1
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
 USE_GPU=
 DO_CHECK=--do-check --do-fill
-DO_CHECK=
+#DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
 DO_PROFILING=
 
