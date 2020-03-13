@@ -2,42 +2,56 @@
 info: running 8 threads
 information: do warmup.
 information: checking data, i.e. test, activated (slow process !)
-# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops
+# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops..
 #           0: 00 00 00 00          0           0
-information: i=3195, received=3196, dt=3000ms, rate=08.323MB/s.
-information: i=37987, received=34792, dt=3000ms, rate=90.604MB/s.
-information: i=72873, received=34886, dt=3000ms, rate=90.849MB/s.
-information: i=107996, received=35123, dt=3000ms, rate=91.466MB/s.
-information: i=143136, received=35140, dt=3000ms, rate=91.510MB/s.
-information: i=178214, received=35078, dt=3001ms, rate=91.319MB/s.
-information: i=213247, received=35033, dt=3000ms, rate=91.232MB/s.
-information: i=248431, received=35184, dt=3000ms, rate=91.625MB/s.
-information: i=283865, received=35434, dt=3000ms, rate=92.276MB/s.
-information: i=319078, received=35213, dt=3000ms, rate=91.701MB/s.
-information: i=354244, received=35166, dt=3000ms, rate=91.578MB/s.
-information: i=389444, received=35200, dt=3000ms, rate=91.667MB/s.
-information: i=424670, received=35226, dt=3000ms, rate=91.734MB/s.
-information: i=460076, received=35406, dt=3001ms, rate=92.172MB/s.
-information: i=495320, received=35244, dt=3000ms, rate=91.781MB/s.
-information: i=530590, received=35270, dt=3000ms, rate=91.849MB/s.
-information: i=565697, received=35107, dt=3000ms, rate=91.424MB/s.
-information: i=600483, received=34786, dt=3000ms, rate=90.589MB/s.
-information: i=637835, received=37352, dt=3000ms, rate=97.271MB/s.
-information: i=673346, received=35511, dt=3000ms, rate=92.477MB/s.
-information: i=708511, received=35165, dt=3001ms, rate=91.545MB/s.
-information: i=743453, received=34942, dt=3000ms, rate=90.995MB/s.
-information: i=781751, received=38298, dt=3000ms, rate=99.734MB/s.
-information: i=818293, received=36542, dt=3000ms, rate=95.161MB/s.
-information: i=858199, received=39906, dt=3000ms, rate=103.922MB/s.
-information: i=897420, received=39221, dt=3000ms, rate=102.138MB/s.
-information: i=936291, received=38871, dt=3000ms, rate=101.227MB/s.
-information: i=972261, received=35970, dt=3000ms, rate=93.672MB/s.
-information: i=1007480, received=35219, dt=3001ms, rate=91.686MB/s.
-information: i=1042714, received=35234, dt=3000ms, rate=91.755MB/s.
-information: i=1078019, received=35305, dt=3000ms, rate=91.940MB/s.
-information: i=1113248, received=35229, dt=3000ms, rate=91.742MB/s.
-information: i=1148394, received=35146, dt=3000ms, rate=91.526MB/s.
-information: i=1183454, received=35060, dt=3000ms, rate=91.302MB/s.
-information: i=1218855, received=35401, dt=3000ms, rate=92.190MB/s.
-test pass: zero drop on 8192 BoF (Bytes of Frame).
-count=1234567, elapsed time: 103657ms, rate=93.048MB/s.
+#        1536: 00 00 06 01       1537           2; drop:            1 drops,            1 index drops
+information: i=23840, received=23841, dt=3000ms, rate=248.344MB/s.
+information: i=49597, received=25757, dt=3000ms, rate=268.302MB/s.
+information: i=75462, received=25865, dt=3000ms, rate=269.427MB/s.
+information: i=101015, received=25553, dt=3000ms, rate=266.177MB/s.
+information: i=125885, received=24870, dt=3000ms, rate=259.062MB/s.
+information: i=154953, received=29068, dt=3000ms, rate=302.792MB/s.
+information: i=181041, received=26088, dt=3000ms, rate=271.750MB/s.
+information: i=206546, received=25505, dt=3000ms, rate=265.677MB/s.
+information: i=232583, received=26037, dt=3001ms, rate=271.128MB/s.
+information: i=258543, received=25960, dt=3000ms, rate=270.417MB/s.
+information: i=284317, received=25774, dt=3000ms, rate=268.479MB/s.
+information: i=310385, received=26068, dt=3000ms, rate=271.542MB/s.
+information: i=336340, received=25955, dt=3000ms, rate=270.365MB/s.
+information: i=362389, received=26049, dt=3000ms, rate=271.344MB/s.
+information: i=388413, received=26024, dt=3000ms, rate=271.083MB/s.
+information: i=414350, received=25937, dt=3000ms, rate=270.177MB/s.
+information: i=440073, received=25723, dt=3000ms, rate=267.948MB/s.
+information: i=466065, received=25992, dt=3000ms, rate=270.750MB/s.
+information: i=491525, received=25460, dt=3001ms, rate=265.120MB/s.
+information: i=517404, received=25879, dt=3000ms, rate=269.573MB/s.
+information: i=542850, received=25446, dt=3000ms, rate=265.062MB/s.
+information: i=567763, received=24913, dt=3000ms, rate=259.510MB/s.
+information: i=591957, received=24194, dt=3000ms, rate=252.021MB/s.
+information: i=617354, received=25397, dt=3000ms, rate=264.552MB/s.
+information: i=643075, received=25721, dt=3000ms, rate=267.927MB/s.
+information: i=669003, received=25928, dt=3000ms, rate=270.083MB/s.
+information: i=694980, received=25977, dt=3000ms, rate=270.594MB/s.
+information: i=720944, received=25964, dt=3000ms, rate=270.458MB/s.
+information: i=746901, received=25957, dt=3001ms, rate=270.295MB/s.
+information: i=772446, received=25545, dt=3000ms, rate=266.094MB/s.
+information: i=796050, received=23604, dt=3000ms, rate=245.875MB/s.
+information: i=821720, received=25670, dt=3000ms, rate=267.396MB/s.
+information: i=846578, received=24858, dt=3000ms, rate=258.938MB/s.
+information: i=872035, received=25457, dt=3000ms, rate=265.177MB/s.
+information: i=897512, received=25477, dt=3000ms, rate=265.385MB/s.
+information: i=923129, received=25617, dt=3000ms, rate=266.844MB/s.
+information: i=948688, received=25559, dt=3000ms, rate=266.240MB/s.
+information: i=973245, received=24557, dt=3000ms, rate=255.802MB/s.
+information: i=999166, received=25921, dt=3001ms, rate=269.920MB/s.
+information: i=1023424, received=24258, dt=3000ms, rate=252.688MB/s.
+information: i=1044961, received=21537, dt=3000ms, rate=224.344MB/s.
+information: i=1068914, received=23953, dt=3000ms, rate=249.510MB/s.
+information: i=1093846, received=24932, dt=3000ms, rate=259.708MB/s.
+information: i=1117775, received=23929, dt=3000ms, rate=249.260MB/s.
+information: i=1143159, received=25384, dt=3000ms, rate=264.417MB/s.
+information: i=1168147, received=24988, dt=3000ms, rate=260.292MB/s.
+information: i=1193087, received=24940, dt=3000ms, rate=259.792MB/s.
+information: i=1218606, received=25519, dt=3000ms, rate=265.823MB/s.
+test fail: in total,            1 drops,            1 index drops (i.e. 0.0001%) on 32768 BoF (Bytes of Frame).
+count=1234567, elapsed time: 145789ms, rate=264.631MB/s.
