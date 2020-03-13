@@ -4,6 +4,8 @@
 #include "CDataProcessorGPU.hpp"
 #include "CDataProcessor_energy.hpp"
 
+#ifdef DO_NETCDF
+
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>
 {
@@ -336,5 +338,7 @@ public:
   };//kernelGPU4
 
 };//CDataProcessorGPU_discri_opencl_int4
+
+#endif //NetCDF
 
 #endif

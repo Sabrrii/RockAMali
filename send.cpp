@@ -9,11 +9,12 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.8d"
+#define VERSION "v0.6.0d"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
-#include "CDataSend.hpp"
+//#include "CDataSend.hpp"
+#include "CDataSend_ASIO.hpp"
 
 using namespace cimg_library;
 
@@ -127,7 +128,8 @@ int main(int argc,char **argv)
     }//generate
     case 1:
     {//send
-      CDataSend<Tdata,Taccess> send(locks,ip,port,wait);
+      CDataSend_ASIO<Tdata,Taccess> send(locks,ip,port,wait);
+      //CDataSend<Tdata,Taccess> send(locks,ip,port,wait);
       send.run(access,images, count);
       break;
     }//send

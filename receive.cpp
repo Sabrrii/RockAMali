@@ -11,7 +11,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.5.8e"
+#define VERSION "v0.6.0d"
 
 //thread lock
 #include "CDataStore.hpp"
@@ -19,8 +19,8 @@
 #ifdef DO_GPU
 #include "CDataProcessorGPUfactory.hpp"
 #endif //DO_GPU
-#include "CDataReceive.hpp"
-
+//#include "CDataReceive.hpp"
+#include "CDataReceive_ASIO.hpp"
 using namespace cimg_library;
 using boost::asio::ip::udp;
 
@@ -63,6 +63,7 @@ int main(int argc,char **argv)
   const int count=cimg_option("-n",123,  "number of vector");  //! \todo [high] should be NO count of the vectors with an infinite loop (to implement)
   const int nbuffer=cimg_option("-b",12, "size   of vector buffer (total size is b*s*4 Bytes)");
   const int threadCount=cimg_option("-c",2,"thread count (2 for receiving only or threads above 3 are processing one)");
+  const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the sender");
   const unsigned short port=cimg_option("-p", 1234, "port where the packets are sent on the receiving device");
 //! CPU processor factory
   const std::string processor_type=cimg_option("--CPU-factory","count","CPU processing type, e.g. count or kernel");
@@ -179,7 +180,8 @@ int main(int argc,char **argv)
   {
     case 0:
     {//receive
-      CDataReceive<Tdata, Taccess> receive(locks, port, width, &io_service, do_check,do_check_exit);
+      CDataReceive_ASIO<Tdata, Taccess> receive(locks, port, width, &io_service, do_check,do_check_exit);
+      //CDataReceive<Tdata, Taccess> receive(locks, , port, width, do_check,do_check_exit);
       receive.run(access,images, count);
       receive.show_checking();
       break;

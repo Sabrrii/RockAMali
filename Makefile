@@ -73,13 +73,13 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 ##RockAMali
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
-#all: send receive version factory doc
+all: send receive version factory doc
 #all: process_sequential version factory process_sequential_run
 #all: send receive_sequential version factory
 
 ##lib. code test
 #all: time_copy
-all: udp_receive
+#all: udp_receive udp_send
 time_copy: time_copy.cpp Makefile
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 
