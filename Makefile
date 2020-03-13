@@ -2,13 +2,13 @@
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
 ##RockAMali <- gansacq2
-FRAME_SIZE=2048
-WAIT4RATE=0
+FRAME_SIZE=8192
+WAIT4RATE=123
 DST_IP=10.10.15.1
 ETH=enp1s0
 ###ganp484 <- gansacq2 (10GEth copper)
-DST_IP=10.10.16.1
-ETH=eth1
+#DST_IP=10.10.16.1
+#ETH=eth1
 ##ml507 -> ganp157
 #FRAME_SIZE=256
 #DST_IP=10.10.17.202
@@ -237,7 +237,7 @@ nc_send_prepare: /tmp/4GB.rnd
 	./nc_send_file.sh
 nc_send_run:
 	./nc_send.sh 10.10.16.1
-#ganp484
+#ganp484 orRockAMali
 nc_receive_run:
 	nc -v -l -p 12345 > /dev/null
 
