@@ -15,8 +15,9 @@ CPU_AFFINITY="0 4 1-3:5"
 #DST_IP=10.10.17.202
 #ETH=p1p2
 PORT=20485
-NS=1234567
-NP=1
+NS=123
+NB=12
+NP=2
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
@@ -73,9 +74,9 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 ##RockAMali
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
-all: send receive version factory doc
+#all: send receive version factory doc
 #all: process_sequential version factory process_sequential_run
-#all: send receive_sequential version factory
+all: send receive version factory
 
 ##lib. code test
 #all: time_copy
