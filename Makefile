@@ -236,7 +236,7 @@ ganp484_eth:
 nc_send_prepare: /tmp/4GB.rnd
 	./nc_send_file.sh
 nc_send_run:
-	./nc_send.sh 10.10.16.1
+	./nc_send.sh $(DST_IP)
 #ganp484 orRockAMali
 nc_receive_run:
 	nc -v -l -p 12345 > /dev/null
