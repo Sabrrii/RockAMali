@@ -217,11 +217,29 @@ endif #UPD grab
 
 ##gansacq2 (su)
 gansacq2_eth:
-	/sbin/ifconfig eth6
-	/sbin/ifconfig eth6 10.10.15.2/24
-	/sbin/ifconfig eth6 down; ethtool -s eth6 speed 10000 duplex full autoneg off; /sbin/ifconfig eth6 up
-	ping 10.10.15.1 -c 1
-#iftop -B -i eth6
+	/sbin/ifconfig eth7
+	/sbin/ifconfig eth7 10.10.16.2/24
+	/sbin/ifconfig eth7 down; ethtool -s eth7 speed 10000 duplex full autoneg off; /sbin/ifconfig eth7 up
+	ping 10.10.16.1 -c 1
+	@echo iftop -B -i eth7
+
+##ganp484 (su)
+ganp484_eth:
+	/sbin/ifconfig eth1
+	/sbin/ifconfig eth1 10.10.16.1/24
+	/sbin/ifconfig eth1 down; ethtool -s eth1 speed 10000 duplex full autoneg off; /sbin/ifconfig eth1 up
+	ping 10.10.16.2 -c 1
+	@echo iftop -B -i eth1
+
+##ganp484 <- gansacq2
+#gansacq2
+nc_send_prepare: /tmp/4GB.rnd
+	./nc_send_file.sh
+nc_send_run:
+	./nc_send.sh 10.10.16.1
+#ganp484
+nc_receive_run:
+	nc -v -l -p 12345 > /dev/null
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
