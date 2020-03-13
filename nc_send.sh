@@ -3,7 +3,7 @@
 ip=10.10.16.1
 ip=$1
 
-sizeG=8
+sizeG=16
 sizeM=`echo "$sizeG*1024" | bc`
 fi=/tmp/$sizeG'GB.rnd'
 fr=/dev/shm/$sizeG'GB.rnd'

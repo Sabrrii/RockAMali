@@ -1,2 +1,2 @@
-nc send /dev/shm/8GB.rnd
-22s  372MB/s
+nc send /dev/shm/16GB.rnd
+48s  341MB/s
