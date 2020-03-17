@@ -1,0 +1,34 @@
+#BoF: UDP BoF
+#nc:  TCP ?BpF
+
+#ethernet cards
+##10GEth copper 2x BroadCom
+##10GEth copper 1x Tehuti
+
+
+#link 10GEth copper gansacq2 -> ganp484
+
+##BoF	rate[MB/s]	SHANOINE
+8192	102		750cf60
+32768	273		c624c81
+
+##nc	rate[MB/s]	SHANOINE
+9999	372		d0b9fb0
+9999	528		115e5fd
+
+
+#link 10GEth copper gansacq2 -> rockamali
+
+##BoF	rate[MB/s]	SHANOINE
+8192	83		6c03eb
+
+##nc	rate[MB/s]	SHANOINE
+9999	372		04c7fa7	
+
+
+#link 10GEth copper ganp484 -> rockamali
+
+## TODO ##
+# - plug link
+# - run BoF tests for perfs
+
