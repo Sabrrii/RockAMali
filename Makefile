@@ -4,6 +4,7 @@
 ##RockAMali <- gansacq2 (hint: 32kBoF as 4x8kBoF @100MB/s)
 FRAME_SIZE=2048
 WAIT4RATE=192
+IPERF="--bandwidth 1G --udp"
 DST_IP=10.10.15.1
 ETH=enp1s0
 CPU_AFFINITY="0 4 1-3:5"
@@ -233,15 +234,24 @@ ganp484_eth:
 	ping 10.10.16.2 -c 1
 	@echo iftop -B -i eth1
 
-##ganp484 <- gansacq2
+##ganp484/RockAMali <- gansacq2
 #gansacq2
 nc_send_prepare: /tmp/4GB.rnd
 	./nc_send_file.sh
 nc_send_run:
 	./nc_send.sh $(DST_IP)
-#ganp484 orRockAMali
+#ganp484 or RockAMali
 nc_receive_run:
 	nc -v -l -p 12345 > /dev/null
+
+##ganp484/RockAMali <- gansacq2
+#gansacq2
+iperf_send_run:
+	iperf3 -c $(DST_IP) -p $(PORT) -4 -w $(FRAME_SIZE) -k $(NS) $(IPERF) | tee network_iperfc.txt
+#ganp484 or RockAMali
+iperf_receive_run:
+	iperf3 -s -p $(PORT) | tee network_iperfs.txt
+
 
 clear:
 	rm -fr $(DATA)/samples/ $(DATA)/results/
