@@ -1,39 +1,44 @@
-thread#0 has CPU#-1 affinity
 thread#1 has CPU#-1 affinity
 
 info: running 6 threads
-information: do warmup.
+thread#0 has CPU#-1 affinity
+.information: do warmup.
 # index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops
 #           0: 00 00 00 00          0           0
-information: i=156, received=157, dt=3000ms, rate=00.409MB/s.
-#         264: 00 00 01 79        377         114; drop:            1 drops,          113 index drops
-#         265: 00 00 01 a4        420          43; drop:            2 drops,          155 index drops
-#         266: 00 00 01 cf        463          43; drop:            3 drops,          197 index drops
-#         267: 00 00 02 4e        590         127; drop:            4 drops,          323 index drops
-#         268: 00 00 02 59        601          11; drop:            5 drops,          333 index drops
-#         269: 00 00 02 61        609           8; drop:            6 drops,          340 index drops
-#         270: 00 00 02 81        641          32; drop:            7 drops,          371 index drops
-#         271: 00 00 02 a8        680          39; drop:            8 drops,          409 index drops
-#         272: 00 00 02 aa        682           2; drop:            9 drops,          410 index drops
-#         279: 00 00 02 b2        690           2; drop:           10 drops,          411 index drops
-#         280: 00 00 02 b4        692           2; drop:           11 drops,          412 index drops
-#         281: 00 00 02 b6        694           2; drop:           12 drops,          413 index drops
-#         284: 00 00 02 bb        699           3; drop:           13 drops,          415 index drops
-#         287: 00 00 02 bf        703           2; drop:           14 drops,          416 index drops
-#         365: 00 00 03 0f        783           3; drop:           15 drops,          418 index drops
-#         366: 00 00 03 11        785           2; drop:           16 drops,          419 index drops
-#         579: 00 00 03 e8       1000           3; drop:           17 drops,          421 index drops
-#         580: 00 00 03 eb       1003           3; drop:           18 drops,          423 index drops
-#         668: 00 00 04 45       1093           3; drop:           19 drops,          425 index drops
-#         669: 00 00 04 47       1095           2; drop:           20 drops,          426 index drops
-#         686: 00 00 04 59       1113           2; drop:           21 drops,          427 index drops
-#         687: 00 00 04 5b       1115           2; drop:           22 drops,          428 index drops
-#         688: 00 00 04 5d       1117           2; drop:           23 drops,          429 index drops
-information: i=32378, received=32222, dt=3001ms, rate=83.883MB/s.
-information: i=65953, received=33575, dt=3000ms, rate=87.435MB/s.
-information: i=99625, received=33672, dt=3000ms, rate=87.688MB/s.
-information: i=123027, received=23402, dt=3001ms, rate=60.922MB/s.
+information: i=4735, received=4736, dt=3001ms, rate=00.771MB/s.
+information: i=44711, received=39976, dt=3000ms, rate=06.507MB/s.
+information: i=84569, received=39858, dt=3001ms, rate=06.485MB/s.
+information: i=124501, received=39932, dt=3000ms, rate=06.499MB/s.
+information: i=165198, received=40697, dt=3000ms, rate=06.624MB/s.
+information: i=206255, received=41057, dt=3001ms, rate=06.680MB/s.
+information: i=246153, received=39898, dt=3000ms, rate=06.494MB/s.
+information: i=285641, received=39488, dt=3001ms, rate=06.425MB/s.
+information: i=325533, received=39892, dt=3000ms, rate=06.493MB/s.
+information: i=365933, received=40400, dt=3000ms, rate=06.576MB/s.
+information: i=407055, received=41122, dt=3001ms, rate=06.691MB/s.
+information: i=447990, received=40935, dt=3000ms, rate=06.663MB/s.
+information: i=489644, received=41654, dt=3001ms, rate=06.777MB/s.
+information: i=529934, received=40290, dt=3000ms, rate=06.558MB/s.
+information: i=571115, received=41181, dt=3000ms, rate=06.703MB/s.
+information: i=611667, received=40552, dt=3001ms, rate=06.598MB/s.
+information: i=651316, received=39649, dt=3000ms, rate=06.453MB/s.
+information: i=691810, received=40494, dt=3001ms, rate=06.589MB/s.
+information: i=732985, received=41175, dt=3000ms, rate=06.702MB/s.
+information: i=774222, received=41237, dt=3000ms, rate=06.712MB/s.
+information: i=813788, received=39566, dt=3001ms, rate=06.438MB/s.
+information: i=854559, received=40771, dt=3000ms, rate=06.636MB/s.
+information: i=895141, received=40582, dt=3001ms, rate=06.603MB/s.
+information: i=935165, received=40024, dt=3000ms, rate=06.514MB/s.
+information: i=976187, received=41022, dt=3000ms, rate=06.677MB/s.
+#     1012990: 00 0f 75 3d    1013053          64; drop:            1 drops,           63 index drops
+information: i=1015717, received=39530, dt=3001ms, rate=06.432MB/s.
+information: i=1055656, received=39939, dt=3000ms, rate=06.500MB/s.
+information: i=1095458, received=39802, dt=3001ms, rate=06.476MB/s.
+information: i=1134962, received=39504, dt=3000ms, rate=06.430MB/s.
+information: i=1175367, received=40405, dt=3000ms, rate=06.576MB/s.
+information: i=1216137, received=40770, dt=3001ms, rate=06.634MB/s.
+information: i=1234504, received=18367, dt=3000ms, rate=02.989MB/s.
 error: receiving frame timeout 3 s (i.e. -w option ; see recvfrom).
 
-test fail: in total,           23 drops,          429 index drops (i.e. 0.3475%) on 8192 BoF (Bytes of Frame).
-count=123456, elapsed time: 14442ms, rate=66.784MB/s.
+test fail: in total,            1 drops,           63 index drops (i.e. 0.0051%) on 512 BoF (Bytes of Frame).
+count=1234567, elapsed time: 95121ms, rate=06.337MB/s.

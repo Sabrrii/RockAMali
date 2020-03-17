@@ -32,3 +32,10 @@
 # - plug link
 # - run BoF tests for perfs
 
+
+
+512BoF
+information: i=1095458, received=39802, dt=3001ms, rate=06.476MB/s.
+information: i=1134962, received=39504, dt=3000ms, rate=06.430MB/s.
+test fail: in total,            1 drops,           63 index drops (i.e. 0.0051%) on 512 BoF (Bytes of Frame).
+count=1234567, elapsed time: 95121ms, rate=06.337MB/s.
