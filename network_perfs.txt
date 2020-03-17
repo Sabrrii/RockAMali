@@ -211,3 +211,10 @@ count=1234567, elapsed time: 251816ms, rate=38.302MB/s.
 
 #link 10GEth copper gansacq2 -> rockamali (WAIT4RATE=128)
 
+
+
+512BoF
+information: i=1171660, received=15583, dt=3000ms, rate=02.536MB/s.
+information: i=1187826, received=16166, dt=3000ms, rate=02.631MB/s.
+test pass: zero drop on 512 BoF (Bytes of Frame).
+count=1234567, elapsed time: 241905ms, rate=02.492MB/s.
