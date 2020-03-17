@@ -2,7 +2,7 @@
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
 ##RockAMali <- gansacq2 (hint: 32kBoF as 4x8kBoF @100MB/s)
-FRAME_SIZE=2048
+FRAME_SIZE=4096
 WAIT4RATE=128
 DST_IP=10.10.15.1
 ETH=enp1s0
