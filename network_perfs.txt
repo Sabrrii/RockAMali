@@ -34,7 +34,7 @@
 
 
 
-#link 10GEth copper gansacq2 -> rockamali
+#link 10GEth copper gansacq2 -> rockamali (WAIT4RATE=12)
 512BoF
 information: i=1095458, received=39802, dt=3001ms, rate=06.476MB/s.
 information: i=1134962, received=39504, dt=3000ms, rate=06.430MB/s.
@@ -92,10 +92,8 @@ count=1234567, elapsed time: 112271ms, rate=85.909MB/s.
 
 
 
-#link 10GEth copper gansacq2 -> rockamali
 
-
-
+#link 10GEth copper gansacq2 -> ganp484 (WAIT4RATE=12)
 512BoF
 information: i=1061987, received=39100, dt=3000ms, rate=06.364MB/s.
 information: i=1101479, received=39492, dt=3000ms, rate=06.428MB/s.
@@ -152,6 +150,8 @@ test pass: zero drop on 8192 BoF (Bytes of Frame).
 count=1234567, elapsed time: 112385ms, rate=85.822MB/s.
 
 
+
+#link 10GEth copper gansacq2 -> ganp484 (WAIT4RATE=128)
 512BoF
 information: i=1158865, received=15559, dt=3000ms, rate=02.532MB/s.
 information: i=1174430, received=15565, dt=3000ms, rate=02.533MB/s.
@@ -206,3 +206,8 @@ information: i=1160962, received=14971, dt=3000ms, rate=38.987MB/s.
 information: i=1175919, received=14957, dt=3000ms, rate=38.951MB/s.
 test pass: zero drop on 8192 BoF (Bytes of Frame).
 count=1234567, elapsed time: 251816ms, rate=38.302MB/s.
+
+
+
+#link 10GEth copper gansacq2 -> rockamali (WAIT4RATE=128)
+
