@@ -136,3 +136,10 @@ information: i=1094395, received=28824, dt=3001ms, rate=150.075MB/s.
 information: i=1123263, received=28868, dt=3000ms, rate=150.354MB/s.
 test fail: in total,            1 drops,            1 index drops (i.e. 0.0001%) on 16384 BoF (Bytes of Frame).
 count=1234567, elapsed time: 129147ms, rate=149.366MB/s.
+
+
+32768BoF
+information: i=1138169, received=23860, dt=3000ms, rate=248.542MB/s.
+information: i=1162979, received=24810, dt=3000ms, rate=258.438MB/s.
+test fail: in total,            1 drops,            7 index drops (i.e. 0.0006%) on 32768 BoF (Bytes of Frame).
+count=1234567, elapsed time: 156547ms, rate=246.445MB/s.
