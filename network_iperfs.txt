@@ -1,0 +1,24 @@
+-----------------------------------------------------------
+Server listening on 20485
+-----------------------------------------------------------
+Accepted connection from 10.10.15.2, port 56670
+[  5] local 10.10.15.1 port 20485 connected to 10.10.15.2 port 60055
+[ ID] Interval           Transfer     Bandwidth       Jitter    Lost/Total Datagrams
+[  5]   0.00-1.00   sec  1.50 MBytes  12.6 Mbits/sec  0.686 ms  79066/80151 (99%)  
+[  5]   1.00-2.00   sec  1.33 MBytes  11.2 Mbits/sec  0.542 ms  84861/85823 (99%)  
+[  5]   2.00-3.00   sec  1.35 MBytes  11.3 Mbits/sec  0.949 ms  88096/89073 (99%)  
+[  5]   3.00-4.00   sec  1.35 MBytes  11.3 Mbits/sec  1.152 ms  80907/81881 (99%)  
+[  5]   4.00-5.00   sec  1.43 MBytes  12.0 Mbits/sec  0.389 ms  88433/89465 (99%)  
+[  5]   5.00-6.00   sec  1.07 MBytes  9.00 Mbits/sec  0.247 ms  86394/87171 (99%)  
+[  5]   6.00-7.00   sec  1.14 MBytes  9.59 Mbits/sec  0.153 ms  83967/84795 (99%)  
+[  5]   7.00-8.00   sec  1.29 MBytes  10.8 Mbits/sec  0.344 ms  84312/85244 (99%)  
+[  5]   8.00-9.00   sec  1.09 MBytes  9.16 Mbits/sec  0.706 ms  86296/87087 (99%)  
+[  5]   9.00-10.00  sec  1.12 MBytes  9.37 Mbits/sec  0.430 ms  84715/85523 (99%)  
+[  5]  10.00-11.00  sec  1.06 MBytes  8.85 Mbits/sec  0.622 ms  86897/87661 (99%)  
+[  5]  11.00-12.00  sec  1.26 MBytes  10.6 Mbits/sec  0.178 ms  85959/86873 (99%)  
+[  5]  12.00-13.00  sec  1.19 MBytes  10.0 Mbits/sec  0.322 ms  82514/83378 (99%)  
+[  5]  13.00-14.00  sec  1.07 MBytes  8.95 Mbits/sec  0.570 ms  87281/88054 (99%)  
+[  5]  14.00-14.35  sec   535 KBytes  12.6 Mbits/sec  0.404 ms  31905/32283 (99%)  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Jitter    Lost/Total Datagrams
+[  5]   0.00-14.35  sec  0.00 Bytes  0.00 bits/sec  0.404 ms  1221603/1234462 (99%)  
