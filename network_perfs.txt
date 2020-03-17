@@ -157,3 +157,10 @@ information: i=1158865, received=15559, dt=3000ms, rate=02.532MB/s.
 information: i=1174430, received=15565, dt=3000ms, rate=02.533MB/s.
 test pass: zero drop on 512 BoF (Bytes of Frame).
 count=1234567, elapsed time: 242001ms, rate=02.491MB/s.
+
+
+1024BoF
+information: i=1171267, received=15396, dt=3000ms, rate=05.012MB/s.
+information: i=1186656, received=15389, dt=3000ms, rate=05.009MB/s.
+test pass: zero drop on 1024 BoF (Bytes of Frame).
+count=1234567, elapsed time: 244067ms, rate=04.940MB/s.
