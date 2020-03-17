@@ -1,0 +1,24 @@
+Connecting to host 10.10.15.1, port 20485
+[  4] local 10.10.15.2 port 60055 connected to 10.10.15.1 port 20485
+[ ID] Interval           Transfer     Bandwidth       Total Datagrams
+[  4]   0.00-1.00   sec   117 MBytes   979 Mbits/sec  84554  
+[  4]   1.00-2.00   sec   119 MBytes   997 Mbits/sec  86079  
+[  4]   2.00-3.00   sec   117 MBytes   978 Mbits/sec  84435  
+[  4]   3.00-4.00   sec   120 MBytes  1.00 Gbits/sec  86705  
+[  4]   4.00-5.00   sec   124 MBytes  1.04 Gbits/sec  89798  
+[  4]   5.00-6.00   sec   117 MBytes   982 Mbits/sec  84753  
+[  4]   6.00-7.00   sec   120 MBytes  1.01 Gbits/sec  87196  
+[  4]   7.00-8.00   sec   111 MBytes   930 Mbits/sec  80251  
+[  4]   8.00-9.00   sec   127 MBytes  1.07 Gbits/sec  91932  
+[  4]   9.00-10.00  sec   111 MBytes   933 Mbits/sec  80538  
+[  4]  10.00-11.00  sec   128 MBytes  1.07 Gbits/sec  92454  
+[  4]  11.00-12.00  sec   113 MBytes   952 Mbits/sec  82146  
+[  4]  12.00-13.00  sec   115 MBytes   966 Mbits/sec  83386  
+[  4]  13.00-14.00  sec   129 MBytes  1.08 Gbits/sec  93091  
+[  4]  14.00-14.31  sec  37.6 MBytes  1.02 Gbits/sec  27249  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bandwidth       Jitter    Lost/Total Datagrams
+[  4]   0.00-14.31  sec  1.66 GBytes   999 Mbits/sec  0.404 ms  1221603/1234462 (99%)  
+[  4] Sent 1234462 datagrams
+
+iperf Done.
