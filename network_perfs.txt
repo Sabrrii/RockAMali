@@ -34,6 +34,7 @@
 
 
 
+#link 10GEth copper gansacq2 -> rockamali
 512BoF
 information: i=1095458, received=39802, dt=3001ms, rate=06.476MB/s.
 information: i=1134962, received=39504, dt=3000ms, rate=06.430MB/s.
@@ -88,3 +89,8 @@ information: i=1101923, received=34076, dt=3000ms, rate=88.740MB/s.
 information: i=1136012, received=34089, dt=3001ms, rate=88.744MB/s.
 test fail: in total,           83 drops,          687 index drops (i.e. 0.0556%) on 8192 BoF (Bytes of Frame).
 count=1234567, elapsed time: 112271ms, rate=85.909MB/s.
+
+
+
+#link 10GEth copper gansacq2 -> rockamali
+

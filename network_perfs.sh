@@ -6,11 +6,18 @@ bof4=2048
 WAIT4RATE=12
 
 arch=`uname --processor`
-if [ $arch == 'aarch64' ]
+#if [ $arch == 'aarch64' ]
+#then
+#  do_send=false
+#else
+#  do_send=true
+#fi
+host=`cat /etc/hostname`
+if [ $host == 'gansacq2' ]
 then
-  do_send=false
-else
   do_send=true
+else
+  do_send=false
 fi
 
 for bof4 in 0128 0256 0512 1024 2048 4096 8192 2048
