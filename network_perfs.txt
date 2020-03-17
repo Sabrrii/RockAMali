@@ -46,3 +46,10 @@ information: i=1061609, received=39252, dt=3000ms, rate=12.777MB/s.
 information: i=1101901, received=40292, dt=3001ms, rate=13.112MB/s.
 test pass: zero drop on 1024 BoF (Bytes of Frame).
 count=1234567, elapsed time: 92754ms, rate=12.998MB/s.
+
+
+2048BoF
+information: i=1117083, received=38745, dt=3001ms, rate=25.216MB/s.
+information: i=1155948, received=38865, dt=3001ms, rate=25.294MB/s.
+test fail: in total,           48 drops,          176 index drops (i.e. 0.0143%) on 2048 BoF (Bytes of Frame).
+count=1234567, elapsed time: 98348ms, rate=24.518MB/s.
