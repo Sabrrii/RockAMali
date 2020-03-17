@@ -267,3 +267,6 @@ information: i=1185844, received=14983, dt=3000ms, rate=39.018MB/s.
 information: i=1200821, received=14977, dt=3000ms, rate=39.003MB/s.
 test fail: in total,            6 drops,           10 index drops (i.e. 0.0008%) on 8192 BoF (Bytes of Frame).
 count=1234567, elapsed time: 254622ms, rate=37.880MB/s.
+
+#link 10GEth copper gansacq2 -> rockamali (WAIT4RATE=192)
+

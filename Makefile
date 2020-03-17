@@ -3,7 +3,7 @@
 ## uint   = 4uchar: 2048*2 = 8192BoF
 ##RockAMali <- gansacq2 (hint: 32kBoF as 4x8kBoF @100MB/s)
 FRAME_SIZE=2048
-WAIT4RATE=128
+WAIT4RATE=192
 DST_IP=10.10.15.1
 ETH=enp1s0
 CPU_AFFINITY="0 4 1-3:5"
@@ -93,7 +93,7 @@ udp_receive: udp_receive.cpp Makefile
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
-	/sbin/ifconfig $(ETH) | grep RX | grep dropped; GOMP_CPU_AFFINITY=$(CPU_AFFINITY); ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup 2>&1 | tee udp_receive.txt; /sbin/ifconfig $(ETH) | grep RX | grep dropped
+	/sbin/ifconfig $(ETH) | grep RX | grep dropped; env GOMP_CPU_AFFINITY=$(CPU_AFFINITY) ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup 2>&1 | tee udp_receive.txt; /sbin/ifconfig $(ETH) | grep RX | grep dropped
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_send: udp_send.cpp Makefile
 	g++ -O0 -o udp_send  udp_send.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_send --help -I && ./udp_send -v > VERSION && ./udp_send -n 12

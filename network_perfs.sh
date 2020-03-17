@@ -20,7 +20,7 @@ else
   do_send=false
 fi
 
-for bof4 in 0128 0256 0512 1024 2048 4096 8192 2048
+for bof4 in 8192 4096 2048
 do
   bof=`echo $bof4*4 | bc`
   echo $bof"BoF"
