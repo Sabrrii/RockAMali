@@ -1,21 +1,44 @@
 
-info: running 8 threads
+info: running 6 threads
+thread#1 has CPU#0 affinity
+thread#0 has CPU#0 affinity
 information: do warmup.
-# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops.
+# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops.....
 #           0: 00 00 00 00          0           0
-information: i=57, received=58, dt=3000ms, rate=00.604MB/s.
-information: i=164, received=107, dt=3001ms, rate=01.114MB/s.
-information: i=7437, received=7273, dt=3000ms, rate=75.760MB/s.
-information: i=17408, received=9971, dt=3000ms, rate=103.865MB/s.
-information: i=27435, received=10027, dt=3000ms, rate=104.448MB/s.
-information: i=37429, received=9994, dt=3000ms, rate=104.104MB/s.
-information: i=47434, received=10005, dt=3000ms, rate=104.219MB/s.
-information: i=57453, received=10019, dt=3000ms, rate=104.365MB/s.
-information: i=67501, received=10048, dt=3000ms, rate=104.667MB/s.
-information: i=77500, received=9999, dt=3000ms, rate=104.156MB/s.
-information: i=87436, received=9936, dt=3000ms, rate=103.500MB/s.
-information: i=97403, received=9967, dt=3001ms, rate=103.788MB/s.
-information: i=107429, received=10026, dt=3000ms, rate=104.438MB/s.
-information: i=117419, received=9990, dt=3000ms, rate=104.062MB/s.
-test pass: zero drop on 32768 BoF (Bytes of Frame).
-count=123456, elapsed time: 43339ms, rate=89.019MB/s.
+information: i=35, received=36, dt=3000ms, rate=00.375MB/s.
+information: i=122, received=87, dt=3000ms, rate=00.906MB/s.
+#         258: 00 00 01 29        297          40; drop:            1 drops,           39 index drops
+#         259: 00 00 01 34        308          11; drop:            2 drops,           49 index drops
+#         260: 00 00 01 3f        319          11; drop:            3 drops,           59 index drops
+#         261: 00 00 01 63        355          36; drop:            4 drops,           94 index drops
+#         272: 00 00 01 6f        367           2; drop:            5 drops,           95 index drops
+#         282: 00 00 01 7a        378           2; drop:            6 drops,           96 index drops
+#         290: 00 00 01 83        387           2; drop:            7 drops,           97 index drops
+#         299: 00 00 01 8d        397           2; drop:            8 drops,           98 index drops
+#         318: 00 00 01 a1        417           2; drop:            9 drops,           99 index drops
+#         327: 00 00 01 ab        427           2; drop:           10 drops,          100 index drops
+#         337: 00 00 01 b6        438           2; drop:           11 drops,          101 index drops
+#         347: 00 00 01 c1        449           2; drop:           12 drops,          102 index drops
+#         357: 00 00 01 cc        460           2; drop:           13 drops,          103 index drops
+#         376: 00 00 01 e1        481           3; drop:           14 drops,          105 index drops
+#         441: 00 00 02 23        547           2; drop:           15 drops,          106 index drops
+information: i=4385, received=4263, dt=3001ms, rate=44.391MB/s.
+information: i=14480, received=10095, dt=3000ms, rate=105.156MB/s.
+#       24510: 00 00 60 29      24617           2; drop:           16 drops,          107 index drops
+information: i=24605, received=10125, dt=3000ms, rate=105.469MB/s.
+information: i=34735, received=10130, dt=3001ms, rate=105.486MB/s.
+#       40188: 00 00 9d 6b      40299           5; drop:           17 drops,          111 index drops
+#       41406: 00 00 a2 2e      41518           2; drop:           18 drops,          112 index drops
+information: i=44855, received=10120, dt=3000ms, rate=105.417MB/s.
+information: i=54945, received=10090, dt=3000ms, rate=105.104MB/s.
+information: i=65027, received=10082, dt=3001ms, rate=104.986MB/s.
+information: i=75302, received=10275, dt=3000ms, rate=107.031MB/s.
+information: i=85452, received=10150, dt=3000ms, rate=105.729MB/s.
+information: i=95539, received=10087, dt=3001ms, rate=105.038MB/s.
+information: i=105496, received=9957, dt=3000ms, rate=103.719MB/s.
+information: i=115331, received=9835, dt=3001ms, rate=102.414MB/s.
+information: i=123344, received=8013, dt=3000ms, rate=83.469MB/s.
+error: receiving frame timeout 3 s (i.e. -w option ; see recvfrom).
+
+test fail: in total,           18 drops,          112 index drops (i.e. 0.0907%) on 32768 BoF (Bytes of Frame).
+count=123456, elapsed time: 46036ms, rate=83.804MB/s.
