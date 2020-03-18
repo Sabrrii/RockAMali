@@ -1,0 +1,7 @@
+#receive on rockpro64 or ganp484
+sync; make nc_receive_run; sync
+
+#send on gansacq2
+sync; make nc_send_run; sync
+
+git commit -am 'netcat perf: COMMENT'

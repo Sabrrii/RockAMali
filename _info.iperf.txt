@@ -1,0 +1,8 @@
+#receive on rockpro64 or ganp484
+sync; make iperf_receive_run; sync
+
+#send
+##gansacq2
+sync; make iperf_send_run; sync
+
+sync; git commit -am 'net. iperf: COMMENT'
