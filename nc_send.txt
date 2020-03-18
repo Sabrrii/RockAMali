@@ -1,2 +1,2 @@
 nc send /dev/shm/16GB.rnd
-33s  496MB/s
+29s  564MB/s
