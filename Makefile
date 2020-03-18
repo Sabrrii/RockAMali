@@ -7,7 +7,7 @@ WAIT4RATE=192
 IPERF=--bandwidth 1G --udp
 DST_IP=10.10.15.1
 ETH=enp1s0
-CPU_AFFINITY="0 4 1-3:5"
+CPU_AFFINITY="0 1 2 3 4 5"
 ###ganp484 <- gansacq2 (10GEth copper)
 #DST_IP=10.10.16.1
 #ETH=eth1
