@@ -4,7 +4,7 @@
 ##RockAMali <- gansacq2 (hint: 32kBoF as 4x8kBoF @100MB/s)
 FRAME_SIZE=2048
 WAIT4RATE=192
-IPERF=--bandwidth 1G
+IPERF=--bandwidth 1G --udp
 DST_IP=10.10.15.1
 ETH=enp1s0
 CPU_AFFINITY="0 4 1-3:5"
@@ -16,7 +16,7 @@ ETH=eth1
 #DST_IP=10.10.17.202
 #ETH=p1p2
 PORT=20485
-NS=123456
+NS=1234567
 NB=12
 NP=2
 GEN_FCT=count

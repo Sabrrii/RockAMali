@@ -1,21 +1,24 @@
 -----------------------------------------------------------
 Server listening on 20485
 -----------------------------------------------------------
-Accepted connection from 10.10.16.2, port 41034
-[  5] local 10.10.16.1 port 20485 connected to 10.10.16.2 port 41036
-[ ID] Interval           Transfer     Bandwidth
-[  5]   0.00-1.00   sec  82.0 MBytes   688 Mbits/sec                  
-[  5]   1.00-2.00   sec   129 MBytes  1.08 Gbits/sec                  
-[  5]   2.00-3.00   sec   142 MBytes  1.19 Gbits/sec                  
-[  5]   3.00-4.00   sec   115 MBytes   968 Mbits/sec                  
-[  5]   4.00-5.00   sec   119 MBytes  1.00 Gbits/sec                  
-[  5]   5.00-6.00   sec   123 MBytes  1.04 Gbits/sec                  
-[  5]   6.00-7.00   sec  87.7 MBytes   736 Mbits/sec                  
-[  5]   7.00-8.00   sec  95.2 MBytes   799 Mbits/sec                  
-[  5]   8.00-9.00   sec   107 MBytes   894 Mbits/sec                  
-[  5]   9.00-10.00  sec   121 MBytes  1.01 Gbits/sec                  
-[  5]  10.00-10.67  sec  81.2 MBytes  1.02 Gbits/sec                  
+Accepted connection from 10.10.16.2, port 41040
+[  5] local 10.10.16.1 port 20485 connected to 10.10.16.2 port 48539
+[ ID] Interval           Transfer     Bandwidth       Jitter    Lost/Total Datagrams
+[  5]   0.00-1.00   sec   109 MBytes   912 Mbits/sec  0.005 ms  1794/80521 (2.2%)  
+[  5]   1.00-2.00   sec   106 MBytes   892 Mbits/sec  0.000 ms  9146/86144 (11%)  
+[  5]   2.00-3.00   sec   107 MBytes   899 Mbits/sec  0.001 ms  7618/85245 (8.9%)  
+[  5]   3.00-4.00   sec   111 MBytes   928 Mbits/sec  0.001 ms  6047/86135 (7%)  
+[  5]   4.00-5.00   sec   110 MBytes   924 Mbits/sec  0.006 ms  10182/89963 (11%)  
+[  5]   5.00-6.00   sec   107 MBytes   900 Mbits/sec  0.001 ms  5666/83330 (6.8%)  
+[  5]   6.00-7.00   sec   119 MBytes   998 Mbits/sec  0.001 ms  3018/89129 (3.4%)  
+[  5]   7.00-8.00   sec   101 MBytes   848 Mbits/sec  0.002 ms  9333/82554 (11%)  
+[  5]   8.00-9.00   sec   108 MBytes   902 Mbits/sec  0.002 ms  8340/86192 (9.7%)  
+[  5]   9.00-10.00  sec   109 MBytes   911 Mbits/sec  0.001 ms  9318/87938 (11%)  
+[  5]  10.00-11.00  sec   107 MBytes   896 Mbits/sec  0.001 ms  9765/87154 (11%)  
+[  5]  11.00-12.00  sec   109 MBytes   911 Mbits/sec  0.002 ms  6582/85213 (7.7%)  
+[  5]  12.00-13.00  sec   111 MBytes   934 Mbits/sec  0.000 ms  5448/86065 (6.3%)  
+[  5]  13.00-14.00  sec   105 MBytes   883 Mbits/sec  0.000 ms  11690/87948 (13%)  
+[  5]  14.00-14.37  sec  36.6 MBytes   836 Mbits/sec  0.001 ms  4527/31036 (15%)  
 - - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bandwidth
-[  5]   0.00-10.67  sec  0.00 Bytes  0.00 bits/sec                  sender
-[  5]   0.00-10.67  sec  1.17 GBytes   945 Mbits/sec                  receiver
+[ ID] Interval           Transfer     Bandwidth       Jitter    Lost/Total Datagrams
+[  5]   0.00-14.37  sec  0.00 Bytes  0.00 bits/sec  0.001 ms  108474/1234567 (8.8%)  
