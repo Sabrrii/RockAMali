@@ -247,10 +247,10 @@ nc_receive_run:
 ##ganp484/RockAMali <- gansacq2
 #gansacq2
 iperf_send_run:
-	iperf3 -c $(DST_IP) -p $(PORT) -4 -w $(FRAME_SIZE) -k $(NS) $(IPERF) | tee network_iperfc.txt
+	iperf3 -c $(DST_IP) -p $(PORT) -4 -w `echo $(FRAME_SIZE)*4 | bc` -k $(NS) $(IPERF) | tee network_iperfc.txt
 #ganp484 or RockAMali
 iperf_receive_run:
-	iperf3 -s -p $(PORT) | tee network_iperfs.txt
+	iperf3 -s -p $(PORT) -1 | tee network_iperfs.txt
 
 
 clear:
