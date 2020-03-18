@@ -59,10 +59,12 @@ ifeq ($(shell uname -p),x86_64)
 ##AMD64 (gan*)
 	DO_GPU=
 	DO_GPU_PROFILING=
+        DO_CPU_AFFINITY=
 else
 ##ARM64 (RockPro64)
 	DO_GPU=-DDO_GPU $(LIB_BOOST_COMPUTE)
 	DO_GPU_PROFILING=-DDO_GPU_PROFILING
+        DO_CPU_AFFINITY=-DDO_CPU_AFFINITY
 endif #DO_GPU
 
 #source package
@@ -90,7 +92,7 @@ std_high_res_clock: std_high_res_clock.cpp Makefile
 
 udp_receive: udp_receive.cpp Makefile
 #	g++ -Wall udp_receive.cpp -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
-	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I && ./udp_receive -v > VERSION && ./udp_receive -n 12 --debug --simulation --verbose
+	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(DO_CPU_AFFINITY) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I && ./udp_receive -v > VERSION && ./udp_receive -n 12 --debug --simulation --verbose
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:

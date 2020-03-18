@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.3j"
+#define VERSION "v0.1.3k"
 
 using namespace cimg_library;
 
@@ -86,10 +86,9 @@ int main(int argc, char **argv)
   #pragma omp parallel shared(lock, received,current_i,done)
   {
   int id=omp_get_thread_num(),tn=omp_get_num_threads();
-  /* //affinity only on RockPro64, but output -1 on GOMP
+  //affinity (only on RockPro64)
   int cpuaff=omp_get_place_num();
-  if(id<2) {printf("thread#%d has CPU#%d affinity\n",id,cpuaff);fflush(stdout);}
-  */
+  printf("thread#%d has CPU#%d affinity\n",id,cpuaff);fflush(stdout);
 
   #pragma omp single
   {
@@ -138,7 +137,7 @@ int main(int argc, char **argv)
       }//infinite loop
       break;
     }//watchdog
-    case 1:
+    case 4:
     {//receive
       //rate related
       unsigned long t0,t1;
