@@ -15,9 +15,9 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.4d"
+#define VERSION "v0.1.4e"
 
-//! \todo adding random rate
+//! \todo . add random rate
 
 using namespace cimg_library;
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
   const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the receiver");
   const int  twait=cimg_option("-w", 123, "waiting time between udp frames [us] (mean rate if dw>0)");
   const int dtwait=cimg_option("-dw",  0, "waiting time range between udp frames [us]");
-  const bool do_rnd_wait=(dtwait==0);
+  const bool do_rnd_wait=(dtwait!=0);
   const int dtw_sz=cimg_option("-dws",(int)max_iter, "size of random waiting times between udp frames [us]");
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 
 //! \todo . add random content
   CImg<unsigned int> twaits;
-  if(do_rnd_wait) {twaits.assign(dtw_sz);twaits.rand(twait-dtwait/2,twait+dtwait/2);}
+  if(do_rnd_wait) {twaits.assign(dtw_sz);twaits.rand(twait-dtwait/2,twait+dtwait/2);twaits.print("random wait");fflush(stderr);}
 
 //  while(1)
   for(int i=0;i<max_iter;++i)

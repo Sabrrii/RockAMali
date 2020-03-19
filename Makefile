@@ -1,9 +1,10 @@
 #run
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
-##RockAMali <- gansacq2 (hint: 32kBoF as 4x8kBoF @100MB/s)
-FRAME_SIZE=8192
-WAIT4RATE=192
+##RockAMali <- gansacq2
+FRAME_SIZE=2048
+WAIT4RATE=222
+DELTAWAIT=60
 IPERF=--bandwidth 1G --udp
 DST_IP=10.10.15.1
 ETH=enp1s0
@@ -101,7 +102,7 @@ udp_receive_run:
 udp_send: udp_send.cpp Makefile
 	g++ -O0 -o udp_send  udp_send.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_send --help -I && ./udp_send -v > VERSION && ./udp_send -n 12
 udp_send_run:
-	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w $(WAIT4RATE) --do-warmup --do-ramp $(DO_CHECK) --verbose; /sbin/ifconfig eth6 | grep TX | grep dropped
+	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w $(WAIT4RATE) -dw $(DELTAWAIT) --do-warmup --do-ramp $(DO_CHECK) --verbose; /sbin/ifconfig eth6 | grep TX | grep dropped
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
