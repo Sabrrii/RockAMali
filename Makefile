@@ -3,8 +3,8 @@
 ## uint   = 4uchar: 2048*2 = 8192BoF
 ##RockAMali <- gansacq2
 FRAME_SIZE=2048
-WAIT4RATE=64
-DELTAWAIT=32
+WAIT4RATE=256
+DELTAWAIT=64
 IPERF=--bandwidth 1G --udp
 DST_IP=10.10.15.1
 ETH=enp1s0
