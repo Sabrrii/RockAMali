@@ -9,8 +9,8 @@ DST_IP=10.10.15.1
 ETH=enp1s0
 CPU_AFFINITY="0 1 2 3 4 5"
 ###ganp484 <- gansacq2 (10GEth copper)
-#DST_IP=10.10.16.1
-#ETH=eth1
+DST_IP=10.10.16.1
+ETH=eth1
 ##ml507 -> ganp157
 #FRAME_SIZE=256
 #DST_IP=10.10.17.202
@@ -79,11 +79,11 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
 #all: process_sequential version factory process_sequential_run
-all: send receive version factory
+#all: send receive version factory
 
 ##lib. code test
 #all: time_copy
-#all: udp_receive udp_send
+all: udp_receive udp_send
 time_copy: time_copy.cpp Makefile
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 

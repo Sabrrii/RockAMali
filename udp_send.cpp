@@ -15,7 +15,9 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.3"
+#define VERSION "v0.1.4d"
+
+//! \todo adding random rate
 
 using namespace cimg_library;
 
@@ -35,7 +37,7 @@ int main(int argc, char **argv)
   ).c_str());//cimg_usage
 
   unsigned int width=cimg_option("-s",8192, "size of UDP buffer [byte]");
-  const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
+  const unsigned long max_iter=cimg_option("-n",256,  "number of frames");
   const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
   const bool do_fill_F=cimg_option("-C",false,NULL);//-C hidden option
         bool do_fill=cimg_option("--do-fill",do_fill_F,"do fill entire frame with index -this is slow process- (or -F option) otherwise single random content frame is sent except first uint32 that get current index");do_fill=do_fill_F|do_fill;//same --do-fill or -F option
@@ -43,7 +45,10 @@ int main(int argc, char **argv)
   const bool debug=cimg_option("--debug",false,"debug output");
   const unsigned short port=cimg_option("-p",20485,"port where the packets are send on the receiving device");
   const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the receiver");
-  const int twait=cimg_option("-w", 123, "waiting time between udp frames [us]");
+  const int  twait=cimg_option("-w", 123, "waiting time between udp frames [us] (mean rate if dw>0)");
+  const int dtwait=cimg_option("-dw",  0, "waiting time range between udp frames [us]");
+  const bool do_rnd_wait=(dtwait==0);
+  const int dtw_sz=cimg_option("-dws",(int)max_iter, "size of random waiting times between udp frames [us]");
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
   const bool do_ramp_R=cimg_option("-R",false,NULL);//-R hidden option
@@ -100,6 +105,10 @@ int main(int argc, char **argv)
   if(do_warmup) {printf("information: do memory warmup.\n");buffer.rand(0,255);bindex.max();}
   if(do_ramp)   {printf("information: do rate ramp on first 256 frames.\n");}
 
+//! \todo . add random content
+  CImg<unsigned int> twaits;
+  if(do_rnd_wait) {twaits.assign(dtw_sz);twaits.rand(twait-dtwait/2,twait+dtwait/2);}
+
 //  while(1)
   for(int i=0;i<max_iter;++i)
   {
@@ -110,8 +119,17 @@ int main(int argc, char **argv)
     //send buffer to receiver
     sendto(clientSocket,buffer,width,0,(struct sockaddr *)&receiverAddr,addr_size);
     //control data rate
-    if(do_ramp) {if(i<256) {const int tw=twait*(256-i);if(verbose) printf("wait=%dus\n",tw); usleep(tw);} else usleep(twait);}
-    else usleep(twait);
+    if(do_ramp)
+    {
+      if(i<256) {const int tw=twait*(256-i);if(verbose) printf("wait=%dus\n",tw); usleep(tw);}
+      else usleep(twait);
+    }
+    else
+    {
+//! \todo _ itw>width case
+      if(do_rnd_wait) {const int itw=i; usleep(twaits(itw));}
+      else usleep(twait);
+    }
   }//for loop
   printf("\n");
   return 0;
