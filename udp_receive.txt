@@ -9,175 +9,150 @@ thread#1 has CPU#0 affinity
 informating thread#0 has CPU#0 affinity
 receiving thread#4 has CPU#0 affinity
 information: do warmup.
-# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops.
+# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops..
+warning: resizing containers as received frame is 8192BoF.
+
 #           0: 00 00 00 00          0           0
-information: i=30, received=31, dt=3000ms, rate=00.081MB/s.
-information: i=89, received=59, dt=3001ms, rate=00.154MB/s.
-information: i=189, received=100, dt=3000ms, rate=00.260MB/s.
-information: i=7032, received=6843, dt=3000ms, rate=17.820MB/s.
-information: i=15434, received=8402, dt=3001ms, rate=21.873MB/s.
-information: i=23830, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=32236, received=8406, dt=3000ms, rate=21.891MB/s.
-information: i=40641, received=8405, dt=3001ms, rate=21.881MB/s.
-information: i=49038, received=8397, dt=3000ms, rate=21.867MB/s.
-information: i=57434, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=65828, received=8394, dt=3001ms, rate=21.852MB/s.
-information: i=74223, received=8395, dt=3000ms, rate=21.862MB/s.
-information: i=82609, received=8386, dt=3000ms, rate=21.839MB/s.
-information: i=91011, received=8402, dt=3001ms, rate=21.873MB/s.
-information: i=99415, received=8404, dt=3000ms, rate=21.885MB/s.
-information: i=107819, received=8404, dt=3000ms, rate=21.885MB/s.
-information: i=116222, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=124622, received=8400, dt=3001ms, rate=21.868MB/s.
-information: i=133018, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=141425, received=8407, dt=3000ms, rate=21.893MB/s.
-information: i=149848, received=8423, dt=3001ms, rate=21.928MB/s.
-information: i=158266, received=8418, dt=3000ms, rate=21.922MB/s.
-information: i=166687, received=8421, dt=3000ms, rate=21.930MB/s.
-information: i=175088, received=8401, dt=3001ms, rate=21.870MB/s.
-information: i=183486, received=8398, dt=3000ms, rate=21.870MB/s.
-information: i=191888, received=8402, dt=3000ms, rate=21.880MB/s.
-#      194687: 00 02 f8 80     194688           2; drop:            1 drops,            1 index drops
-#      194825: 00 02 f9 0b     194827           2; drop:            2 drops,            2 index drops
-information: i=200303, received=8415, dt=3001ms, rate=21.907MB/s.
-information: i=208711, received=8408, dt=3000ms, rate=21.896MB/s.
-information: i=217106, received=8395, dt=3000ms, rate=21.862MB/s.
-information: i=225505, received=8399, dt=3000ms, rate=21.872MB/s.
-information: i=233916, received=8411, dt=3001ms, rate=21.896MB/s.
-information: i=242314, received=8398, dt=3000ms, rate=21.870MB/s.
-information: i=250725, received=8411, dt=3000ms, rate=21.904MB/s.
-information: i=259125, received=8400, dt=3001ms, rate=21.868MB/s.
-information: i=267530, received=8405, dt=3000ms, rate=21.888MB/s.
-information: i=275937, received=8407, dt=3000ms, rate=21.893MB/s.
-information: i=284327, received=8390, dt=3001ms, rate=21.842MB/s.
-information: i=292730, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=301133, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=309544, received=8411, dt=3000ms, rate=21.904MB/s.
-information: i=317935, received=8391, dt=3001ms, rate=21.844MB/s.
-information: i=326351, received=8416, dt=3000ms, rate=21.917MB/s.
-information: i=334761, received=8410, dt=3000ms, rate=21.901MB/s.
-information: i=343161, received=8400, dt=3001ms, rate=21.868MB/s.
-information: i=351567, received=8406, dt=3000ms, rate=21.891MB/s.
-information: i=359972, received=8405, dt=3000ms, rate=21.888MB/s.
-#      364208: 00 05 8e b3     364211           2; drop:            3 drops,            3 index drops
-information: i=368355, received=8383, dt=3001ms, rate=21.823MB/s.
-information: i=376736, received=8381, dt=3000ms, rate=21.826MB/s.
-information: i=385120, received=8384, dt=3000ms, rate=21.833MB/s.
-information: i=393525, received=8405, dt=3000ms, rate=21.888MB/s.
-information: i=401925, received=8400, dt=3001ms, rate=21.868MB/s.
-information: i=410320, received=8395, dt=3000ms, rate=21.862MB/s.
-information: i=418701, received=8381, dt=3000ms, rate=21.826MB/s.
-information: i=427102, received=8401, dt=3001ms, rate=21.870MB/s.
-information: i=435501, received=8399, dt=3000ms, rate=21.872MB/s.
-information: i=443892, received=8391, dt=3000ms, rate=21.852MB/s.
-information: i=452298, received=8406, dt=3000ms, rate=21.891MB/s.
-information: i=460709, received=8411, dt=3001ms, rate=21.896MB/s.
-information: i=469106, received=8397, dt=3000ms, rate=21.867MB/s.
-information: i=477496, received=8390, dt=3001ms, rate=21.842MB/s.
-information: i=485888, received=8392, dt=3000ms, rate=21.854MB/s.
-information: i=494284, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=502684, received=8400, dt=3000ms, rate=21.875MB/s.
-information: i=511084, received=8400, dt=3001ms, rate=21.868MB/s.
-information: i=519494, received=8410, dt=3000ms, rate=21.901MB/s.
-information: i=527900, received=8406, dt=3000ms, rate=21.891MB/s.
-#      530410: 00 08 17 ee     530414           2; drop:            4 drops,            4 index drops
-information: i=536309, received=8409, dt=3001ms, rate=21.891MB/s.
-information: i=544705, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=553101, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=561507, received=8406, dt=3001ms, rate=21.883MB/s.
-information: i=569914, received=8407, dt=3000ms, rate=21.893MB/s.
-information: i=578303, received=8389, dt=3000ms, rate=21.846MB/s.
-information: i=586690, received=8387, dt=3000ms, rate=21.841MB/s.
-information: i=595094, received=8404, dt=3001ms, rate=21.878MB/s.
-information: i=603502, received=8408, dt=3000ms, rate=21.896MB/s.
-information: i=611908, received=8406, dt=3000ms, rate=21.891MB/s.
-information: i=620326, received=8418, dt=3001ms, rate=21.915MB/s.
-information: i=628742, received=8416, dt=3000ms, rate=21.917MB/s.
-information: i=637152, received=8410, dt=3000ms, rate=21.901MB/s.
-information: i=645567, received=8415, dt=3001ms, rate=21.907MB/s.
-information: i=653986, received=8419, dt=3000ms, rate=21.924MB/s.
-information: i=662400, received=8414, dt=3000ms, rate=21.911MB/s.
-information: i=670815, received=8415, dt=3001ms, rate=21.907MB/s.
-information: i=679204, received=8389, dt=3000ms, rate=21.846MB/s.
-information: i=687605, received=8401, dt=3000ms, rate=21.878MB/s.
-information: i=696023, received=8418, dt=3000ms, rate=21.922MB/s.
-#      698080: 00 0a a6 f7     698103          20; drop:            5 drops,           23 index drops
-#      698112: 00 0a a7 1f     698143           9; drop:            6 drops,           31 index drops
-#      698144: 00 0a a7 43     698179           5; drop:            7 drops,           35 index drops
-#      698608: 00 0a a9 14     698644           2; drop:            8 drops,           36 index drops
-information: i=704401, received=8378, dt=3001ms, rate=21.810MB/s.
-information: i=712810, received=8409, dt=3000ms, rate=21.898MB/s.
-information: i=721218, received=8408, dt=3001ms, rate=21.889MB/s.
-information: i=729634, received=8416, dt=3000ms, rate=21.917MB/s.
-information: i=738049, received=8415, dt=3000ms, rate=21.914MB/s.
-information: i=746454, received=8405, dt=3000ms, rate=21.888MB/s.
-information: i=754854, received=8400, dt=3001ms, rate=21.868MB/s.
-information: i=763249, received=8395, dt=3000ms, rate=21.862MB/s.
-information: i=771637, received=8388, dt=3000ms, rate=21.844MB/s.
-information: i=780026, received=8389, dt=3001ms, rate=21.839MB/s.
-information: i=788428, received=8402, dt=3000ms, rate=21.880MB/s.
-information: i=796832, received=8404, dt=3000ms, rate=21.885MB/s.
-information: i=805229, received=8397, dt=3001ms, rate=21.860MB/s.
-information: i=813614, received=8385, dt=3000ms, rate=21.836MB/s.
-information: i=822006, received=8392, dt=3000ms, rate=21.854MB/s.
-information: i=830409, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=838803, received=8394, dt=3001ms, rate=21.852MB/s.
-information: i=847205, received=8402, dt=3000ms, rate=21.880MB/s.
-information: i=855596, received=8391, dt=3000ms, rate=21.852MB/s.
-information: i=864001, received=8405, dt=3000ms, rate=21.888MB/s.
-#      866119: 00 0d 37 6f     866159           5; drop:            9 drops,           40 index drops
-#      866142: 00 0d 37 87     866183           2; drop:           10 drops,           41 index drops
-#      866153: 00 0d 37 97     866199           6; drop:           11 drops,           46 index drops
-#      866380: 00 0d 38 7b     866427           2; drop:           12 drops,           47 index drops
-information: i=872396, received=8395, dt=3001ms, rate=21.855MB/s.
-information: i=880791, received=8395, dt=3000ms, rate=21.862MB/s.
-information: i=889195, received=8404, dt=3001ms, rate=21.878MB/s.
-information: i=897604, received=8409, dt=3000ms, rate=21.898MB/s.
-information: i=906016, received=8412, dt=3000ms, rate=21.906MB/s.
-information: i=914419, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=922811, received=8392, dt=3001ms, rate=21.847MB/s.
-information: i=931207, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=939606, received=8399, dt=3000ms, rate=21.872MB/s.
-information: i=948016, received=8410, dt=3001ms, rate=21.894MB/s.
-information: i=956415, received=8399, dt=3000ms, rate=21.872MB/s.
-information: i=964817, received=8402, dt=3000ms, rate=21.880MB/s.
-information: i=973242, received=8425, dt=3000ms, rate=21.940MB/s.
-information: i=981646, received=8404, dt=3001ms, rate=21.878MB/s.
-information: i=990044, received=8398, dt=3000ms, rate=21.870MB/s.
-information: i=998457, received=8413, dt=3000ms, rate=21.909MB/s.
-information: i=1006862, received=8405, dt=3001ms, rate=21.881MB/s.
-information: i=1015275, received=8413, dt=3000ms, rate=21.909MB/s.
-information: i=1023690, received=8415, dt=3000ms, rate=21.914MB/s.
-information: i=1032094, received=8404, dt=3000ms, rate=21.885MB/s.
-#     1034595: 00 0f c9 93    1034643           2; drop:           13 drops,           48 index drops
-information: i=1040504, received=8410, dt=3001ms, rate=21.894MB/s.
-information: i=1048917, received=8413, dt=3000ms, rate=21.909MB/s.
-information: i=1057320, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=1065723, received=8403, dt=3001ms, rate=21.876MB/s.
-information: i=1074117, received=8394, dt=3000ms, rate=21.859MB/s.
-information: i=1082520, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=1090931, received=8411, dt=3001ms, rate=21.896MB/s.
-information: i=1099334, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=1107733, received=8399, dt=3000ms, rate=21.872MB/s.
-information: i=1116131, received=8398, dt=3000ms, rate=21.870MB/s.
-information: i=1124529, received=8398, dt=3001ms, rate=21.863MB/s.
-information: i=1132932, received=8403, dt=3000ms, rate=21.883MB/s.
-information: i=1141332, received=8400, dt=3000ms, rate=21.875MB/s.
-information: i=1149729, received=8397, dt=3001ms, rate=21.860MB/s.
-information: i=1158141, received=8412, dt=3000ms, rate=21.906MB/s.
-information: i=1166718, received=8577, dt=3000ms, rate=22.336MB/s.
-information: i=1175091, received=8373, dt=3000ms, rate=21.805MB/s.
-information: i=1183489, received=8398, dt=3001ms, rate=21.863MB/s.
-information: i=1191876, received=8387, dt=3000ms, rate=21.841MB/s.
-information: i=1200268, received=8392, dt=3000ms, rate=21.854MB/s.
-#     1202353: 00 12 58 e2    1202402           2; drop:           14 drops,           49 index drops
-#     1202659: 00 12 5a 15    1202709           2; drop:           15 drops,           50 index drops
-information: i=1208660, received=8392, dt=3001ms, rate=21.847MB/s.
-information: i=1217056, received=8396, dt=3000ms, rate=21.865MB/s.
-information: i=1225456, received=8400, dt=3000ms, rate=21.875MB/s.
-information: i=1233844, received=8388, dt=3001ms, rate=21.836MB/s.
-information: i=1234517, received=673, dt=3000ms, rate=01.753MB/s.
+#         271: 00 00 01 10        272           2; drop:            1 drops,            1 index drops
+#         272: 00 00 01 13        275           3; drop:            2 drops,            3 index drops
+#         274: 00 00 01 16        278           2; drop:            3 drops,            4 index drops
+#         275: 00 00 01 18        280           2; drop:            4 drops,            5 index drops
+#         276: 00 00 01 1a        282           2; drop:            5 drops,            6 index drops
+#         277: 00 00 01 1c        284           2; drop:            6 drops,            7 index drops
+#         278: 00 00 01 1e        286           2; drop:            7 drops,            8 index drops
+#         280: 00 00 01 22        290           3; drop:            8 drops,           10 index drops
+#         281: 00 00 01 24        292           2; drop:            9 drops,           11 index drops
+#         282: 00 00 01 27        295           3; drop:           10 drops,           13 index drops
+#         283: 00 00 01 2a        298           3; drop:           11 drops,           15 index drops
+#         284: 00 00 01 2d        301           3; drop:           12 drops,           17 index drops
+#         285: 00 00 01 34        308           7; drop:           13 drops,           23 index drops
+#         286: 00 00 01 39        313           5; drop:           14 drops,           27 index drops
+#         288: 00 00 01 3e        318           4; drop:           15 drops,           30 index drops
+#         289: 00 00 01 48        328          10; drop:           16 drops,           39 index drops
+#         290: 00 00 01 50        336           8; drop:           17 drops,           46 index drops
+#         291: 00 00 01 56        342           6; drop:           18 drops,           51 index drops
+#         292: 00 00 01 5b        347           5; drop:           19 drops,           55 index drops
+#         294: 00 00 01 66        358          10; drop:           20 drops,           64 index drops
+#         295: 00 00 01 6c        364           6; drop:           21 drops,           69 index drops
+#         296: 00 00 01 72        370           6; drop:           22 drops,           74 index drops
+#         297: 00 00 01 78        376           6; drop:           23 drops,           79 index drops
+#         298: 00 00 01 80        384           8; drop:           24 drops,           86 index drops
+#         299: 00 00 01 86        390           6; drop:           25 drops,           91 index drops
+#         300: 00 00 01 8c        396           6; drop:           26 drops,           96 index drops
+#         301: 00 00 01 8f        399           3; drop:           27 drops,           98 index drops
+#         302: 00 00 01 94        404           5; drop:           28 drops,          102 index drops
+#         303: 00 00 01 a2        418          14; drop:           29 drops,          115 index drops
+#         304: 00 00 01 aa        426           8; drop:           30 drops,          122 index drops
+#         305: 00 00 01 b0        432           6; drop:           31 drops,          127 index drops
+information: i=3535, received=3536, dt=3000ms, rate=09.208MB/s.
+information: i=25120, received=21585, dt=3000ms, rate=56.211MB/s.
+information: i=46896, received=21776, dt=3001ms, rate=56.689MB/s.
+information: i=68677, received=21781, dt=3000ms, rate=56.721MB/s.
+information: i=90469, received=21792, dt=3000ms, rate=56.750MB/s.
+information: i=112262, received=21793, dt=3001ms, rate=56.734MB/s.
+information: i=134372, received=22110, dt=3000ms, rate=57.578MB/s.
+information: i=156309, received=21937, dt=3000ms, rate=57.128MB/s.
+#      173696: 00 02 a7 27     173863          41; drop:           32 drops,          167 index drops
+#      173717: 00 02 a7 54     173908          25; drop:           33 drops,          191 index drops
+#      173745: 00 02 a7 7f     173951          16; drop:           34 drops,          206 index drops
+#      173777: 00 02 a7 a8     173992          10; drop:           35 drops,          215 index drops
+#      173815: 00 02 a7 d7     174039          10; drop:           36 drops,          224 index drops
+#      173850: 00 02 a8 02     174082           9; drop:           37 drops,          232 index drops
+#      173894: 00 02 a8 37     174135          10; drop:           38 drops,          241 index drops
+#      173932: 00 02 a8 66     174182          10; drop:           39 drops,          250 index drops
+#      173970: 00 02 a8 93     174227           8; drop:           40 drops,          257 index drops
+#      174005: 00 02 a8 bb     174267           6; drop:           41 drops,          262 index drops
+#      174040: 00 02 a8 e3     174307           6; drop:           42 drops,          267 index drops
+#      174072: 00 02 a9 0b     174347           9; drop:           43 drops,          275 index drops
+#      174105: 00 02 a9 33     174387           8; drop:           44 drops,          282 index drops
+#      174135: 00 02 a9 57     174423           7; drop:           45 drops,          288 index drops
+#      174163: 00 02 a9 7a     174458           8; drop:           46 drops,          295 index drops
+#      174194: 00 02 a9 9f     174495           7; drop:           47 drops,          301 index drops
+#      174222: 00 02 a9 c2     174530           8; drop:           48 drops,          308 index drops
+#      174249: 00 02 a9 e2     174562           6; drop:           49 drops,          313 index drops
+#      174274: 00 02 aa 02     174594           8; drop:           50 drops,          320 index drops
+#      174528: 00 02 ab 01     174849           2; drop:           51 drops,          321 index drops
+information: i=177847, received=21538, dt=3001ms, rate=56.070MB/s.
+#      182494: 00 02 ca 26     182822           8; drop:           52 drops,          328 index drops
+information: i=199595, received=21748, dt=3000ms, rate=56.635MB/s.
+information: i=221378, received=21783, dt=3000ms, rate=56.727MB/s.
+information: i=243086, received=21708, dt=3000ms, rate=56.531MB/s.
+information: i=264696, received=21610, dt=3001ms, rate=56.257MB/s.
+information: i=286372, received=21676, dt=3000ms, rate=56.448MB/s.
+information: i=308110, received=21738, dt=3000ms, rate=56.609MB/s.
+information: i=329684, received=21574, dt=3000ms, rate=56.182MB/s.
+information: i=351276, received=21592, dt=3001ms, rate=56.210MB/s.
+information: i=372866, received=21590, dt=3000ms, rate=56.224MB/s.
+information: i=394452, received=21586, dt=3000ms, rate=56.214MB/s.
+information: i=416177, received=21725, dt=3000ms, rate=56.576MB/s.
+information: i=437974, received=21797, dt=3001ms, rate=56.744MB/s.
+information: i=459759, received=21785, dt=3000ms, rate=56.732MB/s.
+information: i=481564, received=21805, dt=3000ms, rate=56.784MB/s.
+information: i=503321, received=21757, dt=3001ms, rate=56.640MB/s.
+information: i=524998, received=21677, dt=3000ms, rate=56.451MB/s.
+information: i=546736, received=21738, dt=3000ms, rate=56.609MB/s.
+information: i=568547, received=21811, dt=3000ms, rate=56.799MB/s.
+information: i=590247, received=21700, dt=3001ms, rate=56.492MB/s.
+#      607539: 00 09 46 7c     607868           2; drop:           53 drops,          329 index drops
+#      607577: 00 09 46 e7     607975          70; drop:           54 drops,          398 index drops
+#      607597: 00 09 46 fe     607998           4; drop:           55 drops,          401 index drops
+#      607643: 00 09 47 39     608057          14; drop:           56 drops,          414 index drops
+#      607673: 00 09 47 70     608112          26; drop:           57 drops,          439 index drops
+#      607706: 00 09 47 a6     608166          22; drop:           58 drops,          460 index drops
+#      607738: 00 09 47 cf     608207          10; drop:           59 drops,          469 index drops
+#      607784: 00 09 48 06     608262          10; drop:           60 drops,          478 index drops
+#      607821: 00 09 48 33     608307           9; drop:           61 drops,          486 index drops
+#      607871: 00 09 48 6a     608362           6; drop:           62 drops,          491 index drops
+#      607907: 00 09 48 93     608403           6; drop:           63 drops,          496 index drops
+#      607940: 00 09 48 ba     608442           7; drop:           64 drops,          502 index drops
+#      607983: 00 09 48 eb     608491           7; drop:           65 drops,          508 index drops
+#      608015: 00 09 49 11     608529           7; drop:           66 drops,          514 index drops
+#      608041: 00 09 49 31     608561           7; drop:           67 drops,          520 index drops
+#      608070: 00 09 49 53     608595           6; drop:           68 drops,          525 index drops
+#      608098: 00 09 49 74     608628           6; drop:           69 drops,          530 index drops
+#      608127: 00 09 49 97     608663           7; drop:           70 drops,          536 index drops
+#      608154: 00 09 49 b8     608696           7; drop:           71 drops,          542 index drops
+#      608183: 00 09 49 db     608731           7; drop:           72 drops,          548 index drops
+#      608208: 00 09 49 fa     608762           7; drop:           73 drops,          554 index drops
+#      608237: 00 09 4a 1c     608796           6; drop:           74 drops,          559 index drops
+#      608262: 00 09 4a 3a     608826           6; drop:           75 drops,          564 index drops
+#      608287: 00 09 4a 57     608855           5; drop:           76 drops,          568 index drops
+#      608312: 00 09 4a 74     608884           5; drop:           77 drops,          572 index drops
+#      608663: 00 09 4b d4     609236           2; drop:           78 drops,          573 index drops
+information: i=611659, received=21412, dt=3000ms, rate=55.760MB/s.
+information: i=633250, received=21591, dt=3000ms, rate=56.227MB/s.
+information: i=654863, received=21613, dt=3000ms, rate=56.284MB/s.
+information: i=676598, received=21735, dt=3001ms, rate=56.583MB/s.
+information: i=698361, received=21763, dt=3000ms, rate=56.674MB/s.
+information: i=720173, received=21812, dt=3000ms, rate=56.802MB/s.
+information: i=741967, received=21794, dt=3001ms, rate=56.736MB/s.
+information: i=763658, received=21691, dt=3000ms, rate=56.487MB/s.
+information: i=785291, received=21633, dt=3000ms, rate=56.336MB/s.
+information: i=807020, received=21729, dt=3000ms, rate=56.586MB/s.
+information: i=828739, received=21719, dt=3001ms, rate=56.541MB/s.
+information: i=850469, received=21730, dt=3000ms, rate=56.589MB/s.
+information: i=872162, received=21693, dt=3000ms, rate=56.492MB/s.
+#      872171: 00 0d 51 29     872745           2; drop:           79 drops,          574 index drops
+information: i=893740, received=21578, dt=3001ms, rate=56.174MB/s.
+information: i=915330, received=21590, dt=3000ms, rate=56.224MB/s.
+information: i=936924, received=21594, dt=3000ms, rate=56.234MB/s.
+information: i=958514, received=21590, dt=3000ms, rate=56.224MB/s.
+information: i=980118, received=21604, dt=3001ms, rate=56.242MB/s.
+information: i=1001724, received=21606, dt=3000ms, rate=56.266MB/s.
+information: i=1023192, received=21468, dt=3000ms, rate=55.906MB/s.
+#     1040576: 00 0f e2 ff    1041151           2; drop:           80 drops,          575 index drops
+information: i=1044617, received=21425, dt=3001ms, rate=55.776MB/s.
+#     1049146: 00 10 04 7d    1049725           5; drop:           81 drops,          579 index drops
+information: i=1066196, received=21579, dt=3000ms, rate=56.195MB/s.
+information: i=1087774, received=21578, dt=3000ms, rate=56.193MB/s.
+information: i=1109393, received=21619, dt=3000ms, rate=56.299MB/s.
+information: i=1130999, received=21606, dt=3001ms, rate=56.247MB/s.
+information: i=1152588, received=21589, dt=3000ms, rate=56.221MB/s.
+information: i=1174293, received=21705, dt=3000ms, rate=56.523MB/s.
+information: i=1196018, received=21725, dt=3000ms, rate=56.576MB/s.
+information: i=1217825, received=21807, dt=3001ms, rate=56.770MB/s.
+information: i=1233988, received=16163, dt=3000ms, rate=42.091MB/s.
 error: receiving frame timeout 3 s (i.e. -w option ; see recvfrom).
 
-test fail: in total,           15 drops,           50 index drops (i.e. 0.0041%) on 8192 BoF (Bytes of Frame).
-count=1234567, elapsed time: 452170ms, rate=21.331MB/s.
+test fail: in total,           81 drops,          579 index drops (i.e. 0.0469%) on 8192 BoF (Bytes of Frame).
+count=1234567, elapsed time: 175858ms, rate=54.846MB/s.
