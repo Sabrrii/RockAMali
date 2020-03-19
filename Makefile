@@ -10,8 +10,8 @@ DST_IP=10.10.15.1
 ETH=enp1s0
 CPU_AFFINITY="0 1 2 3 4 5"
 ###ganp484 <- gansacq2 (10GEth copper)
-DST_IP=10.10.16.1
-ETH=eth1
+#DST_IP=10.10.16.1
+#ETH=eth1
 ##ml507 -> ganp157
 #FRAME_SIZE=256
 #DST_IP=10.10.17.202
