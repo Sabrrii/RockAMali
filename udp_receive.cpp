@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.4d"
+#define VERSION "v0.1.4e"
 
 using namespace cimg_library;
 
@@ -166,7 +166,10 @@ int main(int argc, char **argv)
       struct timeval tv;
       tv.tv_sec = twait;
       tv.tv_usec = 0;
-      if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d.\n",twait);exit(2);}
+      if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d us.\n",twait);exit(2);}
+
+//! \todo add both SO_NO_CHECK, SO_RCVBUF
+      if (setsockopt(udpSocket, SO...
 
       //configure settings in address struct
       receiverAddr.sin_family = AF_INET;
