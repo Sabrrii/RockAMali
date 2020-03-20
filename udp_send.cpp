@@ -13,9 +13,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef DO_NETCDF
+#include "CImg_NetCDF.h"
+#endif //DO_NETCDF
+
 // UDP point to point test
 
-#define VERSION "v0.1.4"
+#define VERSION "v0.1.5d"
 
 using namespace cimg_library;
 
@@ -51,6 +55,9 @@ int main(int argc, char **argv)
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
   const bool do_ramp_R=cimg_option("-R",false,NULL);//-R hidden option
   bool do_ramp=cimg_option("--do-ramp",do_ramp_R,"do rate ramp on first 256 frames, e.g. ethernet rate raise to requested (or -R option)");do_ramp=do_ramp_R|do_ramp;//same --do-ramp or -R option
+#ifdef DO_NETCDF
+  const std::string file_name=cimg_option("-o","udp_send.nc","output file name (e.g. -o data.nc)");//ouput file name for a few parameters, especially random waits
+#endif //NetCDF
 
   ///standard options
   #if cimg_display!=0
@@ -68,8 +75,8 @@ int main(int argc, char **argv)
     std::cout<<VERSION<<std::endl;
 #ifdef DO_NETCDF
     std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
-    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
-    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
+//    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
+//    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
 #endif //NetCDF
     std::cout<<std::endl;return 0;
   }//same --version or -v option
@@ -104,7 +111,30 @@ int main(int argc, char **argv)
   if(do_ramp)   {printf("information: do rate ramp on first 256 frames.\n");}
 
   CImg<unsigned int> twaits;
-  if(do_rnd_wait) {twaits.assign(dtw_sz);twaits.rand(twait-dtwait/2,twait+dtwait/2);twaits.print("random wait");fflush(stderr);}
+  if(do_rnd_wait) {twaits.assign(dtw_sz);twaits.rand(twait-dtwait/2,twait+dtwait/2);twaits.print("random wait");fflush(stderr);} else {twaits.assign(1);twaits(0)=twait;}
+#ifdef DO_NETCDF
+  //NetCDF format
+  CImgNetCDF<int> nc;
+  CImg<int> nc_img;//temporary image for type conversion
+  //dimension names
+  std::vector<std::string> dim_names;
+  std::string dim_time;
+  //variable names (and its unit)
+  std::string var_name;
+  std::string unit_name;
+  dim_time="dimF";
+  dim_names.push_back("dimS");
+  var_name="send_wait";
+  unit_name="us";
+  nc_img.assign(twaits);
+  //open file
+std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+  //declare dims and vars
+std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+  //add data
+std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+#endif //NetCDF
 
 //  while(1)
   for(int i=0,itw=0;i<max_iter;++i,++itw)

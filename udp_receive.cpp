@@ -15,13 +15,17 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef DO_NETCDF
+#include "CImg_NetCDF.h"
+#endif //DO_NETCDF
+
 // UDP point to point test
 
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.4"
+#define VERSION "v0.1.5d"
 
 using namespace cimg_library;
 
@@ -73,8 +77,8 @@ int main(int argc, char **argv)
     std::cout<<VERSION<<std::endl;
 #ifdef DO_NETCDF
     std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
-    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
-    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
+//    std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
+//    std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
 #endif //NetCDF
     std::cout<<std::endl;return 0;
   }//same --version or -v option
