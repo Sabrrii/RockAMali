@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5e"
+#define VERSION "v0.1.5f"
 
 using namespace cimg_library;
 
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 #ifdef DO_NETCDF
   //NetCDF format
   CImgNetCDF<int> nc;
-  CImg<int> nc_img;//temporary image for type conversion
+  CImg<int> nc_img(1);//temporary image for type conversion
   //dimension names
   std::vector<std::string> dim_names;
   std::string dim_time;
@@ -126,12 +126,23 @@ int main(int argc, char **argv)
   dim_names.push_back("dimS");
   var_name="send_wait";
   unit_name="us";
-  nc_img.assign(1);
   //open file
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
   //declare dims and vars
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+//! \todo add attribute: mean wait, BoF, ...
+  //add 
+  if (!(nc.pNCvar->add_att("wait_unit","us"))) std::cerr<<"error: while adding attribute wait unit (NC_ERROR)."<<std::endl;
+  if(dtwait==0)
+  {
+    if (!(nc.pNCvar->add_att("wait",twait))) std::cerr<<"error: while adding attribute wait (NC_ERROR)."<<std::endl;
+  }
+  else
+  {
+    if (!(nc.pNCvar->add_att("wait_average",twait))) std::cerr<<"error: while adding attribute wait average (NC_ERROR)."<<std::endl;
+    if (!(nc.pNCvar->add_att("wait_delta",dtwait))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
+  }//wait as attribute
   //add data
   std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
   cimg_forX(twaits,x)
