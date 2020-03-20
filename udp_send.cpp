@@ -15,9 +15,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.4e"
-
-//! \todo . add random rate
+#define VERSION "v0.1.4"
 
 using namespace cimg_library;
 
@@ -105,12 +103,11 @@ int main(int argc, char **argv)
   if(do_warmup) {printf("information: do memory warmup.\n");buffer.rand(0,255);bindex.max();}
   if(do_ramp)   {printf("information: do rate ramp on first 256 frames.\n");}
 
-//! \todo . add random content
   CImg<unsigned int> twaits;
   if(do_rnd_wait) {twaits.assign(dtw_sz);twaits.rand(twait-dtwait/2,twait+dtwait/2);twaits.print("random wait");fflush(stderr);}
 
 //  while(1)
-  for(int i=0;i<max_iter;++i)
+  for(int i=0,itw=0;i<max_iter;++i,++itw)
   {
     printf("i=%d\r",i);if(i==0) fflush(stdout);
     //update loop index in UDP buffer
@@ -126,8 +123,7 @@ int main(int argc, char **argv)
     }
     else
     {
-//! \todo _ itw>width case
-      if(do_rnd_wait) {const int itw=i; usleep(twaits(itw));}
+      if(do_rnd_wait) {if(itw==twaits.width()) itw=0; usleep(twaits(itw));}
       else usleep(twait);
     }
   }//for loop
