@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5k"
+#define VERSION "v0.1.5l"
 
 using namespace cimg_library;
 
@@ -193,6 +193,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     sendto(clientSocket,buffer,width,0,(struct sockaddr *)&receiverAddr,addr_size);
     //control data rate
     if(itw==twaits.width()) itw=0;
+#ifdef DO_NETCDF
     if(debug)
     {
       nc_img(0)=twaits(itw);
@@ -200,6 +201,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
       if(ramp_width<i) if(do_ramp) if(!do_rnd_wait) nc_img(0)=twaits(twaits.width()-1);
       nc.addNetCDFData(nc_img);
     }//debug
+#endif //NetCDF
     if(do_ramp) if(i<ramp_width) {const int tw=twaits(i);if(verbose) printf("wait=%dus\n",tw);usleep(tw);continue;}
     if(do_rnd_wait) {if(debug) printf("\nwait=%dus",twaits(itw));usleep(twaits(itw));continue;}
     if(debug) printf("\nwait=%dus",twait);

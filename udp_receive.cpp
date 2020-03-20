@@ -25,7 +25,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5d"
+#define VERSION "v0.1.5e"
 
 using namespace cimg_library;
 
@@ -60,6 +60,9 @@ int main(int argc, char **argv)
   const int twait=cimg_option("-w", 3, "time out for receiving next frame [s]");
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
+#ifdef DO_NETCDF
+  const std::string file_name=cimg_option("-o","udp_receive.nc","output file name (e.g. -o data.nc)");//ouput file name for a few parameters, especially received and drops
+#endif //NetCDF
 
   ///standard options
   #if cimg_display!=0
@@ -192,6 +195,32 @@ int main(int argc, char **argv)
 
       if(do_warmup) {printf("information: do warmup.\n");buffer.rand(0,255);bindex.max();}
       if(do_check) std::cout<<"information: checking data, i.e. test, activated (slow process !)\n";
+#ifdef DO_NETCDF
+      //NetCDF format
+      CImgNetCDF<int> nc;
+      CImg<int> nc_img(1);//temporary image for type conversion
+      //dimension names
+      std::vector<std::string> dim_names;
+      std::string dim_time;
+      //variable names (and its unit)
+      std::string var_name;
+      std::string unit_name;
+      dim_time="dimF";
+      dim_names.push_back("dimS");
+      var_name="index";
+      unit_name="none";
+      //open file
+std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+      //declare dims and vars
+std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+      //add attributes
+      if (!(nc.pNCvar->add_att("long_name","received index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+      if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+      if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+  //add data
+  std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
+#endif //NetCDF
 
       //index
       unsigned int index=0;
@@ -296,6 +325,10 @@ int main(int argc, char **argv)
             if(debug) bindex.print("b index");
           }
         }//check
+#ifdef DO_NETCDF
+        nc_img(0)=index;
+        nc.addNetCDFData(nc_img);
+ #endif //NetCDF
         //next loop
         prev_index=index;
       }//loop
