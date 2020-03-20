@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5h"
+#define VERSION "v0.1.5i"
 
 using namespace cimg_library;
 
@@ -169,6 +169,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
 //  while(1)
   for(int i=0,itw=0;i<max_iter;++i,++itw)
   {
+    if(debug) printf("\n");
     printf("i=%d\r",i);if(i==0) fflush(stdout);
     //update loop index in UDP buffer
     if(do_fill) bindex=(!endian_swap)?i:ntohl(i);//slow
@@ -180,10 +181,13 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     if(debug)
     {
       nc_img(0)=twaits(itw);
+      //specific default wait
+      if(ramp_width<i) if(do_ramp) if(!do_rnd_wait) nc_img(0)=twaits(twaits.width()-1);
       nc.addNetCDFData(nc_img);
     }//debug
     if(do_ramp) if(i<ramp_width) {const int tw=twaits(i);if(verbose) printf("wait=%dus\n",tw);usleep(tw);continue;}
-    if(do_rnd_wait) {usleep(twaits(itw));continue;}
+    if(do_rnd_wait) {if(debug) printf("\nwait=%dus",twaits(itw));usleep(twaits(itw));continue;}
+    if(debug) printf("\nwait=%dus",twait);
     usleep(twait);
   }//for loop
   printf("\n");
