@@ -1,0 +1,17 @@
+netcdf udp_send {
+dimensions:
+	dimS = 1 ;
+	dimF = UNLIMITED ; // (12346 currently)
+variables:
+	int send_wait(dimF, dimS) ;
+		send_wait:units = "us" ;
+		send_wait:long_name = "wait time between sending UDP frames" ;
+		send_wait:wait_unit = "us" ;
+		send_wait:wait_average = 256 ;
+		send_wait:wait_delta = 128 ;
+		send_wait:wait_min = 192 ;
+		send_wait:wait_max = 320 ;
+		send_wait:ramp = "disable" ;
+		send_wait:frame_size_unit = "Byte" ;
+		send_wait:frame_size = 32768 ;
+}

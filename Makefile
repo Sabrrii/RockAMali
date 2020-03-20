@@ -6,7 +6,7 @@ FRAME_SIZE=8192
 WAIT4RATE=256
 DELTAWAIT=128
 RAMP=--do-ramp -r 8
-#RAMP=
+RAMP=
 IPERF=--bandwidth 1G --udp
 DST_IP=10.10.15.1
 ETH=enp1s0
@@ -19,7 +19,7 @@ CPU_AFFINITY="0"
 #DST_IP=10.10.17.202
 #ETH=p1p2
 PORT=20485
-NS=23
+NS=12345
 NB=12
 NP=2
 GEN_FCT=count
@@ -104,7 +104,7 @@ udp_receive_run:
 udp_send: udp_send.cpp Makefile
 	g++ -O0 -o udp_send  udp_send.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_send --help -I && ./udp_send -v > VERSION && ./udp_send -n 12
 udp_send_run:
-	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w $(WAIT4RATE) -dw $(DELTAWAIT) --do-warmup $(RAMP) $(DO_CHECK) --verbose; ncdump -h udp_send.nc; /sbin/ifconfig eth6 | grep TX | grep dropped
+	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w $(WAIT4RATE) -dw $(DELTAWAIT) --do-warmup $(RAMP) $(DO_CHECK) --verbose; ncdump -h udp_send.nc | tee udp_send.cdl; /sbin/ifconfig eth6 | grep TX | grep dropped
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
