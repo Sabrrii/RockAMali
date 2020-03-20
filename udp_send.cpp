@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5g"
+#define VERSION "v0.1.5h"
 
 using namespace cimg_library;
 
@@ -55,6 +55,7 @@ int main(int argc, char **argv)
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
   const bool do_ramp_R=cimg_option("-R",false,NULL);//-R hidden option
   bool do_ramp=cimg_option("--do-ramp",do_ramp_R,"do rate ramp on first 256 frames, e.g. ethernet rate raise to requested (or -R option)");do_ramp=do_ramp_R|do_ramp;//same --do-ramp or -R option
+  const int ramp_width=cimg_option("-r",256,"ramp width");
 #ifdef DO_NETCDF
   const std::string file_name=cimg_option("-o","udp_send.nc","output file name (e.g. -o data.nc)");//ouput file name for a few parameters, especially random waits
 #endif //NetCDF
@@ -110,8 +111,14 @@ int main(int argc, char **argv)
   if(do_warmup) {printf("information: do memory warmup.\n");buffer.rand(0,255);bindex.max();}
   if(do_ramp)   {printf("information: do rate ramp on first 256 frames.\n");}
 
-  CImg<unsigned int> twaits;
-  if(do_rnd_wait) {twaits.assign(dtw_sz);twaits.rand(twait-dtwait/2,twait+dtwait/2);twaits.print("random wait");fflush(stderr);} else {twaits.assign(1);twaits(0)=twait;}
+  CImg<unsigned int> twaits;//wait times for ramp and random waiting
+  //assign and constant init
+  if(do_ramp){if(do_rnd_wait) twaits.assign(dtw_sz); else {twaits.assign(ramp_width+1);twaits=twait;}}
+  else       {if(do_rnd_wait) twaits.assign(dtw_sz); else {twaits.assign(1);twaits(0)=twait;}}
+  //init random
+  if(do_rnd_wait){twaits.rand(twait-dtwait/2,twait+dtwait/2);twaits.print("random wait");fflush(stderr);}
+  //init ramp
+  if(do_ramp) {cimg_for_inX(twaits,0,ramp_width-1,x) {const int tw=twait*(ramp_width-x);twaits(x)=tw;}}
 #ifdef DO_NETCDF
   //NetCDF format
   CImgNetCDF<int> nc;
@@ -142,15 +149,21 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
   {
     if (!(nc.pNCvar->add_att("wait_average",twait))) std::cerr<<"error: while adding attribute wait average (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvar->add_att("wait_delta",dtwait))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
+    if (!(nc.pNCvar->add_att("wait_min",(int)twaits.min()))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
+    if (!(nc.pNCvar->add_att("wait_max",(int)twaits.max()))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
   }//wait as attribute
-  if (!(nc.pNCvar->add_att("frame_size",width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+  if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+  if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
   //add data
   std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
-  cimg_forX(twaits,x)
+  if(!debug)
   {
-    nc_img(0)=twaits(x);
-    nc.addNetCDFData(nc_img);
-  }//for loop
+    cimg_forX(twaits,x)
+    {
+      nc_img(0)=twaits(x);
+      nc.addNetCDFData(nc_img);
+    }//for loop
+  }//debug
 #endif //NetCDF
 
 //  while(1)
@@ -163,16 +176,15 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     //send buffer to receiver
     sendto(clientSocket,buffer,width,0,(struct sockaddr *)&receiverAddr,addr_size);
     //control data rate
-    if(do_ramp)
+    if(itw==twaits.width()) itw=0;
+    if(debug)
     {
-      if(i<256) {const int tw=twait*(256-i);if(verbose) printf("wait=%dus\n",tw); usleep(tw);}
-      else usleep(twait);
-    }
-    else
-    {
-      if(do_rnd_wait) {if(itw==twaits.width()) itw=0; usleep(twaits(itw));}
-      else usleep(twait);
-    }
+      nc_img(0)=twaits(itw);
+      nc.addNetCDFData(nc_img);
+    }//debug
+    if(do_ramp) if(i<ramp_width) {const int tw=twaits(i);if(verbose) printf("wait=%dus\n",tw);usleep(tw);continue;}
+    if(do_rnd_wait) {usleep(twaits(itw));continue;}
+    usleep(twait);
   }//for loop
   printf("\n");
   return 0;
