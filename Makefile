@@ -4,9 +4,9 @@
 ##RockAMali <- gansacq2
 FRAME_SIZE=8192
 WAIT4RATE=256
-DELTAWAIT=0
+DELTAWAIT=128
 RAMP=--do-ramp -r 8
-RAMP=
+#RAMP=
 IPERF=--bandwidth 1G --udp
 DST_IP=10.10.15.1
 ETH=enp1s0

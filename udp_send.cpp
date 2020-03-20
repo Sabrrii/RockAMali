@@ -151,6 +151,11 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     if (!(nc.pNCvar->add_att("wait_delta",dtwait))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvar->add_att("wait_min",(int)twaits.min()))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvar->add_att("wait_max",(int)twaits.max()))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
+    if(do_ramp)
+    {//cut ramp part
+      CImg<int> ctwaits(&(twaits(ramp_width-1)),twaits.width()-ramp_width,1,1, true);//shared
+      if (!(nc.pNCvar->add_att("wait_max_without_ramp",(int)ctwaits.max()))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
+    }//cut ramp part
   }//wait as attribute
   if(do_ramp==0)
   {
