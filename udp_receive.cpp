@@ -25,7 +25,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5e"
+#define VERSION "v0.1.5f"
 
 using namespace cimg_library;
 
@@ -145,8 +145,14 @@ int main(int argc, char **argv)
         //locked section
         {
           omp_set_lock(&lock);
-          //exit
-          if(done) break;
+          //exit thread
+          if(done)
+          {//other thread done
+            omp_unset_lock(&lock);
+//! \todo add statistics in NetCDF same or an other file ?!
+            //break infinite loop, i.e. exit thread
+            break;
+          }//other thread done
           omp_unset_lock(&lock);
         }//lock
       }//infinite loop
@@ -326,6 +332,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
           }
         }//check
 #ifdef DO_NETCDF
+//! \todo add drop in NetCDF same file
         nc_img(0)=index;
         nc.addNetCDFData(nc_img);
  #endif //NetCDF
@@ -344,6 +351,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
       const unsigned long dt=t1-t0;
       const float rate=(max_iter*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
       printf("count=%ld, elapsed time: %ldms, rate=%06.3fMB/s.\n",max_iter,dt,rate);
+//! \todo add statistics in NetCDF same or an other file ?!
       //! work done exiting
       //locked section
       {
