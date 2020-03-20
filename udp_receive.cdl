@@ -1,0 +1,11 @@
+netcdf udp_receive {
+dimensions:
+	dimS = 1 ;
+	dimF = UNLIMITED ; // (1234324 currently)
+variables:
+	int index(dimF, dimS) ;
+		index:units = "none" ;
+		index:long_name = "received index (from frame content)" ;
+		index:frame_size_unit = "Byte" ;
+		index:frame_size = 32768 ;
+}
