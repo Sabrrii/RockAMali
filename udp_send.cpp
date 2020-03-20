@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5d"
+#define VERSION "v0.1.5e"
 
 using namespace cimg_library;
 
@@ -126,14 +126,19 @@ int main(int argc, char **argv)
   dim_names.push_back("dimS");
   var_name="send_wait";
   unit_name="us";
-  nc_img.assign(twaits);
+  nc_img.assign(1);
   //open file
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
   //declare dims and vars
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
   //add data
-std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+  std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
+  cimg_forX(twaits,x)
+  {
+    nc_img(0)=twaits(x);
+    nc.addNetCDFData(nc_img);
+  }//for loop
 #endif //NetCDF
 
 //  while(1)
