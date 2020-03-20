@@ -21,7 +21,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.4f"
+#define VERSION "v0.1.4g"
 
 using namespace cimg_library;
 
@@ -42,6 +42,8 @@ int main(int argc, char **argv)
 
   unsigned int width=cimg_option("-s",1024, "size of UDP buffer [byte], might be schrunk (but not expanded !)");
   const uint64_t receive_buf_size=cimg_option("-B",20*1024*1024, "linux ethernet buffer [byte]");
+  const bool do_check_UDP_CRC=cimg_option("--crc",true,"check UDP CRC");
+  const int disable_UDP_CRC_check=do_check_UDP_CRC?0:1;
   const int unsigned long max_iter=cimg_option("-n",256,  "number of frames");
   const bool endian_swap=!cimg_option("--no-endian-swap",false,"do not swap endianess, by default it is done if needed (arch. dep.)");
   const bool do_check_C=cimg_option("-C",false,NULL);//-C hidden option
@@ -169,8 +171,9 @@ int main(int argc, char **argv)
       tv.tv_usec = 0;
       if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d us.\n",twait);exit(2);}
 
-//! \todo add both SO_NO_CHECK, SO_RCVBUF
-      if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVBUF, &receive_buf_size, sizeof(receive_buf_size)) < 0) {fprintf(stderr,"error: while setting linux receive buffer size to %d MB.\n",receive_buf_size/1024/1024);exit(2);}
+//! \todo . add both SO_NO_CHECK, SO_RCVBUF
+      if (setsockopt(udpSocket,SOL_SOCKET, SO_RCVBUF, &receive_buf_size, sizeof(receive_buf_size)) < 0) {fprintf(stderr,"error: while setting linux receive buffer size to %d MB.\n",receive_buf_size/1024/1024);exit(2);}
+      if (setsockopt(udpSocket,SOL_SOCKET, SO_NO_CHECK, (void*)&disable_UDP_CRC_check, sizeof(disable_UDP_CRC_check)) < 0) {fprintf(stderr,"error: while setting UDP CRC check to %sable\n",do_check_UDP_CRC?" en":"dis");exit(2);}
 
       //configure settings in address struct
       receiverAddr.sin_family = AF_INET;
