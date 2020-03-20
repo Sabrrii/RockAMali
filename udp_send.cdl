@@ -1,7 +1,7 @@
 netcdf udp_send {
 dimensions:
 	dimS = 1 ;
-	dimF = UNLIMITED ; // (12346 currently)
+	dimF = UNLIMITED ; // (1234568 currently)
 variables:
 	int send_wait(dimF, dimS) ;
 		send_wait:units = "us" ;
@@ -10,8 +10,10 @@ variables:
 		send_wait:wait_average = 256 ;
 		send_wait:wait_delta = 128 ;
 		send_wait:wait_min = 192 ;
-		send_wait:wait_max = 320 ;
-		send_wait:ramp = "disable" ;
+		send_wait:wait_max = 32768 ;
+		send_wait:wait_max_without_ramp = 320 ;
+		send_wait:ramp = "enable" ;
+		send_wait:ramp_width = 128 ;
 		send_wait:frame_size_unit = "Byte" ;
 		send_wait:frame_size = 32768 ;
 }
