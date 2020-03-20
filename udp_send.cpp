@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5i"
+#define VERSION "v0.1.5j"
 
 using namespace cimg_library;
 
@@ -152,6 +152,16 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     if (!(nc.pNCvar->add_att("wait_min",(int)twaits.min()))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvar->add_att("wait_max",(int)twaits.max()))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
   }//wait as attribute
+  if(do_ramp==0)
+  {
+    if (!(nc.pNCvar->add_att("ramp","disable"))) std::cerr<<"error: while adding attribute ramp (NC_ERROR)."<<std::endl;
+  }
+  else
+  {
+    if (!(nc.pNCvar->add_att("ramp","enable")))  std::cerr<<"error: while adding attribute ramp (NC_ERROR)."<<std::endl;
+    if (!(nc.pNCvar->add_att("ramp_width",(int)ramp_width))) std::cerr<<"error: while adding attribute ramp size  (NC_ERROR)."<<std::endl;
+  }//ramp as attribute
+
   if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
   if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
   //add data
