@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5f"
+#define VERSION "v0.1.5g"
 
 using namespace cimg_library;
 
@@ -131,8 +131,8 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
   //declare dims and vars
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
-//! \todo add attribute: mean wait, BoF, ...
-  //add 
+  //add attributes
+  if (!(nc.pNCvar->add_att("long_name","wait time between sending UDP frames"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
   if (!(nc.pNCvar->add_att("wait_unit","us"))) std::cerr<<"error: while adding attribute wait unit (NC_ERROR)."<<std::endl;
   if(dtwait==0)
   {
@@ -143,6 +143,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
     if (!(nc.pNCvar->add_att("wait_average",twait))) std::cerr<<"error: while adding attribute wait average (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvar->add_att("wait_delta",dtwait))) std::cerr<<"error: while adding attribute wait delta (NC_ERROR)."<<std::endl;
   }//wait as attribute
+  if (!(nc.pNCvar->add_att("frame_size",width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
   //add data
   std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
   cimg_forX(twaits,x)
