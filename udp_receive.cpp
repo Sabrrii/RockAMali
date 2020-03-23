@@ -343,7 +343,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
 //! \todo . add drop in NetCDF same file
             {//NetCDF
             nc_img(0)=count;
-            for(int d=0;d<count;++d)
+            for(int d=0;d<count+1;++d)
             {
               ncd.addNetCDFData(nc_img);
             }
