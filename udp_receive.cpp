@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 #ifdef DO_NETCDF
   const std::string file_name=cimg_option("-o","udp_receive.nc","output file name (e.g. -o data.nc)");//ouput file name for a few parameters, especially received and drops
   const std::string file_named=cimg_option("-od","udp_receive_drop.nc","output file name (e.g. -od datad.nc)");//ouput file name for a few parameters, especially received and drops
-  const std::string file_namer=cimg_option("-od","udp_receive_rate.nc","output file name (e.g. -or datar.nc)");//ouput file name for a few parameters, especially received and drops
+  const std::string file_namer=cimg_option("-or","udp_receive_rate.nc","output file name (e.g. -or datar.nc)");//ouput file name for a few parameters, especially received and drops
 #endif //NetCDF
 
   ///standard options
