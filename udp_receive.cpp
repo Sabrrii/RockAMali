@@ -25,7 +25,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5f"
+#define VERSION "v0.1.5g"
 
 using namespace cimg_library;
 
@@ -335,7 +335,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
 //! \todo add drop in NetCDF same file
         nc_img(0)=index;
         nc.addNetCDFData(nc_img);
- #endif //NetCDF
+#endif //NetCDF
         //next loop
         prev_index=index;
       }//loop
@@ -352,6 +352,11 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
       const float rate=(max_iter*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
       printf("count=%ld, elapsed time: %ldms, rate=%06.3fMB/s.\n",max_iter,dt,rate);
 //! \todo add statistics in NetCDF same or an other file ?!
+#ifdef DO_NETCDF
+      //add global attributes
+      nc.pNCFile->add_att("library","CImg_NetCDF");
+      nc.pNCFile->add_att("library_version",CIMG_NETCDF_VERSION);
+#endif //NetCDF
       //! work done exiting
       //locked section
       {
