@@ -25,7 +25,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5n"
+#define VERSION "v0.1.5o"
 
 using namespace cimg_library;
 
@@ -62,6 +62,7 @@ int main(int argc, char **argv)
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 #ifdef DO_NETCDF
   const std::string file_name=cimg_option("-o","udp_receive.nc","output file name (e.g. -o data.nc)");//ouput file name for a few parameters, especially received and drops
+  const std::string file_named=cimg_option("-o","udp_receive_drop.nc","output file name (e.g. -o datad.nc)");//ouput file name for a few parameters, especially received and drops
 #endif //NetCDF
 
   ///standard options
@@ -184,7 +185,7 @@ int main(int argc, char **argv)
       tv.tv_usec = 0;
       if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d us.\n",twait);exit(2);}
 
-//! \todo . add both SO_NO_CHECK, SO_RCVBUF
+      //Linux socket tune
       if (setsockopt(udpSocket,SOL_SOCKET, SO_RCVBUF, &receive_buf_size, sizeof(receive_buf_size)) < 0) {fprintf(stderr,"error: while setting linux receive buffer size to %d MB.\n",receive_buf_size/1024/1024);exit(2);}
       if (setsockopt(udpSocket,SOL_SOCKET, SO_NO_CHECK, (void*)&disable_UDP_CRC_check, sizeof(disable_UDP_CRC_check)) < 0) {fprintf(stderr,"error: while setting UDP CRC check to %sable\n",do_check_UDP_CRC?" en":"dis");exit(2);}
 
@@ -203,7 +204,8 @@ int main(int argc, char **argv)
       if(do_check) std::cout<<"information: checking data, i.e. test, activated (slow process !)\n";
 #ifdef DO_NETCDF
       //NetCDF format
-      CImgNetCDF<int> nc;
+      CImgNetCDF<int> nc;//index
+      CImgNetCDF<int> ncd;//drop
       CImg<int> nc_img(1);//temporary image for type conversion
       //dimension names
       std::vector<std::string> dim_names;
@@ -227,8 +229,25 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
       if (!(nc.pNCvar->add_att("long_name","received index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+      //add data
+      std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
+/**/
+      //open file
+std::cout << "CImgNetCDF::saveNetCDFFile(" << file_named << ",...) return " << ncd.saveNetCDFFile((char*)file_named.c_str()) << std::endl;
+      //add global attributes
+      ncd.pNCFile->add_att("library","CImg_NetCDF");
+      ncd.pNCFile->add_att("library_version",CIMG_NETCDF_VERSION);
+      //declare dims and vars
+      var_name="drop";
+std::cout << "CImgNetCDF::addNetCDFDims(" << file_named << ",...) return " << ncd.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+      //add attributes
+      if (!(ncd.pNCvar->add_att("long_name","dropped index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+      if (!(ncd.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+      if (!(ncd.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
   //add data
-  std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
+  std::cout << "CImgNetCDF::addNetCDFData(" << file_named << ",...)"<< std::endl<<std::flush;
+/**/
 #endif //NetCDF
 
       //index
@@ -323,6 +342,17 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
           //print drop related
           printf(" % 11ld",inc);
           if(count_drop>0) printf("; drop: % 12lu drops, % 12lu index drops",count_drop,count_drops);
+#ifdef DO_NETCDF
+//! \todo . add drop in NetCDF same file
+          {//NetCDF
+          const int count=abs(inc-1);
+          nc_img(0)=count;
+          for(int d=0;d<count;++d)
+          {
+            ncd.addNetCDFData(nc_img);
+          }
+          }//NetCDF
+#endif //NetCDF
         }//drop
         //! check full content
         if(do_check)
@@ -335,7 +365,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
           }
         }//check
 #ifdef DO_NETCDF
-//! \todo add drop in NetCDF same file
+//! \todo . add drop in NetCDF same file
         nc_img(0)=index;
         nc.addNetCDFData(nc_img);
 #endif //NetCDF
@@ -356,9 +386,8 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
       const unsigned long dt=t1-t0;
       const float rate=(max_iter*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
       printf("count=%ld, elapsed time: %ldms, rate=%06.3fMB/s.\n",max_iter,dt,rate);
-//! \todo . add statistics in NetCDF same or an other file ?!
 #ifdef DO_NETCDF
-      //add global attributes
+      //add statistics in NetCDF as global attributes
       nc.pNCFile->add_att("frame_size",(int)width);
       nc.pNCFile->add_att("frame_size_unit","BoF");
       nc.pNCFile->add_att("test_status",(int)test_status);
