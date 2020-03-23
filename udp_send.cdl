@@ -1,7 +1,7 @@
 netcdf udp_send {
 dimensions:
 	dimS = 1 ;
-	dimF = UNLIMITED ; // (1234568 currently)
+	dimF = UNLIMITED ; // (12346 currently)
 variables:
 	int send_wait(dimF, dimS) ;
 		send_wait:units = "us" ;
@@ -16,4 +16,8 @@ variables:
 		send_wait:ramp_width = 128 ;
 		send_wait:frame_size_unit = "Byte" ;
 		send_wait:frame_size = 32768 ;
+
+// global attributes:
+		:library = "CImg_NetCDF" ;
+		:library_version = "v0.8.3" ;
 }
