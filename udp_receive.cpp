@@ -25,7 +25,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5m"
+#define VERSION "v0.1.5n"
 
 using namespace cimg_library;
 
@@ -345,8 +345,10 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
       t1=cimg::time();
       printf("\n");
       //summary of drops
-      if(count_drops==0) printf("test pass: zero drop");
-      else printf("test fail: in total, % 12ld drops, % 12ld index drops (i.e. %6.4f%%)",count_drop,count_drops,count_drops*100.0/(float)max_iter);
+      const bool test_status=(count_drops==0);
+      const float count_drops_percentage=count_drops*100.0/(float)max_iter;
+      if(test_status) printf("test pass: zero drop");
+      else printf("test fail: in total, % 12ld drops, % 12ld index drops (i.e. %6.4f%%)",count_drop,count_drops,count_drops_percentage);
       printf(" on %d BoF (Bytes of Frame)",width);
       if(nBytes==4) printf(" -warning: this might be a UDP simulation-");
       printf(".\n");
@@ -354,13 +356,32 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.a
       const unsigned long dt=t1-t0;
       const float rate=(max_iter*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
       printf("count=%ld, elapsed time: %ldms, rate=%06.3fMB/s.\n",max_iter,dt,rate);
-//! \todo add statistics in NetCDF same or an other file ?!
+//! \todo . add statistics in NetCDF same or an other file ?!
 #ifdef DO_NETCDF
       //add global attributes
-/*
-      nc.pNCFile->add_att("library","CImg_NetCDF");
-      nc.pNCFile->add_att("library_version",CIMG_NETCDF_VERSION);
-*/
+      nc.pNCFile->add_att("frame_size",(int)width);
+      nc.pNCFile->add_att("frame_size_unit","BoF");
+      nc.pNCFile->add_att("test_status",(int)test_status);
+      nc.pNCFile->add_att("test_status_string",test_status?"pass":"fail");
+      nc.pNCFile->add_att("mean_rate",rate);
+      nc.pNCFile->add_att("mean_rate_unit","MB/s");
+      nc.pNCFile->add_att("elapsed_time",(int)dt);
+      nc.pNCFile->add_att("elapsed_time_unit","ms");
+      nc.pNCFile->add_att("expected_frame",(int)max_iter);
+      nc.pNCFile->add_att("expected_frame_unit","frame");
+      nc.pNCFile->add_att("received_frame",(int)i);
+      nc.pNCFile->add_att("received_frame_unit","frame");
+      if(!test_status)
+      {//drops
+        nc.pNCFile->add_att("total_drop",(int)count_drop);
+        nc.pNCFile->add_att("total_drop_unit","drop");
+        nc.pNCFile->add_att("total_index_drop",(int)count_drops);
+        nc.pNCFile->add_att("total_index_drop_unit","index");
+        nc.pNCFile->add_att("total_index_drop_percentage",count_drops_percentage);
+        nc.pNCFile->add_att("total_index_drop_percentage_unit","%");
+      }//drops
+//      nc.pNCFile->add_att("",);
+//      nc.pNCFile->add_att("_unit","");
 #endif //NetCDF
       //! work done exiting
       //locked section
