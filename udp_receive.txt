@@ -16,24 +16,40 @@ Information: create new "dimS" dimension.
 0
 CImgNetCDF::addNetCDFVar(udp_receive.nc,...) return 0
 CImgNetCDF::addNetCDFData(udp_receive.nc,...)
-# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops.
+CImgNetCDF::saveNetCDFFile(udp_receive_drop.nc,...) return 0
+CImgNetCDF::addNetCDFDims(udp_receive_drop.nc,...) return CImgNetCDF::addNetCDFDims(CImg<int>,dims=dimS,  dimF)
+NetCDF: Invalid dimension ID or name
+Information: create new "dimS" dimension.
+0
+CImgNetCDF::addNetCDFVar(udp_receive_drop.nc,...) return 0
+CImgNetCDF::addNetCDFData(udp_receive_drop.nc,...)
+# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops..
 #           0: 00 00 00 00          0           0
-information: i=60, received=61, dt=3001ms, rate=00.635MB/s.
-#         134: 00 00 00 99        153          20; drop:            1 drops,           19 index drops
-#         135: 00 00 00 9e        158           5; drop:            2 drops,           23 index drops
-#         136: 00 00 00 b9        185          27; drop:            3 drops,           49 index drops
-#         142: 00 00 00 c0        192           2; drop:            4 drops,           50 index drops
-#         143: 00 00 00 c2        194           2; drop:            5 drops,           51 index drops
-#         147: 00 00 00 c7        199           2; drop:            6 drops,           52 index drops
-#         149: 00 00 00 ca        202           2; drop:            7 drops,           53 index drops
-#         150: 00 00 00 cd        205           3; drop:            8 drops,           55 index drops
-#         153: 00 00 00 d1        209           2; drop:            9 drops,           56 index drops
-#         154: 00 00 00 d4        212           3; drop:           10 drops,           58 index drops
-#         157: 00 00 00 d8        216           2; drop:           11 drops,           59 index drops
-#         163: 00 00 00 e3        227           6; drop:           12 drops,           64 index drops
-information: i=6393, received=6333, dt=3000ms, rate=65.969MB/s.
-information: i=12281, received=5888, dt=3000ms, rate=61.333MB/s.
+#         134: 00 00 00 88        136           3; drop:            1 drops,            2 index drops
+#         135: 00 00 00 8b        139           3; drop:            2 drops,            4 index drops
+#         136: 00 00 00 99        153          14; drop:            3 drops,           17 index drops
+#         137: 00 00 00 9c        156           3; drop:            4 drops,           19 index drops
+#         138: 00 00 00 a9        169          13; drop:            5 drops,           31 index drops
+#         139: 00 00 00 ae        174           5; drop:            6 drops,           35 index drops
+#         141: 00 00 00 b1        177           2; drop:            7 drops,           36 index drops
+#         143: 00 00 00 b4        180           2; drop:            8 drops,           37 index drops
+#         144: 00 00 00 b8        184           4; drop:            9 drops,           40 index drops
+#         145: 00 00 00 ba        186           2; drop:           10 drops,           41 index drops
+#         146: 00 00 00 bd        189           3; drop:           11 drops,           43 index drops
+#         147: 00 00 00 c0        192           3; drop:           12 drops,           45 index drops
+#         151: 00 00 00 c5        197           2; drop:           13 drops,           46 index drops
+#         152: 00 00 00 c8        200           3; drop:           14 drops,           48 index drops
+#         153: 00 00 00 ca        202           2; drop:           15 drops,           49 index drops
+#         154: 00 00 00 cd        205           3; drop:           16 drops,           51 index drops
+#         157: 00 00 00 d1        209           2; drop:           17 drops,           52 index drops
+#         159: 00 00 00 d4        212           2; drop:           18 drops,           53 index drops
+#         160: 00 00 00 d6        214           2; drop:           19 drops,           54 index drops
+#         165: 00 00 00 dc        220           2; drop:           20 drops,           55 index drops
+#         167: 00 00 00 e0        224           3; drop:           21 drops,           57 index drops
+information: i=1382, received=1383, dt=3000ms, rate=14.406MB/s.
+information: i=8967, received=7585, dt=3000ms, rate=79.010MB/s.
+information: i=12288, received=3321, dt=3001ms, rate=34.582MB/s.
 error: receiving frame timeout 3 s (i.e. -w option ; see recvfrom).
 
-test fail: in total,           12 drops,           64 index drops (i.e. 0.5184%) on 32768 BoF (Bytes of Frame).
-count=12345, elapsed time: 9762ms, rate=39.519MB/s.
+test fail: in total,           21 drops,           57 index drops (i.e. 0.4617%) on 32768 BoF (Bytes of Frame).
+count=12345, elapsed time: 9978ms, rate=38.663MB/s.

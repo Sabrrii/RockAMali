@@ -1,0 +1,15 @@
+netcdf udp_receive_drop {
+dimensions:
+	dimS = 1 ;
+	dimF = UNLIMITED ; // (58 currently)
+variables:
+	int drop(dimF, dimS) ;
+		drop:units = "none" ;
+		drop:long_name = "dropped index (from frame content)" ;
+		drop:frame_size_unit = "Byte" ;
+		drop:frame_size = 32768 ;
+
+// global attributes:
+		:library = "CImg_NetCDF" ;
+		:library_version = "v0.8.3" ;
+}
