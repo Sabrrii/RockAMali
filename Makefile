@@ -19,7 +19,7 @@ CPU_AFFINITY="0"
 #DST_IP=10.10.17.202
 #ETH=p1p2
 PORT=20485
-NS=12345
+NS=123456
 NB=12
 NP=2
 GEN_FCT=count
@@ -95,11 +95,11 @@ std_high_res_clock: std_high_res_clock.cpp Makefile
 
 udp_receive: udp_receive.cpp Makefile
 #	g++ -Wall udp_receive.cpp -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
-	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(DO_CPU_AFFINITY) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I && ./udp_receive -v > VERSION && ./udp_receive -n 12 --debug --simulation --verbose
+	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(DO_CPU_AFFINITY) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I && ./udp_receive -v > VERSION && ./udp_receive -n 12 -w 1 --debug --simulation --verbose
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
-	/sbin/ifconfig $(ETH) | grep RX | grep dropped; ethtool -S $(ETH) | grep InDropped --color; env GOMP_CPU_AFFINITY=$(CPU_AFFINITY) ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup --crc false 2>&1 | tee udp_receive.txt; ncdump -h udp_receive.nc | tee udp_receive.cdl ; ncdump -h udp_receive_drop.nc | tee udp_receive_drop.cdl; /sbin/ifconfig $(ETH) | grep RX | grep dropped; ethtool -S $(ETH) | grep InDropped --color
+	/sbin/ifconfig $(ETH) | grep RX | grep dropped; ethtool -S $(ETH) | grep InDropped --color; env GOMP_CPU_AFFINITY=$(CPU_AFFINITY) ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup --crc false 2>&1 | tee udp_receive.txt; ncdump -h udp_receive.nc | tee udp_receive.cdl ;ncdump -h udp_receive_rate.nc | tee udp_receive_rate.cdl ; ncdump -h udp_receive_drop.nc | tee udp_receive_drop.cdl; /sbin/ifconfig $(ETH) | grep RX | grep dropped; ethtool -S $(ETH) | grep InDropped --color
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_send: udp_send.cpp Makefile
 	g++ -O0 -o udp_send  udp_send.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_send --help -I && ./udp_send -v > VERSION && ./udp_send -n 12

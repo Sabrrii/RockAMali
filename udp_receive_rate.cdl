@@ -1,0 +1,15 @@
+netcdf udp_receive_rate {
+dimensions:
+	dimS = 1 ;
+	dimF = UNLIMITED ; // (122649 currently)
+variables:
+	float rate(dimF, dimS) ;
+		rate:units = "MB/s" ;
+		rate:long_name = "UDP transfer rate" ;
+		rate:frame_size_unit = "Byte" ;
+		rate:frame_size = 32768 ;
+
+// global attributes:
+		:library = "CImg_NetCDF" ;
+		:library_version = "v0.8.3" ;
+}
