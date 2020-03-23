@@ -25,7 +25,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5q"
+#define VERSION "v0.1.5r"
 
 using namespace cimg_library;
 
@@ -171,8 +171,8 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.
         const float rate=(count*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
         if(i>0) fprintf(stderr,"\ninformation: i=%ld, received=%d, dt=%ldms, rate=%06.3fMB/s.",i,count,dt,rate);
         fflush(stderr);
-//! \todo add statistics in NetCDF other file (var.)
 #ifdef DO_NETCDF
+        //add rate in NetCDF
         nc_img(0)=rate;
         for(int d=0;d<count;++d)
         {
@@ -187,8 +187,20 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.
           //exit thread
           if(done)
           {//other thread done
+            i=current_i;
+            const bool test_status=(i==max_iter-1);
             omp_unset_lock(&lock);
-//! \todo add total statistics in NetCDF other file (global attr.)
+#ifdef DO_NETCDF
+            //add total statistics in NetCDF (global attr.)
+            nc.pNCFile->add_att("frame_size",(int)width);
+            nc.pNCFile->add_att("frame_size_unit","BoF");
+            nc.pNCFile->add_att("test_status",(int)test_status);
+            nc.pNCFile->add_att("test_status_string",test_status?"pass":"fail");
+            nc.pNCFile->add_att("expected_frame",(int)max_iter);
+            nc.pNCFile->add_att("expected_frame_unit","frame");
+            nc.pNCFile->add_att("received_frame",(int)i);
+            nc.pNCFile->add_att("received_frame_unit","frame");
+#endif //NetCDF
             //break infinite loop, i.e. exit thread
             break;
           }//other thread done
