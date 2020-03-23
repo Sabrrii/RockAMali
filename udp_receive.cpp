@@ -25,7 +25,7 @@
 //! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5o"
+#define VERSION "v0.1.5p"
 
 using namespace cimg_library;
 
@@ -337,23 +337,31 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
           if(i>0)
           {
             ++count_drop;
-            count_drops+=abs(inc-1);//normal increment is 1
+            const int count=abs(inc-1);
+            count_drops+=count;//normal increment is 1
+#ifdef DO_NETCDF
+//! \todo . add drop in NetCDF same file
+            {//NetCDF
+            nc_img(0)=count;
+            for(int d=0;d<count+1;++d)
+            {
+              ncd.addNetCDFData(nc_img);
+            }
+            }//NetCDF
+#endif //NetCDF
           }
           //print drop related
           printf(" % 11ld",inc);
           if(count_drop>0) printf("; drop: % 12lu drops, % 12lu index drops",count_drop,count_drops);
-#ifdef DO_NETCDF
-//! \todo . add drop in NetCDF same file
-          {//NetCDF
-          const int count=abs(inc-1);
-          nc_img(0)=count;
-          for(int d=0;d<count;++d)
-          {
-            ncd.addNetCDFData(nc_img);
-          }
-          }//NetCDF
-#endif //NetCDF
         }//drop
+#ifdef DO_NETCDF
+        else
+        {//NetCDF
+          nc_img(0)=0;
+          ncd.addNetCDFData(nc_img);
+        }//NetCDF
+#endif //NetCDF
+
         //! check full content
         if(do_check)
         {
