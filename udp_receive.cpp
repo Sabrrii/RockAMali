@@ -22,10 +22,10 @@
 // UDP point to point test
 
 //! \todo drop of exactly 2^32 should not be taken into drops
-//! \todo add NetCDF for storing both frame index and increment in loop (unlimited dim.)
+//! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5r"
+#define VERSION "v0.1.5s"
 
 using namespace cimg_library;
 
@@ -172,14 +172,18 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.
         if(i>0) fprintf(stderr,"\ninformation: i=%ld, received=%d, dt=%ldms, rate=%06.3fMB/s.",i,count,dt,rate);
         fflush(stderr);
 #ifdef DO_NETCDF
-        //add rate in NetCDF
-        nc_img(0)=rate;
-        for(int d=0;d<count;++d)
+        if(i>0)
         {
-          nc.addNetCDFData(nc_img);
+//! \todo [?] add current_i and received CImgListNetCDF
+          //add rate in NetCDF
+          nc_img(0)=rate;
+          for(int d=0;d<count;++d)
+          {
+            nc.addNetCDFData(nc_img);
+          }
         }
 #endif //NetCDF
-        sleep(3);
+        sleep(twait);
         //! exit if work done
         //locked section
         {
@@ -420,6 +424,8 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
           }
         }//check
 #ifdef DO_NETCDF
+//! \todo add option to not store within this loop (if do_store==false, only store last element)
+//! \todo add increment CImgListNetCDF
         nc_img(0)=index;
         nc.addNetCDFData(nc_img);
 #endif //NetCDF
@@ -441,6 +447,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
       const float rate=(max_iter*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
       printf("count=%ld, elapsed time: %ldms, rate=%06.3fMB/s.\n",max_iter,dt,rate);
 #ifdef DO_NETCDF
+//! \todo add glob. attr. to ncd also (for loop on nc(d).pNCFile->) 
       //add statistics in NetCDF as global attributes
       nc.pNCFile->add_att("frame_size",(int)width);
       nc.pNCFile->add_att("frame_size_unit","BoF");
