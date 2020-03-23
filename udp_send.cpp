@@ -19,7 +19,7 @@
 
 // UDP point to point test
 
-#define VERSION "v0.1.5l"
+#define VERSION "v0.1.5m"
 
 using namespace cimg_library;
 
@@ -135,6 +135,9 @@ int main(int argc, char **argv)
   unit_name="us";
   //open file
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+  //add global attributes
+  nc.pNCFile->add_att("library","CImg_NetCDF");
+  nc.pNCFile->add_att("library_version",CIMG_NETCDF_VERSION);
   //declare dims and vars
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
