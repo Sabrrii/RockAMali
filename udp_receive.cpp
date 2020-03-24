@@ -25,7 +25,7 @@
 //! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5t"
+#define VERSION "v0.1.5u"
 
 using namespace cimg_library;
 
@@ -143,8 +143,10 @@ std::cout << "CImgNetCDF::addNetCDFDims(" << file_namer << ",...) return " << nc
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
       //add attributes
       if (!(nc.pNCvar->add_att("long_name","UDP transfer rate"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
-      if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+      if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size unit (NC_ERROR)."<<std::endl;
+      if (!(nc.pNCvar->add_att("time_interval",(int)twait))) std::cerr<<"error: while adding attribute time interval  (NC_ERROR)."<<std::endl;
+      if (!(nc.pNCvar->add_att("time_interval_unit","s"))) std::cerr<<"error: while adding attribute time interval unit (NC_ERROR)."<<std::endl;
       //add data
       std::cout << "CImgNetCDF::addNetCDFData(" << file_namer << ",...)"<< std::endl<<std::flush;
 #endif //NetCDF
@@ -205,6 +207,8 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.
             nc.pNCFile->add_att("expected_frame_unit","frame");
             nc.pNCFile->add_att("received_frame",(int)i);
             nc.pNCFile->add_att("received_frame_unit","frame");
+            nc.pNCFile->add_att("time_interval",(int)twait);
+            nc.pNCFile->add_att("time_interval_unit","s");
 #endif //NetCDF
             //break infinite loop, i.e. exit thread
             break;
@@ -282,6 +286,7 @@ std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
       //add attributes
       if (!(nc.pNCvar->add_att("long_name","received index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+      if(!do_netcdf) if (!(nc.pNCvar->add_att("do_not_store_data","true"))) std::cerr<<"error: while adding attribute store data  (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       //add data
@@ -298,6 +303,7 @@ std::cout << "CImgNetCDF::addNetCDFDims(" << file_named << ",...) return " << nc
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
       //add attributes
       if (!(ncd.pNCvar->add_att("long_name","dropped index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+      if(!do_netcdf) if (!(ncd.pNCvar->add_att("do_not_store_data","true"))) std::cerr<<"error: while adding attribute store data  (NC_ERROR)."<<std::endl;
       if (!(ncd.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       if (!(ncd.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
   //add data
