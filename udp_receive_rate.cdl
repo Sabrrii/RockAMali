@@ -1,7 +1,7 @@
 netcdf udp_receive_rate {
 dimensions:
 	dimS = 1 ;
-	dimF = UNLIMITED ; // (121042 currently)
+	dimF = UNLIMITED ; // (121208 currently)
 variables:
 	float rate(dimF, dimS) ;
 		rate:units = "MB/s" ;
@@ -10,6 +10,12 @@ variables:
 		rate:frame_size_unit = "Byte" ;
 		rate:time_interval = 1 ;
 		rate:time_interval_unit = "s" ;
+	int index(dimF, dimS) ;
+		index:units = "none" ;
+		index:long_name = "last received index" ;
+	int received(dimF, dimS) ;
+		received:units = "none" ;
+		received:long_name = "number of received frames" ;
 
 // global attributes:
 		:library = "CImg_NetCDF" ;
@@ -20,7 +26,7 @@ variables:
 		:test_status_string = "fail" ;
 		:expected_frame = 123456 ;
 		:expected_frame_unit = "frame" ;
-		:received_frame = 121042 ;
+		:received_frame = 121408 ;
 		:received_frame_unit = "frame" ;
 		:time_interval = 1 ;
 		:time_interval_unit = "s" ;
