@@ -25,7 +25,7 @@
 //! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5s"
+#define VERSION "v0.1.5t"
 
 using namespace cimg_library;
 
@@ -61,6 +61,7 @@ int main(int argc, char **argv)
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
 #ifdef DO_NETCDF
+  const bool do_netcdf=cimg_option("--nc",true,"do store data in NetCDF");
   const std::string file_name=cimg_option("-o","udp_receive.nc","output file name (e.g. -o data.nc)");//ouput file name for a few parameters, especially received and drops
   const std::string file_named=cimg_option("-od","udp_receive_drop.nc","output file name (e.g. -od datad.nc)");//ouput file name for a few parameters, especially received and drops
   const std::string file_namer=cimg_option("-or","udp_receive_rate.nc","output file name (e.g. -or datar.nc)");//ouput file name for a few parameters, especially received and drops
@@ -180,7 +181,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.
           for(int d=0;d<count;++d)
           {
             nc.addNetCDFData(nc_img);
-          }
+          }//plateau
         }
 #endif //NetCDF
         sleep(twait);
@@ -394,11 +395,14 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
             const int count=abs(inc-1);
             count_drops+=count;//normal increment is 1
 #ifdef DO_NETCDF
-            nc_img(0)=count;
-            for(int d=0;d<count+1;++d)
+            if(do_netcdf)
             {
-              ncd.addNetCDFData(nc_img);
-            }
+              nc_img(0)=count;
+              for(int d=0;d<count+1;++d)
+              {
+                ncd.addNetCDFData(nc_img);
+              }//plateau
+            }//do_netcdf
 #endif //NetCDF
           }
           //print drop related
@@ -408,8 +412,11 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
 #ifdef DO_NETCDF
         else
         {//no drop
-          nc_img(0)=0;
-          ncd.addNetCDFData(nc_img);
+          if(do_netcdf)
+          {
+            nc_img(0)=0;
+            ncd.addNetCDFData(nc_img);
+          }//do_netcdf
         }//no drop
 #endif //NetCDF
 
@@ -424,10 +431,12 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
           }
         }//check
 #ifdef DO_NETCDF
-//! \todo add option to not store within this loop (if do_store==false, only store last element)
 //! \todo add increment CImgListNetCDF
-        nc_img(0)=index;
-        nc.addNetCDFData(nc_img);
+        if(do_netcdf)
+        {
+          nc_img(0)=index;
+          nc.addNetCDFData(nc_img);
+        }//do_netcdf
 #endif //NetCDF
         //next loop
         prev_index=index;
@@ -447,7 +456,14 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
       const float rate=(max_iter*width)/(1024.0*1024.0)/(float)(dt/1000.0);//MB/s
       printf("count=%ld, elapsed time: %ldms, rate=%06.3fMB/s.\n",max_iter,dt,rate);
 #ifdef DO_NETCDF
-//! \todo add glob. attr. to ncd also (for loop on nc(d).pNCFile->) 
+      //no data requested, add only last data
+      if(!do_netcdf)
+      {
+        nc.pNCFile->add_att ("do_not_store_data","true");
+        nc_img(0)=index;       nc.addNetCDFData(nc_img);
+        ncd.pNCFile->add_att("do_not_store_data","true");
+        nc_img(0)=count_drops;ncd.addNetCDFData(nc_img);
+      }//!do_netcdf
       //add statistics in NetCDF as global attributes
       nc.pNCFile->add_att("frame_size",(int)width);
       nc.pNCFile->add_att("frame_size_unit","BoF");
