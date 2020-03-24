@@ -25,7 +25,7 @@
 //! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.5"
+#define VERSION "v0.1.6d"
 
 using namespace cimg_library;
 
@@ -264,34 +264,47 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.
       if(do_check) std::cout<<"information: checking data, i.e. test, activated (slow process !)\n";
 #ifdef DO_NETCDF
       //NetCDF format
-      CImgNetCDF<int> nc;//index
-      CImgNetCDF<int> ncd;//drop
-      CImg<int> nc_img(1);//temporary image for type conversion
       //dimension names
       std::vector<std::string> dim_names;
       std::string dim_time;
       //variable names (and its unit)
+      std::vector<std::string> var_names;
+      var_names.push_back("index");
+      var_names.push_back("increment");
+      std::vector<std::string> unit_names;
+      unit_names.push_back("none");
+      unit_names.push_back("none");
+/**/
       std::string var_name;
       std::string unit_name;
       dim_time="dimF";
       dim_names.push_back("dimS");
       var_name="index";
       unit_name="none";
+/**/
+std::cout << "ici\n"<<std::flush;
+      //NetCDF file and containers
+      CImgListNetCDF<int> nc;//index
+      CImgNetCDF<int> ncd;//drop
+      CImgList<int> nc_imgs(var_names.size(),1);//temporary image for type conversion
+      CImg<int> nc_img(1);//temporary image for type conversion
       //open file
-std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
       //add global attributes
       nc.pNCFile->add_att("library","CImg_NetCDF");
       nc.pNCFile->add_att("library_version",CIMG_NETCDF_VERSION);
       //declare dims and vars
-std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
-std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_imgs,dim_names,dim_time) << std::endl<<std::flush;
+std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_imgs,var_names,unit_names) << std::endl<<std::flush;
+/*
+//! \bug seg. fault for list ?!
       //add attributes
       if (!(nc.pNCvar->add_att("long_name","received index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
       if(!do_netcdf) if (!(nc.pNCvar->add_att("do_not_store_data","true"))) std::cerr<<"error: while adding attribute store data  (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       //add data
-      std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
+      std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
 /**/
       //open file
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_named << ",...) return " << ncd.saveNetCDFFile((char*)file_named.c_str()) << std::endl;
@@ -438,11 +451,12 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
           }
         }//check
 #ifdef DO_NETCDF
-//! \todo add increment CImgListNetCDF
+//! \todo . add increment CImgListNetCDF
         if(do_netcdf)
         {
-          nc_img(0)=index;
-          nc.addNetCDFData(nc_img);
+          nc_imgs[0](0)=index;
+          nc_imgs[1](0)=inc;
+          nc.addNetCDFData(nc_imgs);
         }//do_netcdf
 #endif //NetCDF
         //next loop
@@ -467,7 +481,7 @@ std::cout << "CImgNetCDF::addNetCDFVar(" << file_named << ",...) return " << ncd
       if(!do_netcdf)
       {
         nc.pNCFile->add_att ("do_not_store_data","true");
-        nc_img(0)=index;       nc.addNetCDFData(nc_img);
+        nc_imgs[0](0)=index;nc_imgs[1](0)=inc;nc.addNetCDFData(nc_imgs);
         ncd.pNCFile->add_att("do_not_store_data","true");
         nc_img(0)=count_drops;ncd.addNetCDFData(nc_img);
       }//!do_netcdf
