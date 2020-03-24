@@ -25,7 +25,7 @@
 //! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.6d"
+#define VERSION "v0.1.6e"
 
 using namespace cimg_library;
 
@@ -296,16 +296,16 @@ std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " <
       //declare dims and vars
 std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_imgs,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_imgs,var_names,unit_names) << std::endl<<std::flush;
-/*
-//! \bug seg. fault for list ?!
       //add attributes
-      if (!(nc.pNCvar->add_att("long_name","received index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
-      if(!do_netcdf) if (!(nc.pNCvar->add_att("do_not_store_data","true"))) std::cerr<<"error: while adding attribute store data  (NC_ERROR)."<<std::endl;
-      if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
-      if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+      for(int v;v<nc_imgs.size();++v)
+      {
+        if (!(nc.pNCvars[v]->add_att("long_name","received index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+        if(!do_netcdf) if (!(nc.pNCvar->add_att("do_not_store_data","true"))) std::cerr<<"error: while adding attribute store data  (NC_ERROR)."<<std::endl;
+        if (!(nc.pNCvars[v]->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+        if (!(nc.pNCvars[v]->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+      }//for loop
       //add data
       std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...)"<< std::endl<<std::flush;
-/**/
       //open file
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_named << ",...) return " << ncd.saveNetCDFFile((char*)file_named.c_str()) << std::endl;
       //add global attributes
