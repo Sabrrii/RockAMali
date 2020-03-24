@@ -145,8 +145,8 @@ int main(int argc, char **argv)
       CImgListNetCDF<int> nci;//index
       CImgList<int> nc_imgs(var_names.size(),1);//temporary image for type conversion
       //open file
-      std::cout << "CImgNetCDF::saveNetCDFFile(" << file_namer << ",...) return " << nc.saveNetCDFFile((char*)file_namer.c_str()) << std::endl;
-      std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_namer << ",...) return " << nci.saveNetCDFFile((char*)file_namei.c_str()) << std::endl;
+      std::cout << "CImgNetCDF::saveNetCDFFile(" << file_namer << ",...) return " << nc.saveNetCDFFile((char*)file_namer.c_str()) << std::endl<<std::flush;
+      std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_namei << ",...) return " << nci.saveNetCDFFile((char*)file_namei.c_str()) << std::endl<<std::flush;
       //add global attributes
       nc.pNCFile->add_att("library","CImg_NetCDF");
       nc.pNCFile->add_att("library_version",CIMG_NETCDF_VERSION);
