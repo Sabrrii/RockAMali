@@ -5,6 +5,8 @@
 FRAME_SIZE=8192
 WAIT4RATE=256
 DELTAWAIT=128
+RECO=--crc false -B 2 -w 1
+RECO=-w 1
 RAMP=--do-ramp -r 128
 #RAMP=
 IPERF=--bandwidth 1G --udp
@@ -12,8 +14,8 @@ DST_IP=10.10.15.1
 ETH=enp1s0
 CPU_AFFINITY="0"
 ###ganp484 <- gansacq2 (10GEth copper)
-#DST_IP=10.10.16.1
-#ETH=eth1
+DST_IP=10.10.16.1
+ETH=eth1
 ##ml507 -> ganp157
 #FRAME_SIZE=256
 #DST_IP=10.10.17.202
@@ -99,12 +101,18 @@ udp_receive: udp_receive.cpp Makefile
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
-	/sbin/ifconfig $(ETH) | grep RX | grep dropped; ethtool -S $(ETH) | grep InDropped --color; env GOMP_CPU_AFFINITY=$(CPU_AFFINITY) ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup --crc false --nc false 2>&1 | tee udp_receive.txt; ncdump -h udp_receive.nc | tee udp_receive.cdl ;ncdump -h udp_receive_rate.nc | tee udp_receive_rate.cdl ; ncdump -h udp_receive_drop.nc | tee udp_receive_drop.cdl; /sbin/ifconfig $(ETH) | grep RX | grep dropped; ethtool -S $(ETH) | grep InDropped --color
+	/sbin/ifconfig $(ETH) | grep RX | grep dropped #; ethtool -S $(ETH) | grep InDropped --color
+	env GOMP_CPU_AFFINITY=$(CPU_AFFINITY) ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup $(RECO) 2>&1 | tee udp_receive.txt
+	ncdump -h udp_receive.nc | tee udp_receive.cdl ;ncdump -h udp_receive_rate.nc | tee udp_receive_rate.cdl ; ncdump -h udp_receive_drop.nc | tee udp_receive_drop.cdl
+	/sbin/ifconfig $(ETH) | grep RX | grep dropped #; ethtool -S $(ETH) | grep InDropped --color
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_send: udp_send.cpp Makefile
 	g++ -O0 -o udp_send  udp_send.cpp $(LIB_CIMG) $(DO_NETCDF) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_send --help -I && ./udp_send -v > VERSION && ./udp_send -n 12
 udp_send_run:
-	/sbin/ifconfig eth6 | grep TX | grep dropped; ./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w $(WAIT4RATE) -dw $(DELTAWAIT) --do-warmup $(RAMP) $(DO_CHECK) --verbose; ncdump -h udp_send.nc | tee udp_send.cdl; /sbin/ifconfig eth6 | grep TX | grep dropped
+	/sbin/ifconfig eth6 | grep TX | grep dropped
+	./udp_send -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n `echo $(NS)+1 | bc` -w $(WAIT4RATE) -dw $(DELTAWAIT) --do-warmup $(RAMP) $(DO_CHECK) --verbose
+	ncdump -h udp_send.nc | tee udp_send.cdl
+	/sbin/ifconfig eth6 | grep TX | grep dropped
 
 gui: main.cpp
 	g++ -O0 -o generate.X main.cpp -I../CImg -Wall -W -ansi -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp -lboost_system $(LIB_XWINDOWS) && ./generate.X -h -I && ./generate.X -v > VERSION
