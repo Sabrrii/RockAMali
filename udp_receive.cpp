@@ -25,7 +25,7 @@
 //! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.6f"
+#define VERSION "v0.1.6g"
 
 using namespace cimg_library;
 
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
       printf("informating thread#%d has CPU#%d affinity\n",id,cpuaff);fflush(stdout);
 #endif //DO_CPU_AFFINITY
 #ifdef DO_NETCDF
-//! \todo  dim. same size, may merge
+//! \todo . dim. same size, may merge
       //dimension names
       std::vector<std::string> dim_names;
       std::string dim_time;
@@ -146,17 +146,20 @@ int main(int argc, char **argv)
       CImgList<int> nc_imgs(var_names.size(),1);//temporary image for type conversion
       //open file
       std::cout << "CImgNetCDF::saveNetCDFFile(" << file_namer << ",...) return " << nc.saveNetCDFFile((char*)file_namer.c_str()) << std::endl<<std::flush;
-      std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_namei << ",...) return " << nci.saveNetCDFFile((char*)file_namei.c_str()) << std::endl<<std::flush;
+      nci.setNetCDFFile(nc.pNCFile);//share file
       //add global attributes
       nc.pNCFile->add_att("library","CImg_NetCDF");
       nc.pNCFile->add_att("library_version",CIMG_NETCDF_VERSION);
       //declare dims and vars
-      std::cout << "CImgListNetCDF::addNetCDFDims(" << file_namei << ",...) return " << nci.addNetCDFDims(nc_imgs,dim_names,dim_time) << std::endl<<std::flush;
-      std::cout << "CImgListNetCDF::addNetCDFVar(" << file_namei << ",...) return " << nci.addNetCDFVar(nc_imgs,var_names,unit_names) << std::endl<<std::flush;
       std::cout << "CImgNetCDF::addNetCDFDims(" << file_namer << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
       std::cout << "CImgNetCDF::addNetCDFVar(" << file_namer << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+      nci.setNetCDFDims(nc.vpNCDim,nc.pNCDimt);//share dims
+      std::cout << "CImgListNetCDF::addNetCDFVar(" << file_namei << ",...) return " << nci.addNetCDFVar(nc_imgs,var_names,unit_names) << std::endl<<std::flush;
       //add attributes
       if (!(nc.pNCvar->add_att("long_name","UDP transfer rate"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+      if (!(nci.pNCvars[0]->add_att("long_name","last received index"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+      if (!(nci.pNCvars[1]->add_att("long_name","number of received frames"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+//! \todo attr. on all var.
       if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size unit (NC_ERROR)."<<std::endl;
       if (!(nc.pNCvar->add_att("time_interval",(int)twait))) std::cerr<<"error: while adding attribute time interval  (NC_ERROR)."<<std::endl;
@@ -191,15 +194,14 @@ int main(int argc, char **argv)
 #ifdef DO_NETCDF
         if(i>0)
         {
-//! \todo . add current_i and received CImgListNetCDF
-          //add rate in NetCDF
+          //add rate, last index and received counter in NetCDF
           nc_img(0)=rate;
           nc_imgs[0](0)=i;
           nc_imgs[1](0)=count;
           for(int d=0;d<count;++d)
           {
             nc.addNetCDFData(nc_img);
-            nci.addNetCDFData(nc_imgs);
+            nci.addNetCDFData(nc_imgs,nc.loadDimTime()-1);
           }//plateau
         }
 #endif //NetCDF
