@@ -25,7 +25,7 @@
 //! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
 //! \todo tests: ml507, RockAMali, numexo2
 
-#define VERSION "v0.1.6g"
+#define VERSION "v0.1.6h"
 
 using namespace cimg_library;
 
@@ -122,7 +122,6 @@ int main(int argc, char **argv)
       printf("informating thread#%d has CPU#%d affinity\n",id,cpuaff);fflush(stdout);
 #endif //DO_CPU_AFFINITY
 #ifdef DO_NETCDF
-//! \todo . dim. same size, may merge
       //dimension names
       std::vector<std::string> dim_names;
       std::string dim_time;
@@ -132,10 +131,10 @@ int main(int argc, char **argv)
       var_names.push_back("received");
       std::vector<std::string> unit_names;
       unit_names.push_back("none");
-      unit_names.push_back("none");
+      unit_names.push_back("frame");
       std::string var_name;
       std::string unit_name;
-      dim_time="dimF";
+      dim_time="dimFw";
       dim_names.push_back("dimS");
       var_name="rate";
       unit_name="MB/s";
@@ -159,11 +158,19 @@ int main(int argc, char **argv)
       if (!(nc.pNCvar->add_att("long_name","UDP transfer rate"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
       if (!(nci.pNCvars[0]->add_att("long_name","last received index"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
       if (!(nci.pNCvars[1]->add_att("long_name","number of received frames"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
-//! \todo attr. on all var.
-      if (!(nc.pNCvar->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
-      if (!(nc.pNCvar->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size unit (NC_ERROR)."<<std::endl;
-      if (!(nc.pNCvar->add_att("time_interval",(int)twait))) std::cerr<<"error: while adding attribute time interval  (NC_ERROR)."<<std::endl;
-      if (!(nc.pNCvar->add_att("time_interval_unit","s"))) std::cerr<<"error: while adding attribute time interval unit (NC_ERROR)."<<std::endl;
+      {//attr. on all var.
+      std::vector<NcVar*> pNCVars;
+      pNCVars.push_back(nc.pNCvar);
+      pNCVars.push_back(nci.pNCvars[0]);
+      pNCVars.push_back(nci.pNCvars[1]);
+      for(int v=0;v<pNCVars.size();++v)
+      {
+        if (!(pNCVars[v]->add_att("frame_size",(int)width)))    std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
+        if (!(pNCVars[v]->add_att("frame_size_unit","Byte")))   std::cerr<<"error: while adding attribute frame size unit (NC_ERROR)."<<std::endl;
+        if (!(pNCVars[v]->add_att("time_interval",(int)twait))) std::cerr<<"error: while adding attribute time interval  (NC_ERROR)."<<std::endl;
+        if (!(pNCVars[v]->add_att("time_interval_unit","s")))   std::cerr<<"error: while adding attribute time interval unit (NC_ERROR)."<<std::endl;
+      }//var loop
+      }//attr. on all var.
       //add data
       std::cout << "CImgNetCDF::addNetCDFData(" << file_namer << ",...)"<< std::endl<<std::flush;
 #endif //NetCDF
