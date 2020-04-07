@@ -27,11 +27,11 @@ NP=2
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
-USE_GPU=
+#USE_GPU=
 DO_CHECK=--do-check --do-fill
 DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
-DO_PROFILING=
+#DO_PROFILING=
 
 DATA=./
 DATA=/media/temp/
@@ -83,12 +83,12 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
-#all: process_sequential version factory process_sequential_run
+all: process_sequential version factory process_sequential_run
 #all: send receive version factory
 
 ##lib. code test
 #all: time_copy
-all: udp_receive udp_send
+#all: udp_receive udp_send
 time_copy: time_copy.cpp Makefile
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 
