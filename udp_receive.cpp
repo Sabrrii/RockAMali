@@ -22,10 +22,9 @@
 // UDP point to point test
 
 //! \todo drop of exactly 2^32 should not be taken into drops
-//! \todo . add NetCDF for storing both frame index, drop, actual/mean rate and increment in loop (unlimited dim.)
-//! \todo tests: ml507, RockAMali, numexo2
+//! \todo tests: . ml507, . RockAMali, _ numexo2
 
-#define VERSION "v0.1.6h"
+#define VERSION "v0.1.6"
 
 using namespace cimg_library;
 
