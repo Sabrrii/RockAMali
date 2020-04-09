@@ -1,8 +1,9 @@
 #!/bin/bash
 
-ns=123
+ns=12
 
 list=
+kernel_list=
 i=0
 #GPU kernels
 for g in copy program lambda closure function function_lambda function_macro program_template program_T4 program_T4xyzw program_T4ls_fma
@@ -22,10 +23,20 @@ do
   ncatted -a kernel_name,,c,c,$i'_'$g $fo
   ###global
   ncatted -a kernel_$i,global,c,c,$i'_'$g'_'$kernel $fo
+  ###global list for ncecat
+  kernel_list=$kernel_list" --glb_att_add kernel_${i}=${i}_${g}_$kernel"
+  ##cleaning
+  ft=`basename $fo .nc`.tmp.nc
+  ncwa --history -O -a dim1,dimP $fo $ft
+  ncatted -O -a cell_methods,,d,, $ft $fo
+  rm $ft
 
   #next iteration
   ((++i))
 done
 
 #ensemble cat
-ncecat -O $list -o profiling_GPU.nc
+fo=profiling_GPU.nc
+ncecat -O $list $kernel_list -o $fo
+ncrename -d record,kernel $fo
+ncatted -a kernel,,d,, -a kernel_name,,d,, -a kernel_0,,d,, $fo
