@@ -1,0 +1,10 @@
+netcdf kernels
+{
+dimensions:
+	kernel = UNLIMITED ;
+	dimString=256;
+variables:
+	char kernel(dimString);
+data:
+	kernel="0_copy";
+}
