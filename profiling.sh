@@ -18,7 +18,10 @@ do
   #tune (optional)
   ##add kernel_# attribute
   kernel=`ncdump -h $fo | grep iteration:kernel | cut -d'"' -f2`
-  ncatted -a kernel_$i,iteration,c,c,$i'_'$g'_'$kernel $fo
+  ###all vars
+  ncatted -a kernel_name,,c,c,$i'_'$g $fo
+  ###global
+  ncatted -a kernel_$i,global,c,c,$i'_'$g'_'$kernel $fo
 
   #next iteration
   ((++i))
