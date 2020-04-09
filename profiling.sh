@@ -38,6 +38,7 @@ do
 done
 
 #kernel name var
+#TODO
 echo 'kernel='$kernel_vals';'
 
 #ensemble cat
@@ -45,3 +46,4 @@ fo=profiling_GPU.nc
 ncecat -O $list $kernel_list -o $fo
 ncrename -d record,kernel $fo
 ncatted -a kernel,,d,, -a kernel_name,,d,, -a kernel_0,,d,, $fo
+ncks -A kernels.nc $fo
