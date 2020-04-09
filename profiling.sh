@@ -41,7 +41,7 @@ done
 fk=kernels.cdl
 /bin/echo -e -n 'netcdf kernels\n{\ndimensions:\n\n	kernel = ' > $fk
 /bin/echo -e -n $i >> $fk
-/bin/echo -e -n '; //UNLIMITED ;\n	dimString=128;\nvariables:\n	char kernel_name(kernel, dimString);\ndata:\n	kernel_name = ' >> $fk
+/bin/echo -e -n '; //UNLIMITED ;\n	dimString=128;\nvariables:\n	char kernel(kernel, dimString);\ndata:\n	kernel = ' >> $fk
 /bin/echo -e -n $kernel_vals | sed 's/, //' >> $fk
 /bin/echo -e -n ';\n}//kernels' >> $fk
 ncgen $fk -o kernels.nc
@@ -52,3 +52,9 @@ ncecat -O $list $kernel_list -o $fo
 ncrename -d record,kernel $fo
 ncatted -a kernel,,d,, -a kernel_name,,d,, -a kernel_0,,d,, $fo
 ncks -A kernels.nc $fo
+
+
+#exit
+
+#show header
+ncdump -v kernel $fo
