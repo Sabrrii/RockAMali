@@ -4,6 +4,7 @@ ns=12
 
 list=
 kernel_list=
+kernel_vals=
 i=0
 #GPU kernels
 for g in copy program lambda closure function function_lambda function_macro program_template program_T4 program_T4xyzw program_T4ls_fma
@@ -19,6 +20,7 @@ do
   #tune (optional)
   ##add kernel_# attribute
   kernel=`ncdump -h $fo | grep iteration:kernel | cut -d'"' -f2`
+  kernel_vals=$kernel_vals', "'$i'_'$g'"'
   ###all vars
   ncatted -a kernel_name,,c,c,$i'_'$g $fo
   ###global
@@ -34,6 +36,9 @@ do
   #next iteration
   ((++i))
 done
+
+#kernel name var
+echo 'kernel='$kernel_vals';'
 
 #ensemble cat
 fo=profiling_GPU.nc
