@@ -415,7 +415,7 @@ virtual void define_opencl_source()
     in4._spectrum=out4._spectrum=1;
     //OpenCL framework
     this->program=this->make_opencl_program(this->ctx);
-    this->class_name="CDataProcessorGPU_openclT4_"+this->kernel_name;
+    this->class_name="CDataProcessorGPU_openclI1D_"+this->kernel_name;
     this->kernel_loaded=false;
   }//constructor
 
