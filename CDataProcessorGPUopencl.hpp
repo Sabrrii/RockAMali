@@ -446,20 +446,16 @@ virtual void define_opencl_source()
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
+//! \todo WiP: enqueue_copy_buffer_from/to_image : grep -R enqueue_copy_ ../boost-compute/include/boost/compute/command_queue.hpp -C 5
     ///share data
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
-   #ifdef DO_GPU_PROFILING
-    this->future=compute::copy_async
-   #else
-    compute::copy
-   #endif //DO_GPU_PROFILING
-    (in4.begin(),in4.end(), device_image_in.begin(), this->queue);
+    this->queue.enqueue_copy_buffer_to_image(in4,   device_image_in, 0, device_image_in.origin(),region);
     //compute
     kernelImage1D(device_image_in,device_image_out);
     //copy GPU to CPU
-    compute::copy(device_image_out.begin(),device_image_out.end(), out4.begin(), this->queue);
+    this->queue.enqueue_copy_image_to_buffer(device_image_out, out4, device_image_out.origin(),region, 0);
     //wait for completion
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
