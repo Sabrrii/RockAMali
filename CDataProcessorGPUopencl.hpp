@@ -105,13 +105,17 @@ std::cout<<"source:"<<std::endl<<"\""<<source<<std::endl<<"\""<<std::endl<<std::
 };//CDataProcessorGPU_opencl_template
 
 
+
+
+
+
 //! 4 complex operation with OpenCL including template types for GPU process
 /**
  *  FMA by 4: val * 2.1 + 123.45
  *  Tdata4 and Tproc4 should same type as Tdata and Tproc
  *  \note: Tdata and Tproc only could be in the template source
 **/
-template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char
+template<typename Tdata=unsigned int,typename Tproc=unsigned int/*float*/, typename Taccess=unsigned char
 , typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
 >
 class CDataProcessorGPU_opencl_T4 : public CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>
@@ -175,8 +179,10 @@ virtual void define_opencl_source()
     {//load kernel
       this->oclKernel=compute::kernel(this->program,this->kernel_name.c_str());
       this->oclKernel.set_arg(0,this->device_vector_in4.get_buffer());
+//      this->oclKernel.set_arg(0,in.get_buffer());
       this->oclKernel.set_arg(1,(int)this->device_vector_in4.size());
       this->oclKernel.set_arg(2,this->device_vector_out4.get_buffer());
+//      this->oclKernel.set_arg(2,out.get_buffer());
       this->kernel_loaded=true;
     }//load kernel once
     //compute
@@ -418,21 +424,23 @@ virtual void define_opencl_source()
   }//constructor
 
   //! compution kernel for an iteration
-  virtual void kernelGPU4(compute::vector<Tdata4> &in,compute::vector<Tproc4> &out)
+  virtual void kernelImage1D(compute::image1d &in,compute::image1d &out)
   {
     if(!this->kernel_loaded)
     {//load kernel
       this->oclKernel=compute::kernel(this->program,this->kernel_name.c_str());
-      this->oclKernel.set_arg(0,this->device_vector_in4.get_buffer());
-      this->oclKernel.set_arg(1,(int)this->device_vector_in4.size());
-      this->oclKernel.set_arg(2,this->device_vector_out4.get_buffer());
+      this->oclKernel.set_arg(0,this->device_image_in);
+//      this->oclKernel.set_arg(0,in);
+      this->oclKernel.set_arg(1,this->device_image_out);
+//      this->oclKernel.set_arg(0,out);
       this->kernel_loaded=true;
     }//load kernel once
     //compute
-    using compute::uint_;
-    uint_ tpb=16;
-    uint_ workSize=this->device_vector_in4.size();
-    this->queue.enqueue_1d_range_kernel(this->oclKernel,0,workSize,tpb);
+    const size_t global_work_offset[] = { 0 };
+    const size_t global_work_size[] = { size_t(in4.width()) };
+    this->queue.enqueue_nd_range_kernel(
+        this->oclKernel, 1, global_work_offset, global_work_size, 0
+    );
   };//kernelGPU
 
   //! compution kernel for an iteration
@@ -447,11 +455,11 @@ virtual void define_opencl_source()
    #else
     compute::copy
    #endif //DO_GPU_PROFILING
-    (in4.begin(),in4.end(), device_vector_in4.begin(), this->queue);
+    (in4.begin(),in4.end(), device_image_in.begin(), this->queue);
     //compute
-    kernelGPU4(device_vector_in4,device_vector_out4);
+    kernelImage1D(device_image_in,device_image_out);
     //copy GPU to CPU
-    compute::copy(device_vector_out4.begin(),device_vector_out4.end(), out4.begin(), this->queue);
+    compute::copy(device_image_out.begin(),device_image_out.end(), out4.begin(), this->queue);
     //wait for completion
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
