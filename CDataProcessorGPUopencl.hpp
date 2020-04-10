@@ -281,7 +281,7 @@ virtual void define_opencl_source()
  *  Tdata4 and Tproc4 should same type as Tdata and Tproc
  *  \note: Tdata and Tproc only could be in the template source
 **/
-template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char
+template<typename Tdata=unsigned int,typename Tproc=unsigned int/*float*/, typename Taccess=unsigned char
 , typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
 >
 class CDataProcessorGPU_opencl_T4ls_fma : public CDataProcessorGPU_opencl_T4<Tdata,Tproc, Taccess>
@@ -350,6 +350,7 @@ virtual void define_opencl_source()
 
 
 
+#include <boost/compute/image/image1d.hpp>
 
 //! image1d operation with OpenCL including template types for GPU process
 /**
@@ -357,22 +358,19 @@ virtual void define_opencl_source()
  *  Timg should same type as Tdata
  *  \note: Tdata and Tproc only could be in the template source
 **/
-template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char
-
+template<typename Tdata=unsigned int,typename Tproc=float, typename Taccess=unsigned char
 , typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
-//, typename Timg=compute::uint_
-
+//, typename Timg=compute::CL_R
 >
 class CDataProcessorGPU_opencl_image1d : public CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>
 {
 public:
   // create vectors on the device
-  compute::vector<Tdata4> device_vector_in4;
-  compute::vector<Tproc4> device_vector_out4;
+  compute::image_format format;
+  compute::image1d device_image_in;
+  compute::image1d device_image_out;
   CImg<Tdata4> in4;
   CImg<Tproc4> out4;
-
-//  compute::image1d device_image;
 
 //! OpenCL source (with template)
 /**
@@ -381,17 +379,16 @@ public:
 **/
 virtual void define_opencl_source()
 {
-  this->kernel_name="vMcPc4";
+  this->kernel_name="vMcPcI";
   this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
-  __kernel void vMcPc4(__global const Tdata*input, int size, __global Tproc*output)
+  __kernel void vMcPcI(__read_only image1d_t input, __write_only image1d_t output)
   {
-    const int gid = get_global_id(0)*4;
-    const Tproc mul=2.1;
-    const Tproc cst=123.45;
-    output[gid]  =input[gid]  *mul+cst;
-    output[gid+1]=input[gid+1]*mul+cst;
-    output[gid+2]=input[gid+2]*mul+cst;
-    output[gid+3]=input[gid+3]*mul+cst;
+    const int gid = get_global_id(0);
+    const Tproc4 mul=(Tproc4)(2.1);
+    const Tproc4 cst=(Tproc4)(123.45);
+    Tproc4 in=read_imagef(input, sampler, coord);
+    Tproc4 out=fma(in,mul,cst);
+    write_imagef(output, (int)(gid), out);
   }
   );//source with template
 }//define_opencl_source
@@ -405,7 +402,8 @@ virtual void define_opencl_source()
   , bool do_check=false
   )
   : CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
-  , device_vector_in4(VECTOR_SIZE/4, this->ctx), device_vector_out4(VECTOR_SIZE/4, this->ctx)
+  , format(CL_RGBA, CL_UNSIGNED_INT32)
+  , device_image_in(this->ctx,VECTOR_SIZE/4,format), device_image_out(this->ctx,VECTOR_SIZE/4,format)
   {
 //    this->debug=true;
     this->check_locks(lock);
