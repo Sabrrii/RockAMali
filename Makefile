@@ -26,10 +26,10 @@ NB=12
 NP=2
 GEN_FCT=count
 PROC=kernel
-USE_GPU=--use-GPU --GPU-factory program_T4ls_fma
+USE_GPU=--use-GPU --GPU-factory program_image1d
 #USE_GPU=
 DO_CHECK=--do-check --do-fill
-DO_CHECK=
+#DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
 #DO_PROFILING=
 

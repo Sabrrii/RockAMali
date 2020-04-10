@@ -62,6 +62,8 @@ public:
       return new CDataProcessorGPU_opencl_T4xyzw<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
     factory_types.push_back      ("program_T4ls_fma")  ;if(name == factory_types.back())
       return new CDataProcessorGPU_opencl_T4ls_fma<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
+    factory_types.push_back      ("program_image1d")  ;if(name == factory_types.back())
+      return new CDataProcessorGPU_opencl_image1d<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check);
 //    if(name == "error")
 //      return new CDataProcessorGPU_error;
 

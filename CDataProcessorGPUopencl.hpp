@@ -328,5 +328,143 @@ virtual void define_opencl_source()
 
 };//CDataProcessorGPU_opencl_T4ls_fma
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//! image1d operation with OpenCL including template types for GPU process
+/**
+ *  FMA: val * 2.1 + 123.45
+ *  Timg should same type as Tdata
+ *  \note: Tdata and Tproc only could be in the template source
+**/
+template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char
+
+, typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
+//, typename Timg=compute::uint_
+
+>
+class CDataProcessorGPU_opencl_image1d : public CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>
+{
+public:
+  // create vectors on the device
+  compute::vector<Tdata4> device_vector_in4;
+  compute::vector<Tproc4> device_vector_out4;
+  CImg<Tdata4> in4;
+  CImg<Tproc4> out4;
+
+//  compute::image1d device_image;
+
+//! OpenCL source (with template)
+/**
+ * template types must be either \c Tdata or \c Tproc
+ * \note this function should redefined in inherited class
+**/
+virtual void define_opencl_source()
+{
+  this->kernel_name="vMcPc4";
+  this->source_with_template=BOOST_COMPUTE_STRINGIZE_SOURCE(
+  __kernel void vMcPc4(__global const Tdata*input, int size, __global Tproc*output)
+  {
+    const int gid = get_global_id(0)*4;
+    const Tproc mul=2.1;
+    const Tproc cst=123.45;
+    output[gid]  =input[gid]  *mul+cst;
+    output[gid+1]=input[gid+1]*mul+cst;
+    output[gid+2]=input[gid+2]*mul+cst;
+    output[gid+3]=input[gid+3]*mul+cst;
+  }
+  );//source with template
+}//define_opencl_source
+
+  CDataProcessorGPU_opencl_image1d(std::vector<omp_lock_t*> &lock
+  , compute::device device, int VECTOR_SIZE
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  , device_vector_in4(VECTOR_SIZE/4, this->ctx), device_vector_out4(VECTOR_SIZE/4, this->ctx)
+  {
+//    this->debug=true;
+    this->check_locks(lock);
+    in4._width=out4._width=VECTOR_SIZE/4;
+    in4._height=out4._height=1;
+    in4._depth=out4._depth=1;
+    in4._spectrum=out4._spectrum=1;
+    //OpenCL framework
+    this->program=this->make_opencl_program(this->ctx);
+    this->class_name="CDataProcessorGPU_openclT4_"+this->kernel_name;
+    this->kernel_loaded=false;
+  }//constructor
+
+  //! compution kernel for an iteration
+  virtual void kernelGPU4(compute::vector<Tdata4> &in,compute::vector<Tproc4> &out)
+  {
+    if(!this->kernel_loaded)
+    {//load kernel
+      this->oclKernel=compute::kernel(this->program,this->kernel_name.c_str());
+      this->oclKernel.set_arg(0,this->device_vector_in4.get_buffer());
+      this->oclKernel.set_arg(1,(int)this->device_vector_in4.size());
+      this->oclKernel.set_arg(2,this->device_vector_out4.get_buffer());
+      this->kernel_loaded=true;
+    }//load kernel once
+    //compute
+    using compute::uint_;
+    uint_ tpb=16;
+    uint_ workSize=this->device_vector_in4.size();
+    this->queue.enqueue_1d_range_kernel(this->oclKernel,0,workSize,tpb);
+  };//kernelGPU
+
+  //! compution kernel for an iteration
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
+  {
+    ///share data
+    in4._data=(Tdata4*)in.data();
+    out4._data=(Tproc4*)out.data();
+    //copy CPU to GPU
+   #ifdef DO_GPU_PROFILING
+    this->future=compute::copy_async
+   #else
+    compute::copy
+   #endif //DO_GPU_PROFILING
+    (in4.begin(),in4.end(), device_vector_in4.begin(), this->queue);
+    //compute
+    kernelGPU4(device_vector_in4,device_vector_out4);
+    //copy GPU to CPU
+    compute::copy(device_vector_out4.begin(),device_vector_out4.end(), out4.begin(), this->queue);
+    //wait for completion
+    this->queue.finish();
+   #ifdef DO_GPU_PROFILING
+    this->kernel_elapsed_time();
+   #endif //DO_GPU_PROFILING
+    ///unshare data
+    in4._data=NULL;
+    out4._data=NULL;
+  };//kernel
+
+};//CDataProcessorGPU_opencl_image1d
+
 #endif //_DATA_PROCESSOR_GPU_OPENCL_
 
