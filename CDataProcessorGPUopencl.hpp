@@ -358,17 +358,16 @@ virtual void define_opencl_source()
 
 
 #include <boost/compute/image/image1d.hpp>
+#include "CL_image_data_type.h"
 
 //! image1d operation with OpenCL including template types for GPU process
 /**
  *  FMA: val * 2.1 + 123.45
- *  TimgData/Proc should same type as Tdata/proc
+ *  \note: CLTypeInfo<> take both Tdata4 and Tproc4 in charge
  *  \note: Tdata and Tproc only could be in the template source
 **/
 template<typename Tdata=unsigned int,typename Tproc=float, typename Taccess=unsigned char
 , typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
-//, typename TimgData=compute::CL_INTENSITY, compute::CL_UNSIGNED_INT32
-//, typename TimgProc=compute::CL_INTENSITY, compute::CL_FLOAT
 >
 class CDataProcessorGPU_opencl_image1d : public CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>
 {
@@ -397,6 +396,7 @@ virtual void define_opencl_source()
     const int gid = get_global_id(0);
     const Tproc4 mul=(Tproc4)(2.1);
     const Tproc4 cst=(Tproc4)(123.45);
+//!  \todo read_imageui: read_imageT
     Tproc4 in=convert_Tproc4(read_imageui(input, (int)(gid)));
     Tproc4 out=fma(in,mul,cst);
     write_imagef(output, (int)(gid), out);
@@ -413,7 +413,7 @@ virtual void define_opencl_source()
   , bool do_check=false
   )
   : CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
-  , format_in(FimgDataCL4, CL_UNSIGNED_INT32), format_out(FimgProcCL4, CL_FLOAT)
+  , format_in(FimgDataCL4, CLTypeInfo<Tdata4>::clId()), format_out(FimgProcCL4, CLTypeInfo<Tproc4>::clId())
   , device_image_in(this->ctx,VECTOR_SIZE/4,format_in), device_image_out(this->ctx,VECTOR_SIZE/4,format_out)
   {
 //    this->debug=true;
