@@ -366,14 +366,16 @@ virtual void define_opencl_source()
 **/
 template<typename Tdata=unsigned int,typename Tproc=float, typename Taccess=unsigned char
 , typename Tdata4=compute::uint4_, typename Tproc4=compute::float4_
-//, typename Timg=compute::CL_R
+//, typename TimgData=compute::CL_INTENSITY, compute::CL_UNSIGNED_INT32
+//, typename TimgProc=compute::CL_INTENSITY, compute::CL_FLOAT
 >
 class CDataProcessorGPU_opencl_image1d : public CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>
 {
 public:
   // create vectors on the device
-  compute::image_format format;
+  compute::image_format  format_in;
   compute::image1d device_image_in;
+  compute::image_format  format_out;
   compute::image1d device_image_out;
   CImg<Tdata4> in4;
   CImg<Tproc4> out4;
@@ -408,8 +410,8 @@ virtual void define_opencl_source()
   , bool do_check=false
   )
   : CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
-  , format(CL_RGBA, CL_UNSIGNED_INT32)
-  , device_image_in(this->ctx,VECTOR_SIZE/4,format), device_image_out(this->ctx,VECTOR_SIZE/4,format)
+  , format_in(CL_RGBA, CL_UNSIGNED_INT32), format_out(CL_RGBA, CL_FLOAT)
+  , device_image_in(this->ctx,VECTOR_SIZE/4,format_in), device_image_out(this->ctx,VECTOR_SIZE/4,format_out)
   {
 //    this->debug=true;
     this->check_locks(lock);
