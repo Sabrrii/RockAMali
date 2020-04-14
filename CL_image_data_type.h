@@ -1,7 +1,7 @@
 #ifndef CL_IMAGE_DATA_TYPE_INFORMATION
 #define CL_IMAGE_DATA_TYPE_INFORMATION
 
-#define CL_IMAGE_DATA_TYPE_INFO_VERSION "v0.1.4d"
+#define CL_IMAGE_DATA_TYPE_INFO_VERSION "v0.1.4e"
 
 //! Information on OpenCL type of image data
 /**
@@ -11,19 +11,19 @@
 **/
 
 template<typename T> struct CLTypeInfo {
-//! Identifier - it selves (i.e. \c <int>value   of \c CL_ from \c opencl.h) on OpenCL image data
-  static const int clId()    {static const int         i= CL_UNSIGNED_INT8;  return i;}
-//! Identifier as a string (i.e. \c <char*>value of \c CL_ from \c opencl.h) on OpenCL image data
+//! Identifier - it selves (i.e. \c <int>value   of \c CL_ from \c opencl.h) for OpenCL image data
+  static         int clId()  {static const int         i= CL_UNSIGNED_INT8;  return i;}
+//! Identifier as a string (i.e. \c <char*>value of \c CL_ from \c opencl.h) for OpenCL image data
   static const char* clStr() {static const char *const s="CL_UNSIGNED_INT8"; return s;}
 };
-//! Information on NetCDF type of a \c char data
+//! Information on OpenCL image data type of a \c char data
 template<> struct CLTypeInfo<compute::uint4_> {
-  static const int clId()    {static const int         i= CL_UNSIGNED_INT32;  return i;}
+  static         int clId()  {static const int         i= CL_UNSIGNED_INT32;  return i;}
   static const char* clStr() {static const char *const s="CL_UNSIGNED_INT32"; return s;}
 };
-//! Information on NetCDF type of a \c short data
+//! Information on OpenCL image data type of a \c short data
 template<> struct CLTypeInfo<compute::float4_> {
-  static const int clId()    {static const short       i= CL_FLOAT;  return i;}
+  static       int   clId()  {static const short       i= CL_FLOAT;  return i;}
   static const char* clStr() {static const char *const s="CL_FLOAT"; return s;}
 };
 
