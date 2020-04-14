@@ -392,7 +392,7 @@ virtual void define_opencl_source()
     const int gid = get_global_id(0);
     const Tproc4 mul=(Tproc4)(2.1);
     const Tproc4 cst=(Tproc4)(123.45);
-    Tproc4 in=read_imagef(input, sampler, coord);
+    Tproc4 in=read_imagef(input, (int)(gid));
     Tproc4 out=fma(in,mul,cst);
     write_imagef(output, (int)(gid), out);
   }
@@ -451,14 +451,11 @@ virtual void define_opencl_source()
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
-    const size_t row_pitch=0;
-    const size_t slice_pitch=0;
-    const size_t region[]={ size_t(in4.width()) };
-    this->queue.enqueue_write_image(device_image_in, device_image_in.origin(),region, in4.data(), row_pitch,slice_pitch);
+    this->queue.enqueue_write_image(device_image_in, device_image_in.origin(),device_image_in.size(), in4.data());
     //compute
     kernelImage1D(device_image_in,device_image_out);
     //copy GPU to CPU
-    this->queue.enqueue_read_image(device_image_out, device_image_out.origin(),region, row_pitch,slice_pitch, out4.data());
+    this->queue.enqueue_read_image(device_image_out, device_image_out.origin(),device_image_out.size(), out4.data());
     //wait for completion
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
