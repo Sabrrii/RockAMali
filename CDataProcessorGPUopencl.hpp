@@ -449,6 +449,7 @@ virtual void define_opencl_source()
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     ///share data
+in.print("in");
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
@@ -459,6 +460,7 @@ virtual void define_opencl_source()
     this->queue.enqueue_read_image(device_image_out, device_image_out.origin(),device_image_out.size(), out4.data());
     //wait for completion
     this->queue.finish();
+out.print("out");
     ///unshare data
     in4._data=NULL;
     out4._data=NULL;
