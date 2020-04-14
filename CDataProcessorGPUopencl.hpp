@@ -361,7 +361,7 @@ virtual void define_opencl_source()
 //! image1d operation with OpenCL including template types for GPU process
 /**
  *  FMA: val * 2.1 + 123.45
- *  Timg should same type as Tdata
+ *  TimgData/Proc should same type as Tdata/proc
  *  \note: Tdata and Tproc only could be in the template source
 **/
 template<typename Tdata=unsigned int,typename Tproc=float, typename Taccess=unsigned char
@@ -448,7 +448,6 @@ virtual void define_opencl_source()
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
-//! \todo WiP: enqueue_copy_buffer_from/to_image : grep -R enqueue_copy_ ../boost-compute/include/boost/compute/command_queue.hpp -C 5
     ///share data
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
@@ -460,9 +459,6 @@ virtual void define_opencl_source()
     this->queue.enqueue_read_image(device_image_out, device_image_out.origin(),device_image_out.size(), out4.data());
     //wait for completion
     this->queue.finish();
-   #ifdef DO_GPU_PROFILING
-    this->kernel_elapsed_time();
-   #endif //DO_GPU_PROFILING
     ///unshare data
     in4._data=NULL;
     out4._data=NULL;
