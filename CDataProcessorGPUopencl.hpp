@@ -372,6 +372,10 @@ template<typename Tdata=unsigned int,typename Tproc=float, typename Taccess=unsi
 >
 class CDataProcessorGPU_opencl_image1d : public CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>
 {
+  #define FimgDataCL4 CL_RGBA
+  #define FimgProcCL4 CL_RGBA
+//  #define FimgDataCL4 CL_INTENSITY
+//  #define FimgProcCL4 CL_INTENSITY
 public:
   // create vectors on the device
   compute::image_format  format_in;
@@ -411,7 +415,7 @@ virtual void define_opencl_source()
   , bool do_check=false
   )
   : CDataProcessorGPU_opencl_template<Tdata,Tproc, Taccess>(lock,device,VECTOR_SIZE,wait_status,set_status,wait_statusR,set_statusR,do_check)
-  , format_in(CL_RGBA, CL_UNSIGNED_INT32), format_out(CL_RGBA, CL_FLOAT)
+  , format_in(FimgDataCL4, CL_UNSIGNED_INT32), format_out(FimgProcCL4, CL_FLOAT)
   , device_image_in(this->ctx,VECTOR_SIZE/4,format_in), device_image_out(this->ctx,VECTOR_SIZE/4,format_out)
   {
 //    this->debug=true;
