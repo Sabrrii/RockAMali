@@ -7,7 +7,7 @@ kernel_list=
 kernel_vals=
 i=0
 #GPU kernels
-for g in copy program lambda closure function function_lambda function_macro program_template program_T4 program_T4xyzw program_T4ls_fma
+for g in copy program lambda closure function function_lambda function_macro program_template program_T4 program_T4xyzw program_T4ls_fma program_image1d
 do
   ./process_sequential -s 8192 -o sample_sequential.nc -r result_sequential.nc --generator-factory count -n $ns --use-GPU --GPU-factory $g
   #gather profiling infos
