@@ -451,11 +451,13 @@ virtual void define_opencl_source()
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
-    this->queue.enqueue_copy_buffer_to_image(in4,   device_image_in, 0, device_image_in.origin(),region);
+    const size_t offset=size_t(0);
+    const size_t region[]={ size_t(in4.width()) };
+    this->queue.enqueue_copy_buffer_to_image(in4.begin(),   device_image_in, offset, device_image_in.origin(),region);
     //compute
     kernelImage1D(device_image_in,device_image_out);
     //copy GPU to CPU
-    this->queue.enqueue_copy_image_to_buffer(device_image_out, out4, device_image_out.origin(),region, 0);
+    this->queue.enqueue_copy_image_to_buffer(device_image_out, out4.begin(), device_image_out.origin(),region, offset);
     //wait for completion
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
