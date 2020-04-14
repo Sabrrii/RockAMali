@@ -200,6 +200,7 @@ virtual void define_opencl_source()
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
    #ifdef DO_GPU_PROFILING
+//    this->future=compute::make_future(NULL,
     this->future=compute::copy_async
    #else
     compute::copy
@@ -453,11 +454,13 @@ virtual void define_opencl_source()
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
    #ifdef DO_GPU_PROFILING
-    compute::event event_=
+    this->future=compute::make_future(NULL,
    #endif //DO_GPU_PROFILING
-    this->queue.enqueue_write_image(device_image_in, device_image_in.origin(),device_image_in.size(), in4.data());
+    this->queue.enqueue_write_image(device_image_in, device_image_in.origin(),device_image_in.size(), in4.data())
    #ifdef DO_GPU_PROFILING
-    this->future=compute::make_future(NULL, event_);
+      );//future event
+   #else
+    ;//enqueue
    #endif //DO_GPU_PROFILING
     //compute
     kernelImage1D(device_image_in,device_image_out);
