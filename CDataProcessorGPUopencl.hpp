@@ -394,7 +394,7 @@ virtual void define_opencl_source()
     const int gid = get_global_id(0);
     const Tproc4 mul=(Tproc4)(2.1);
     const Tproc4 cst=(Tproc4)(123.45);
-    Tproc4 in=read_imagef(input, (int)(gid));
+    Tproc4 in=convert_Tproc4(read_imageui(input, (int)(gid)));
     Tproc4 out=fma(in,mul,cst);
     write_imagef(output, (int)(gid), out);
   }
@@ -449,7 +449,6 @@ virtual void define_opencl_source()
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     ///share data
-in.print("in");
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
@@ -460,7 +459,6 @@ in.print("in");
     this->queue.enqueue_read_image(device_image_out, device_image_out.origin(),device_image_out.size(), out4.data());
     //wait for completion
     this->queue.finish();
-out.print("out");
     ///unshare data
     in4._data=NULL;
     out4._data=NULL;
