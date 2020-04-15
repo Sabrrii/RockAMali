@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2e"
+#define VERSION "v0.7.2f"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -283,6 +283,9 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     nc.pNCFile->add_att("CImg_NetCDF",CIMG_NETCDF_VERSION);
     nc.pNCFile->add_att("CParameterNetCDF",CDL_PARAMETER_VERSION);
     nc.pNCFile->add_att("NcTypeInfo",NETCDF_TYPE_INFO_VERSION);
+#ifdef DO_GPU
+    nc.pNCFile->add_att("ClTypeInfo",CL_IMAGE_DATA_TYPE_INFO_VERSION);
+#endif //DO_GPU
 #endif //DO_NETCDF
     //! \todo PROFILING . loop add start
     std::chrono::high_resolution_clock::time_point tp1 = std::chrono::high_resolution_clock::now();
