@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2i"
+#define VERSION "v0.7.2j"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -35,6 +35,10 @@
 #endif //with queue
 #endif //DO_GPU
 #include "CDataStore.hpp"
+
+#ifdef DO_PROFILING
+#include "CProfiling.hpp"
+#endif //DO_PROFILING
 
 using namespace cimg_library;
 
@@ -252,47 +256,7 @@ int main(int argc,char **argv)
       CDataStore<Tdata,Taccess> store(locks,    imagefilename,digit, CDataAccess::STATUS_PROCESSED);
       CDataStore<Tproc,Taccess> storeR(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);
 #ifdef DO_PROFILING
-#ifdef DO_NETCDF
-    std::string file_name="profiling_process.nc";
-    CImgListNetCDF<Tnetcdf> nc;
-    CImgList<Tnetcdf> nc_img;//temporary image for type conversion
-    //dimension names
-    std::vector<std::string> dim_names;
-    std::string dim_time;
-    //variable names (and its unit)
-    std::vector<std::string> var_names;
-    std::vector<std::string> unit_names;
-    nc_img.assign(2, 1,1,1,1, -99);
-    std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
-    dim_time="dimF";
-    dim_names.push_back("dim1");
-    std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
-    //variable names (and its unit)
-    var_names.push_back("iteration");
-    var_names.push_back("storage");
-    unit_names.push_back("us");
-    unit_names.push_back("us");
-std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
-    if (!(nc.pNCvars[0]->add_att("kernel",process->class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding kernel name attribute (NC_ERROR)."<<std::endl;
-    if (!(nc.pNCvars[0]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
-    if (!(nc.pNCvars[1]->add_att("storage",store.class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding storage name attribute (NC_ERROR)."<<std::endl;
-    if (!(nc.pNCvars[1]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
-    //elapsed time var.
-    NcVar *pNCvarETime=nc.pNCFile->add_var("process_sequential_elapsed_time",ncInt);//us
-    pNCvarETime->add_att("units","us");
-    NcVar *pNCvarETimePIt=nc.pNCFile->add_var("process_sequential_elapsed_time_per_iteration",ncInt);//us
-    pNCvarETimePIt->add_att("units","us");
-    //add global attributes
-    ///versions
-    nc.pNCFile->add_att("process_sequential",VERSION);
-    nc.pNCFile->add_att("CImg_NetCDF",CIMG_NETCDF_VERSION);
-    nc.pNCFile->add_att("CParameterNetCDF",CDL_PARAMETER_VERSION);
-    nc.pNCFile->add_att("NcTypeInfo",NETCDF_TYPE_INFO_VERSION);
-#ifdef DO_GPU
-    nc.pNCFile->add_att("ClTypeInfo",CL_IMAGE_DATA_TYPE_INFO_VERSION);
-#endif //DO_GPU
-#endif //DO_NETCDF
-    std::chrono::high_resolution_clock::time_point tp1 = std::chrono::high_resolution_clock::now();
+      CProfilingSequential<Tnetcdf> prof("profiling_process.nc",process->class_name,store.class_name, width, VERSION);
 #endif //DO_PROFILING
 
       //run
@@ -313,7 +277,7 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
         cimg::toc();
         std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
         std::cout << "iteration elapsed time=" << time_span.count()*1000 << " ms.";
-        nc_img(0)(0)=time_span.count()*1000000;//us
+        prof.set_process_ET((Tnetcdf)(time_span.count()*1000000));//us
         cimg::tic();
         t1 = std::chrono::high_resolution_clock::now();
 #endif //DO_PROFILING
@@ -324,9 +288,9 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
         cimg::toc();
         time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
         std::cout << "storage elapsed time=" << time_span.count()*1000 << " ms.";
-        nc_img(1)(0)=time_span.count()*1000000;//us
+        prof.set_store_ET((Tnetcdf)(time_span.count()*1000000));//us
 //         std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
-        std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+        prof.put_ETs();
 #endif //DO_PROFILING
         //check
         if(do_check)
@@ -349,19 +313,19 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
 
 #ifdef DO_PROFILING
       std::chrono::high_resolution_clock::time_point tp2 = std::chrono::high_resolution_clock::now();
-      std::chrono::duration<double> time_loop_span = std::chrono::duration_cast<std::chrono::duration<double>>(tp2 - tp1);
+      std::chrono::duration<double> time_loop_span = std::chrono::duration_cast<std::chrono::duration<double>>(tp2 - prof.tp1);
       std::cout << "loop elapsed time=" << time_loop_span.count()*1000 << " ms.";
 #ifdef DO_NETCDF
       ///profiling
       const int elapsed_time=round(time_loop_span.count()*1000000);
       //elapsed time var.
-      pNCvarETime->put(&elapsed_time);
+      prof.pNCvarETime->put(&elapsed_time);
       const int etpi=elapsed_time/count;
-      pNCvarETimePIt->put(&etpi);
+      prof.pNCvarETimePIt->put(&etpi);
       //add global attributes
-      nc.pNCFile->add_att("process_sequential_elapsed_time",elapsed_time);//us
-      nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
-      nc.pNCFile->add_att("process_sequential_elapsed_time_per_iteration",elapsed_time/count);//us
+      prof.nc.pNCFile->add_att("process_sequential_elapsed_time",elapsed_time);//us
+      prof.nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
+      prof.nc.pNCFile->add_att("process_sequential_elapsed_time_per_iteration",elapsed_time/count);//us
 #endif //DO_NETCDF
 #endif //DO_PROFILING
 
