@@ -50,7 +50,7 @@ ncgen $fk -o kernels.nc
 fo=profiling_GPU.nc
 ncecat -O $list $kernel_list -o $fo
 ncrename -d record,kernel $fo
-ncatted -a kernel,,d,, -a kernel_name,,d,, -a kernel_0,,d,, $fo
+ncatted -a kernel,global,d,, -a kernel,,d,, -a kernel_name,,d,, -a kernel_0,,d,, $fo
 ncks -A kernels.nc $fo
 
 
