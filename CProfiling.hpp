@@ -1,9 +1,22 @@
 #ifndef _SEQUENTIAL_PROFILING_
 #define _SEQUENTIAL_PROFILING_
 
+//std::chrono
+#include <ctime>
+#include <ratio>
+#include <chrono>
+
+#ifdef DO_NETCDF
+#include "CImg_NetCDF.h"
+#endif //DO_NETCDF
+
 //! profiling sequential process
 /**
- * 
+ * elapsed time measurments, might be stored in NetCDF file if compiled
+ * measured elapsed times are :
+ * - entire loop duration
+ * - process duration, e.g. in nc_img(0)
+ * - storage duration, e.g. in nc_img(1)
 **/
 template<typename Tnetcdf>
 class CProfilingSequential
@@ -90,14 +103,14 @@ public:
     nc_img(1)(0)=elapsed_time;
   }//set_store_elapsed_time
 
-  //! store all iteration values, setted by \c set_*_ET, e.g. \c set_process_ET and \c set_store_ET
+  //! store all iteration values, setted by \c set_*_ET, e.g. \c set_process_ET and \c set_store_ET, e.g. elapsed time(s) of single iteration
   virtual void put_IETs()
   {
     std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
   }//store_elapsed_times
 
 
-  //! store all iteration values, setted by \c set_*_ET, e.g. \c set_process_ET and \c set_store_ET
+  //! set and store elapsed time of all iteration loop, e.g. elapsed time of entire program
   virtual void setNput_PET(const int &count)
   {
       std::chrono::high_resolution_clock::time_point tp2 = std::chrono::high_resolution_clock::now();

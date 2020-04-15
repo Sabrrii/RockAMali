@@ -5,20 +5,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#ifdef DO_PROFILING
-//std::chrono
-#include <ctime>
-#include <ratio>
-#include <chrono>
-#ifdef DO_NETCDF
-#include "CImg_NetCDF.h"
-#endif //DO_NETCDF
-#endif //DO_PROFILING
 
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2l"
+#define VERSION "v0.7.2"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -36,6 +27,7 @@
 #endif //DO_GPU
 #include "CDataStore.hpp"
 
+//profiling
 #ifdef DO_PROFILING
 #include "CProfiling.hpp"
 #endif //DO_PROFILING
