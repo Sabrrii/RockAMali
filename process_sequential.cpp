@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2d"
+#define VERSION "v0.7.2e"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -278,12 +278,14 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     if (!(nc.pNCvars[1]->add_att("storage",store.class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding storage name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[1]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
     //add global attributes
+    ///versions
+    nc.pNCFile->add_att("process_sequential",VERSION);
     nc.pNCFile->add_att("CImg_NetCDF",CIMG_NETCDF_VERSION);
     nc.pNCFile->add_att("CParameterNetCDF",CDL_PARAMETER_VERSION);
     nc.pNCFile->add_att("NcTypeInfo",NETCDF_TYPE_INFO_VERSION);
-
 #endif //DO_NETCDF
-    //! \todo PROFILING loop add start
+    //! \todo PROFILING . loop add start
+    std::chrono::high_resolution_clock::time_point tp1 = std::chrono::high_resolution_clock::now();
 #endif //DO_PROFILING
 
       //run
@@ -295,29 +297,29 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
          if(show) images[0].display_graph(generator_type.c_str());
         #endif
 #ifdef DO_PROFILING
-       cimg::tic();
-       std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+        cimg::tic();
+        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 #endif //DO_PROFILING
         process->iteration(access,images, accessR,results, 0,i);
 #ifdef DO_PROFILING
-       std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-       cimg::toc();
-       std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
-       std::cout << "iteration elapsed time=" << time_span.count()*1000 << " ms.";
-       nc_img(0)(0)=time_span.count()*1000000;//us
-       cimg::tic();
-       t1 = std::chrono::high_resolution_clock::now();
+        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+        cimg::toc();
+        std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+        std::cout << "iteration elapsed time=" << time_span.count()*1000 << " ms.";
+        nc_img(0)(0)=time_span.count()*1000000;//us
+        cimg::tic();
+        t1 = std::chrono::high_resolution_clock::now();
 #endif //DO_PROFILING
         store.iteration(access,images, 0,i);
         storeR.iteration(accessR,results, 0,i);
 #ifdef DO_PROFILING
-       t2 = std::chrono::high_resolution_clock::now();
-       cimg::toc();
-       time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
-       std::cout << "storage elapsed time=" << time_span.count()*1000 << " ms.";
-       nc_img(1)(0)=time_span.count()*1000000;//us
-//        std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
-       std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+        t2 = std::chrono::high_resolution_clock::now();
+        cimg::toc();
+        time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+        std::cout << "storage elapsed time=" << time_span.count()*1000 << " ms.";
+        nc_img(1)(0)=time_span.count()*1000000;//us
+//         std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
+        std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
 #endif //DO_PROFILING
         //check
         if(do_check)
@@ -340,8 +342,16 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
 
 #ifdef DO_PROFILING
     //! \todo PROFILING loop add stop
+      std::chrono::high_resolution_clock::time_point tp2 = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double> time_loop_span = std::chrono::duration_cast<std::chrono::duration<double>>(tp2 - tp1);
+      std::cout << "loop elapsed time=" << time_loop_span.count()*1000 << " ms.";
 #ifdef DO_NETCDF
-    //! \todo PROFILING loop save as global attr.
+    //! \todo . PROFILING loop save as global attr.
+      //add global attributes
+      ///profiling
+      nc.pNCFile->add_att("process_sequential_elapsed_time",round(time_loop_span.count()*1000000));//us
+      nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
+      nc.pNCFile->add_att("process_sequential_elapsed_time_per_iteration",round(time_loop_span.count()*1000000/count));//us
 #endif //DO_NETCDF
 #endif //DO_PROFILING
 

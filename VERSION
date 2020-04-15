@@ -1,6 +1,6 @@
 information: -factory- generator types are: count, signal_random, full_random, signal_pac, peak_noise.
 information: -factory- CPU processor types are: count, vPvMv, kernel, pac, filter.
-v0.7.2d
+v0.7.2e
   CImg_NetCDF.v0.8.3
   CParameterNetCDF.v0.5.0
   NcTypeInfo.v0.1.3
