@@ -75,19 +75,44 @@ public:
     tp1 = std::chrono::high_resolution_clock::now();
   }//constructor
 
+  //! set processing elapsed time (before storing all iteration values)
   virtual void set_process_ET(Tnetcdf elapsed_time)
   {
     nc_img(0)(0)=elapsed_time;
   }//set_process_elapsed_time
+  //! set storage elapsed time (before storing all iteration values)
   virtual void set_store_ET(Tnetcdf elapsed_time)
   {
     nc_img(1)(0)=elapsed_time;
   }//set_store_elapsed_time
 
-  virtual void put_ETs()
+  //! store all iteration values, setted by \c set_*_ET, e.g. \c set_process_ET and \c set_store_ET
+  virtual void put_IETs()
   {
     std::cout << "CImgNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
-  }//set_store_elapsed_time
+  }//store_elapsed_times
+
+
+  //! store all iteration values, setted by \c set_*_ET, e.g. \c set_process_ET and \c set_store_ET
+  virtual void setNput_PET(const int &count)
+  {
+      std::chrono::high_resolution_clock::time_point tp2 = std::chrono::high_resolution_clock::now();
+      std::chrono::duration<double> time_loop_span = std::chrono::duration_cast<std::chrono::duration<double>>(tp2 - tp1);
+      std::cout << "loop elapsed time=" << time_loop_span.count()*1000 << " ms.";
+#ifdef DO_NETCDF
+      ///profiling
+      const Tnetcdf elapsed_time=round(time_loop_span.count()*1000000);
+      //elapsed time as variable
+      pNCvarETime->put(&elapsed_time);
+      const Tnetcdf etpi=elapsed_time/count;
+      pNCvarETimePIt->put(&etpi);
+      //elapsed time as global attributes
+      nc.pNCFile->add_att("process_sequential_elapsed_time",elapsed_time);//us
+      nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
+      nc.pNCFile->add_att("process_sequential_elapsed_time_per_iteration",elapsed_time/count);//us
+#endif //DO_NETCDF
+  }//setNstore_elapsed_time
+
 
 };//CProfilingSequential
 

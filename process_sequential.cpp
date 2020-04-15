@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2j"
+#define VERSION "v0.7.2k"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -117,6 +117,9 @@ int main(int argc,char **argv)
     std::cout<<"  CImg_NetCDF."<<CIMG_NETCDF_VERSION<<std::endl;
     std::cout<<"  CParameterNetCDF."<<CDL_PARAMETER_VERSION<<std::endl;
     std::cout<<"  NcTypeInfo."<<NETCDF_TYPE_INFO_VERSION;
+#ifdef DO_GPU
+    std::cout<<std::endl<<"  CLTypeInfo."<<CL_IMAGE_DATA_TYPE_INFO_VERSION;
+#endif //DO_GPU
 #endif //NetCDF
     std::cout<<std::endl;return 0;
   }//same --version or -v option
@@ -256,7 +259,7 @@ int main(int argc,char **argv)
       CDataStore<Tdata,Taccess> store(locks,    imagefilename,digit, CDataAccess::STATUS_PROCESSED);
       CDataStore<Tproc,Taccess> storeR(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);
 #ifdef DO_PROFILING
-      CProfilingSequential<Tnetcdf> prof("profiling_process.nc",process->class_name,store.class_name, width, VERSION);
+      CProfilingSequential<Tnetcdf> prof("profiling_process.nc",process->class_name,store.class_name, width, VERSION);//start elapsed time
 #endif //DO_PROFILING
 
       //run
@@ -290,7 +293,7 @@ int main(int argc,char **argv)
         std::cout << "storage elapsed time=" << time_span.count()*1000 << " ms.";
         prof.set_store_ET((Tnetcdf)(time_span.count()*1000000));//us
 //         std::cout<<"timing: elapsed for process="<<tp<<" ms, store frame="<<ts<<" ms, store result="<<tr<<" ms.";
-        prof.put_ETs();
+        prof.put_IETs();
 #endif //DO_PROFILING
         //check
         if(do_check)
@@ -312,21 +315,7 @@ int main(int argc,char **argv)
       }//vector loop
 
 #ifdef DO_PROFILING
-      std::chrono::high_resolution_clock::time_point tp2 = std::chrono::high_resolution_clock::now();
-      std::chrono::duration<double> time_loop_span = std::chrono::duration_cast<std::chrono::duration<double>>(tp2 - prof.tp1);
-      std::cout << "loop elapsed time=" << time_loop_span.count()*1000 << " ms.";
-#ifdef DO_NETCDF
-      ///profiling
-      const int elapsed_time=round(time_loop_span.count()*1000000);
-      //elapsed time var.
-      prof.pNCvarETime->put(&elapsed_time);
-      const int etpi=elapsed_time/count;
-      prof.pNCvarETimePIt->put(&etpi);
-      //add global attributes
-      prof.nc.pNCFile->add_att("process_sequential_elapsed_time",elapsed_time);//us
-      prof.nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
-      prof.nc.pNCFile->add_att("process_sequential_elapsed_time_per_iteration",elapsed_time/count);//us
-#endif //DO_NETCDF
+      prof.setNput_PET(count);//stop elapsed time
 #endif //DO_PROFILING
 
 #ifdef DO_GPU_PROFILING
