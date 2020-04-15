@@ -30,14 +30,14 @@ variables:
 //Generator full_random
      graph:noise=0.0;//12.3;
 //! \todo noise_ampl instead of min_Amp and max_Amp, same for tau, tA, tB (+B)
-     graph:min_Amp=10;
-     graph:max_Amp=1000;
-     graph:min_tau=2;
-     graph:max_tau=700;
-     graph:min_tB=1000;
-     graph:max_tB=2000;
+     graph:min_tB=1234;
+     graph:max_tB=1235;
      graph:min_tA=10;
-     graph:max_tA=100;
+     graph:max_tA=11;
+     graph:min_Amp=2345;
+     graph:max_Amp=2346;
+     graph:min_tau=500;
+     graph:max_tau=501;
 
 
 //trapezoid filter
