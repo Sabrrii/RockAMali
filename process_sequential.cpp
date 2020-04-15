@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2h"
+#define VERSION "v0.7.2i"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -280,6 +280,8 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     //elapsed time var.
     NcVar *pNCvarETime=nc.pNCFile->add_var("process_sequential_elapsed_time",ncInt);//us
     pNCvarETime->add_att("units","us");
+    NcVar *pNCvarETimePIt=nc.pNCFile->add_var("process_sequential_elapsed_time_per_iteration",ncInt);//us
+    pNCvarETimePIt->add_att("units","us");
     //add global attributes
     ///versions
     nc.pNCFile->add_att("process_sequential",VERSION);
@@ -351,9 +353,11 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
       std::cout << "loop elapsed time=" << time_loop_span.count()*1000 << " ms.";
 #ifdef DO_NETCDF
       ///profiling
-      int elapsed_time=round(time_loop_span.count()*1000000);
+      const int elapsed_time=round(time_loop_span.count()*1000000);
       //elapsed time var.
       pNCvarETime->put(&elapsed_time);
+      const int etpi=elapsed_time/count;
+      pNCvarETimePIt->put(&etpi);
       //add global attributes
       nc.pNCFile->add_att("process_sequential_elapsed_time",elapsed_time);//us
       nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
