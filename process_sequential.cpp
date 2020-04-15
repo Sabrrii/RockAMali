@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.1"
+#define VERSION "v0.7.2d"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -277,7 +277,13 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     if (!(nc.pNCvars[0]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[1]->add_att("storage",store.class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding storage name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[1]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
+    //add global attributes
+    nc.pNCFile->add_att("CImg_NetCDF",CIMG_NETCDF_VERSION);
+    nc.pNCFile->add_att("CParameterNetCDF",CDL_PARAMETER_VERSION);
+    nc.pNCFile->add_att("NcTypeInfo",NETCDF_TYPE_INFO_VERSION);
+
 #endif //DO_NETCDF
+    //! \todo PROFILING loop add start
 #endif //DO_PROFILING
 
       //run
@@ -331,6 +337,13 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
          if(show) results[0].display_graph(processor_type.c_str());
         #endif
       }//vector loop
+
+#ifdef DO_PROFILING
+    //! \todo PROFILING loop add stop
+#ifdef DO_NETCDF
+    //! \todo PROFILING loop save as global attr.
+#endif //DO_NETCDF
+#endif //DO_PROFILING
 
 #ifdef DO_GPU_PROFILING
 #ifdef DO_NETCDF
