@@ -27,7 +27,7 @@ NP=2
 GEN_FCT=count
 PROC=kernel
 USE_GPU=--use-GPU --GPU-factory program_image1d
-#USE_GPU=
+USE_GPU=
 DO_CHECK=--do-check --do-fill
 #DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
@@ -75,7 +75,7 @@ endif #DO_GPU
 #source package
 SRC_DATA_BUFFER=thread_lock.hpp CDataAccess.hpp CDataBuffer.hpp
 SRC_DATA_GENERATOR=CDataGenerator.hpp CDataGenerator_factory.hpp
-SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessor_vMvPv.hpp CDataProcessorGPU.hpp CL_image_data_type.h CDataProcessorGPUopencl.hpp CDataProcessorGPU_vMcPc.hpp CDataProcessorGPUfactory.hpp
+SRC_DATA_PROCESS=CDataProcessor.hpp CDataProcessor_vMvPv.hpp CDataProcessorGPU.hpp CL_image_data_type.h CDataProcessorGPUopencl.hpp CDataProcessorGPU_vMcPc.hpp CDataProcessorGPUfactory.hpp CProfiling.hpp
 HELP_OUTPUT=process_sequential_help.output process_help.output send_help.output receive_help.output store_help.output
 SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h ../CImg.Tool/CImg_NetCDF.h
 

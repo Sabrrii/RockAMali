@@ -60,8 +60,10 @@ public:
     //elapsed time var.
     pNCvarETime=nc.pNCFile->add_var("process_sequential_elapsed_time",ncInt);//us
     pNCvarETime->add_att("units","us");
+    pNCvarETime->add_att("profiling",class_name.c_str());
     pNCvarETimePIt=nc.pNCFile->add_var("process_sequential_elapsed_time_per_iteration",ncInt);//us
     pNCvarETimePIt->add_att("units","us");
+    pNCvarETimePIt->add_att("profiling",class_name.c_str());
     //add global attributes
     ///versions
     nc.pNCFile->add_att("process_sequential",program_version.c_str());
@@ -72,6 +74,8 @@ public:
     nc.pNCFile->add_att("ClTypeInfo",CL_IMAGE_DATA_TYPE_INFO_VERSION);
 #endif //DO_GPU
 #endif //DO_NETCDF
+    nc.pNCFile->add_att("kernel",process_class_name.c_str());
+    nc.pNCFile->add_att("profiling",class_name.c_str());
     tp1 = std::chrono::high_resolution_clock::now();
   }//constructor
 
