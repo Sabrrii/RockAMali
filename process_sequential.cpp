@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2f"
+#define VERSION "v0.7.2g"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -277,6 +277,8 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     if (!(nc.pNCvars[0]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[1]->add_att("storage",store.class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding storage name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[1]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
+    //elapsed time var.
+    NcVar *pNCvarETime=nc.pNCFile->add_var("process_sequential_elapsed_time",ncFloat);//us
     //add global attributes
     ///versions
     nc.pNCFile->add_att("process_sequential",VERSION);
@@ -287,7 +289,6 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     nc.pNCFile->add_att("ClTypeInfo",CL_IMAGE_DATA_TYPE_INFO_VERSION);
 #endif //DO_GPU
 #endif //DO_NETCDF
-    //! \todo PROFILING . loop add start
     std::chrono::high_resolution_clock::time_point tp1 = std::chrono::high_resolution_clock::now();
 #endif //DO_PROFILING
 
@@ -344,17 +345,19 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
       }//vector loop
 
 #ifdef DO_PROFILING
-    //! \todo PROFILING loop add stop
       std::chrono::high_resolution_clock::time_point tp2 = std::chrono::high_resolution_clock::now();
       std::chrono::duration<double> time_loop_span = std::chrono::duration_cast<std::chrono::duration<double>>(tp2 - tp1);
       std::cout << "loop elapsed time=" << time_loop_span.count()*1000 << " ms.";
 #ifdef DO_NETCDF
     //! \todo . PROFILING loop save as global attr.
-      //add global attributes
       ///profiling
-      nc.pNCFile->add_att("process_sequential_elapsed_time",round(time_loop_span.count()*1000000));//us
+      int elapsed_time=round(time_loop_span.count()*1000000);
+      //elapsed time var.
+//      pNCvarETime->put(elapsed_time);
+      //add global attributes
+      nc.pNCFile->add_att("process_sequential_elapsed_time",elapsed_time);//us
       nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
-      nc.pNCFile->add_att("process_sequential_elapsed_time_per_iteration",round(time_loop_span.count()*1000000/count));//us
+      nc.pNCFile->add_att("process_sequential_elapsed_time_per_iteration",elapsed_time/count);//us
 #endif //DO_NETCDF
 #endif //DO_PROFILING
 

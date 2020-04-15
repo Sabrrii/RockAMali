@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ns=1234
+ns=12
 
 list=
 kernel_list=
