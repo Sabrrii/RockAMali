@@ -18,7 +18,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.2g"
+#define VERSION "v0.7.2h"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -278,7 +278,8 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     if (!(nc.pNCvars[1]->add_att("storage",store.class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding storage name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[1]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
     //elapsed time var.
-    NcVar *pNCvarETime=nc.pNCFile->add_var("process_sequential_elapsed_time",ncFloat);//us
+    NcVar *pNCvarETime=nc.pNCFile->add_var("process_sequential_elapsed_time",ncInt);//us
+    pNCvarETime->add_att("units","us");
     //add global attributes
     ///versions
     nc.pNCFile->add_att("process_sequential",VERSION);
@@ -349,11 +350,10 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
       std::chrono::duration<double> time_loop_span = std::chrono::duration_cast<std::chrono::duration<double>>(tp2 - tp1);
       std::cout << "loop elapsed time=" << time_loop_span.count()*1000 << " ms.";
 #ifdef DO_NETCDF
-    //! \todo . PROFILING loop save as global attr.
       ///profiling
       int elapsed_time=round(time_loop_span.count()*1000000);
       //elapsed time var.
-//      pNCvarETime->put(elapsed_time);
+      pNCvarETime->put(&elapsed_time);
       //add global attributes
       nc.pNCFile->add_att("process_sequential_elapsed_time",elapsed_time);//us
       nc.pNCFile->add_att("process_sequential_elapsed_time_units","us");
