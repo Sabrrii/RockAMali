@@ -2,8 +2,6 @@ process.process_sequential.v0.7.2
   CImg_NetCDF.v0.8.3
   CParameterNetCDF.v0.5.0
   NcTypeInfo.v0.1.4
-  CLTypeInfo.v0.1.4
  -factory- generator types are: count, signal_random, full_random, signal_pac, peak_noise.
  -factory- CPU processor types are: count, vPvMv, kernel, pac, filter.
- -factory- GPU processing types are: copy, program, lambda, closure, function, function_lambda, function_macro, discri, discri_int2, discri_int4, program_template, program_T4, program_T4xyzw, program_T4ls_fma, program_image1d.
 receive.send.
