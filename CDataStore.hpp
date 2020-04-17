@@ -105,7 +105,7 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
       //factory name as var. attribute
-      //factory_name;
+      nc.pNCvar->add_att(factory_type.c_str(),factory_name.c_str());
       is_netcdf_init=true;
     }//init NetCDF
 #endif //NetCDF
