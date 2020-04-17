@@ -1,0 +1,20 @@
+import from dev_NetCDF_random_parameters
+
+#gen.:
+grep digit CDataGenerator_PAC.hpp
+grep pageSchema CDataGenerator_PAC.hpp
+
+#proc.CPU:
+
+grep  Threshold CDataProcessor_energy.hpp
+grep  trapezoidal_filter CDataProcessor_energy.hpp
+
+grep Calcul_Ti CDataProcessor_energy.hpp
+grep Calculation_Energy CDataProcessor_energy.hpp
+
+
+
+#proc.GPU
+grep kernel_Energy CDataProcessorGPU_energy.hpp
+grep calculation CDataProcessorGPU_energy.hpp
+
