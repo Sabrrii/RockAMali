@@ -188,13 +188,21 @@ public:
     in2._data=(Tdata2*)in.data();
     out2._data=(Tproc2*)out.data();
     //copy CPU to GPU
-    compute::copy(in2.begin(), in2.end(), device_vector_in2.begin(), this->queue);
+   #ifdef DO_GPU_PROFILING
+    this->future=compute::copy_async
+   #else
+    compute::copy
+   #endif //DO_GPU_PROFILING
+    (in2.begin(), in2.end(), device_vector_in2.begin(), this->queue);
     //compute
     kernelGPU2(device_vector_in2,device_vector_out2);
     //copy GPU to CPU
     compute::copy(device_vector_out2.begin(), device_vector_out2.end(), out2.begin(), this->queue);
     //wait for completion
     this->queue.finish();
+   #ifdef DO_GPU_PROFILING
+    this->kernel_elapsed_time();
+   #endif //DO_GPU_PROFILING
   };//kernel
 
   //! compution kernel for an iteration (compution=copy, here)
@@ -308,14 +316,21 @@ public:
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)out.data();
     //copy CPU to GPU
-    compute::copy(in4.begin(), in4.end(), device_vector_in4.begin(), this->queue);
+   #ifdef DO_GPU_PROFILING
+    this->future=compute::copy_async
+   #else
+    compute::copy
+   #endif //DO_GPU_PROFILING
+    (in4.begin(), in4.end(), device_vector_in4.begin(), this->queue);
     //compute
     kernelGPU4(device_vector_in4,device_vector_out4);
     //copy GPU to CPU
     compute::copy(device_vector_out4.begin(), device_vector_out4.end(), out4.begin(), this->queue);
-
     //wait for completion
     this->queue.finish();
+   #ifdef DO_GPU_PROFILING
+    this->kernel_elapsed_time();
+   #endif //DO_GPU_PROFILING
   };//kernel
 
   //! compution kernel for an iteration (compution=copy, here)

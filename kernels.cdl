@@ -2,10 +2,10 @@ netcdf kernels
 {
 dimensions:
 
-	kernel = 12; //UNLIMITED ;
+	kernel = 3; //UNLIMITED ;
 	dimString=128;
 variables:
 	char kernel_name(kernel, dimString);
 data:
-	kernel_name = "0_copy", "1_program", "2_lambda", "3_closure", "4_function", "5_function_lambda", "6_function_macro", "7_program_template", "8_program_T4", "9_program_T4xyzw", "10_program_T4ls_fma", "11_program_image1d";
+	kernel_name = "0_discri", "1_discri_int2", "2_discri_int4";
 }//kernels
