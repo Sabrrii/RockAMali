@@ -37,6 +37,7 @@ public:
   //variable names (and its unit)
   std::string var_name;
   std::string unit_name;
+  std::string factory_type,factory_name;
 #endif //NetCDF
   //CImg format
   unsigned int file_name_digit;
@@ -46,6 +47,9 @@ public:
 
   CDataStore(std::vector<omp_lock_t*> &lock
   , std::string imagefilename, unsigned int digit
+#ifdef DO_NETCDF
+  , std::string info__from_factory_type, std::string &info__from_factory_name
+#endif //NetCDF
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FREE
   )
@@ -57,6 +61,8 @@ public:
     file_name_digit=digit;
 
 #ifdef DO_NETCDF
+    factory_type=info__from_factory_type;
+    factory_name=info__from_factory_name;
     //file extention
     std::size_t found=file_name.find_last_of(".");
     std::string extention=file_name.substr(found);
@@ -72,6 +78,8 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
 	//! \todo [medium] variable name should be variable of this classe(and we could add a attribute to specify the factory type)
       var_name="signal";
       unit_name="none";
+      //factory name as global attribute
+      nc.pNCFile->add_att(factory_type.c_str(),factory_name.c_str());
     }
 #endif //NetCDF
 
@@ -96,6 +104,8 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
       nc_img.assign(images[n].width());
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+      //factory name as var. attribute
+      //factory_name;
       is_netcdf_init=true;
     }//init NetCDF
 #endif //NetCDF

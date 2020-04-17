@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.3d"
+#define VERSION "v0.7.3e"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -248,8 +248,16 @@ int main(int argc,char **argv)
       }//CPU
       process_class_name=process->class_name;
      //stores
-      CDataStore<Tdata,Taccess> store(locks,    imagefilename,digit, CDataAccess::STATUS_PROCESSED);
-      CDataStore<Tproc,Taccess> storeR(locksR, resultfilename,digit, CDataAccess::STATUS_FILLED);
+      CDataStore<Tdata,Taccess> store(locks,    imagefilename,digit
+#ifdef DO_NETCDF
+      , "generator", generate->class_name //generator_type
+#endif //NetCDF
+      , CDataAccess::STATUS_PROCESSED);
+      CDataStore<Tproc,Taccess> storeR(locksR, resultfilename,digit
+#ifdef DO_NETCDF
+      , "kernel", process_class_name  //processor_type or processing_type
+#endif //NetCDF
+      , CDataAccess::STATUS_FILLED);
 #ifdef DO_PROFILING
       CProfilingSequential<Tnetcdf> prof("profiling_process.nc",process->class_name,store.class_name, width, VERSION);//start elapsed time
 #endif //DO_PROFILING
