@@ -1,5 +1,5 @@
 
- [0;31;59msend[0;0;0m: generate and send data via UDP.
+ send: generate and send data via UDP.
  It uses different GNU libraries (see --info option)
 
  usage: ./send -h
@@ -10,14 +10,14 @@
           NcTypeInfo.v0.1.2
  compilation date: (Mar  5 2020, 09:26:19)
 
-    [1m-s              [0;0;0m 1024                     [0;32;59msize   of udp buffer[0;0;0m
-    [1m-n              [0;0;0m 256                      [0;32;59mnumber of frames[0;0;0m
-    [1m-b              [0;0;0m 12                       [0;32;59msize   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
-    [1m-c              [0;0;0m 2                        [0;32;59mthread count[0;0;0m
-    [1m-p              [0;0;0m 1234                     [0;32;59mport where the packets are send on the receiving device[0;0;0m
-    [1m-i              [0;0;0m 10.10.15.1               [0;32;59mip address of the receiver[0;0;0m
-    [1m-w              [0;0;0m 123456789                [0;32;59mwaiting time between udp frames[0;0;0m
-    [1m--generator-factory[0;0;0m count                    [0;32;59mgenerator type, e.g. count, random or peak[0;0;0m
-    [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
-    [1m--info          [0;0;0m false                    [0;32;59mshow compilation options (or -I option)[0;0;0m
-    [1m--version       [0;0;0m false                    [0;32;59mshow version (or -v option)[0;0;0m
+    -s               1024                     size   of udp buffer[0;0;0m
+    -n               256                      number of frames[0;0;0m
+    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
+    -c               2                        thread count[0;0;0m
+    -p               1234                     port where the packets are send on the receiving device[0;0;0m
+    -i               10.10.15.1               ip address of the receiver[0;0;0m
+    -w               123456789                waiting time between udp frames[0;0;0m
+    --generator-factory count                    generator type, e.g. count, random or peak[0;0;0m
+    --help           true                     help (or -h option)[0;0;0m
+    --info           false                    show compilation options (or -I option)[0;0;0m
+    --version        false                    show version (or -v option)[0;0;0m
