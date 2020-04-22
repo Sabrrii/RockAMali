@@ -249,7 +249,9 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_Noise";	
-    Get_Parameters_Noise(rand_min,rand_max);	
+    Get_Parameters_Noise(rand_min,rand_max);
+//! [todo] add noise prms to NetCDF
+    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
     this->check_locks(lock);
   }//constructor
 
@@ -280,6 +282,14 @@ public:
 
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
+#ifdef DO_NETCDF
+    this->nc_img[0]=this->A;
+    this->nc_img[1]=this->tau;
+    this->nc_img[2]=this->nb_tB;
+//! [todo] add noise prms to NetCDF
+std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) return " << this->nc.addNetCDFData(this->nc_img) << std::endl;
+#endif //DO_NETCDF
+
   }//iteration
 
 };//CDataGenerator_Peak_Noise
@@ -412,7 +422,8 @@ public:
     this->class_name="CDataGenerator_Full_Random";
     this->check_locks(lock);
     Read_Paramaters(min_Amp,max_Amp, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
-    
+    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+
  }//constructor
 
   //! one iteration for any loop
@@ -446,7 +457,7 @@ public:
     if(!(this->is_netcdf_init))
     {
       //add class name in NetCDF profiling file
-     cimglist_for (this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding kernel name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+     cimglist_for (this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
       this->is_netcdf_init=true;
     }//!is_netcdf_init
 
