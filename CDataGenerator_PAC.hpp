@@ -473,47 +473,70 @@ public:
 
 #endif //NetCDF
 
-//! Explanation of signal paramaters
 /**
   \page pageSchema PAC Signal
+ *
+ * Generation of PAC signal and its processing are described here
+ *
  * \li \ref sectionDisplay
  * \li \ref sectionGenerator
  * \li \ref sectionProcessor
- * \n Generation of PAC signal and its processing are described here
  *
  *
  ** \section sectionDisplay Compile & execute the program
  * \image html Makefile_doc.png "Line to change & commands to type"
  *
  * - Makefile : \n
- *  GEN_FCT = name of the signal to be generated (in our case "signal_pac") \n
- *  PROC = name of the processor (in our case "filter")
+ *  \c GEN_FCT = name of the signal to be generated (in our case "signal_pac") \n
+ *  \c PROC = name of the processor (in our case "filter") \n
+ *  see FACTORIES for full available names :
+   \code
+     cat FACTORIES
+     #or
+     ./process_sequential -h 2>&1 | grep '\-factory\-'
+   \endcode
+ * e.g.
+ * \verbinclude "FACTORIES"
  * - Terminal : \n
- *  make process_sequentialX = create the executable that will generate, process the signal \n
- *  make process-sequentialX_run = launch the executable who print and dispay the results with CImg \n
- *  make process_sequentialX_run \n
-ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s 4096 -o sample_sequential.nc -r result_sequential.nc --generator-factory signal_pac --CPU-factory filter -n 12 --use-GPU --GPU-factory discri --do-check --show && ncdump -h sample_sequential.nc \n
- * Ncgen allow to find the paramaters in the .cdl file
+ *  \c make \c process_sequentialX = create the executable that will generate, process and store the signal \n
+ *  \c make \c process-sequentialX_run = launch the executable who prints and displays the results in Xwindows (using CImg) \n
+ *  \c make \c process_sequentialX_run, e.g.
+   \code
+    #generate compiled parameter file
+    ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc
+
+    #run program
+    ./process_sequential.X -s 4096 -n 12 \
+    -o sample_sequential.nc -r result_sequential.nc \
+    --generator-factory signal_pac \
+    --CPU-factory filter \
+    --use-GPU --GPU-factory discri \
+    --do-check --show
+
+    #show result
+    ncdump -h sample_sequential.nc \n
+   \endcode
+ * \note ncgen allow to get the user paramaters from the .cdl file, e.g. \c parameters.cdl
  * 
  ** \section sectionGenerator Generation of PAC signal
  * \image html Signal_details.png "PAC signal details"
  *
  *   Graphic legend :   
- * - blue curve : signal pac values (y axis)
- * - B: Baseline					(20)
- * - A: Amplitude					(1234)
- * - nb_tA: peak duration				(10)
- * - nb_tB: baseline duration				(1000)
- * - Tau: decrease time					(500)
- * A * exp(-t/tau)+B: Exponential decrease 
- * - nbitem: size of frame (x axis) 				(4096)
+ * - \c blue curve : signal pac values (y axis)
+ * - \c B: Baseline					(20)
+ * - \c A: Amplitude					(1234)
+ * - \c nb_tA: peak duration				(10)
+ * - \c nb_tB: baseline duration				(1000)
+ * - \c Tau: decrease time					(500)
+ * , i.e. A * exp(-t/tau)+B: Exponential decrease 
+ * - \c nbitem: size of frame (x axis) 				(4096)
  *
  ** \section sectionProcessor PAC signal processing
  * \image html filter_details.png "Trapezoidal filter details"
  *
  *  Graphic legend :  
- * - Signal: Signal Pac representation	
- * - Filter: show the energy with the formula : \n
+ * - \c Signal: Signal Pac representation	
+ * - \c Filter: show the energy with the formula : \n
  *  <I> s(n)=2*s(n-1)-s(n-2) + e(n-1)-alp*e(n-2) -e(n-(ks+1)) +alp*e(n-(ks+2))-e(n-(ks+ms+1))+alp*e(n-(ks+ms+2))+e(n-(2*ks+ms+1))-alp*e(n-(2*ks+ms+2)) </I> \n
  *  where alp=alpha ; s= trapezoidal; e=signal pac ; ks = increase size ; ms = plateau size;
  *  \note Filter Computation: Represent the part where computation of the filter is done
@@ -521,19 +544,19 @@ ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequ
  * \image html discri_details.png "discri details"
  *
  *  Graphic legend :  
- * - DCFD: (n-delay)-frac*s(n)
- * - Discri simple: e(n)-alp*e(n-1)
- * - Threshold : value who serve as reference
- * - Signal : Signal Pac representation
- * - Trigger : end of the baseline, this is the result of the computation \n
+ * - \c DCFD: (n-delay)-frac*s(n)
+ * - \c Discri \c simple: e(n)-alp*e(n-1)
+ * - \c Threshold : value who serve as reference
+ * - \c Signal : Signal Pac representation
+ * - \c Trigger : end of the baseline, this is the result of the computation \n
  *
  * \image html ParaFilter_details.png "Paramaters filter trapezoidal details"
  *
  *  Graphic legend :  
- * - N baseline : n values of baseline
- * - Q delay : Time between the trigger and the max
- * - N flat top : n values at max
- * - Filter : trapezoidal filter
+ * - \c N \c baseline : n values of baseline
+ * - \c Q \c delay : Time between the trigger and the max
+ * - \c N \c flat \c top : n values at max
+ * - \c Filter : trapezoidal filter
 **/
 
 #endif //_DATA_GENERATOR_PAC_

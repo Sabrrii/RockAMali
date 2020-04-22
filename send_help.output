@@ -10,14 +10,14 @@
           NcTypeInfo.v0.1.2
  compilation date: (Mar  5 2020, 09:26:19)
 
-    -s               1024                     size   of udp buffer[0;0;0m
-    -n               256                      number of frames[0;0;0m
-    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
-    -c               2                        thread count[0;0;0m
-    -p               1234                     port where the packets are send on the receiving device[0;0;0m
-    -i               10.10.15.1               ip address of the receiver[0;0;0m
-    -w               123456789                waiting time between udp frames[0;0;0m
-    --generator-factory count                    generator type, e.g. count, random or peak[0;0;0m
-    --help           true                     help (or -h option)[0;0;0m
-    --info           false                    show compilation options (or -I option)[0;0;0m
-    --version        false                    show version (or -v option)[0;0;0m
+    -s               1024                     size   of udp buffer
+    -n               256                      number of frames
+    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
+    -c               2                        thread count
+    -p               1234                     port where the packets are send on the receiving device
+    -i               10.10.15.1               ip address of the receiver
+    -w               123456789                waiting time between udp frames
+    --generator-factory count                    generator type, e.g. count, random or peak
+    --help           true                     help (or -h option)
+    --info           false                    show compilation options (or -I option)
+    --version        false                    show version (or -v option)

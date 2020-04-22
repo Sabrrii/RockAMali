@@ -9,18 +9,18 @@
           CImg_NetCDF.v0.8.3
  compilation date: (Mar  4 2020, 16:34:08)
 
-    -o               samples/sample.cimg      output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
-    -r               results/sample.cimg      result file name (e.g. "-r result.nc" or  "-r result.cimg -d 3" gives result_???.cimg)[0;0;0m
-    -d               6                        number of digit for file names[0;0;0m
-    -s               1024                     size   of udp buffer[0;0;0m
-    -n               123                      number of vector[0;0;0m
-    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)[0;0;0m
-    -c               2                        thread count (2 for receiving only or threads above 3 are processing one)[0;0;0m
-    -p               1234                     port where the packets are sent on the receiving device[0;0;0m
-    --CPU-factory    count                    CPU processing type, e.g. count or kernel[0;0;0m
-    --do-check       false                    do data check, e.g. test pass (or -C option)[0;0;0m
-    --do-check-exit  false                    do data check exit on first error (or -E option)[0;0;0m
-    --do-warmup      false                    do data warmup, e.g. allocation and fill (or -W option)[0;0;0m
-    --help           true                     help (or -h option)[0;0;0m
-    --info           false                    show compilation options (or -I option)[0;0;0m
-    --version        false                    show version (or -v option)[0;0;0m
+    -o               samples/sample.cimg      output file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)
+    -r               results/sample.cimg      result file name (e.g. "-r result.nc" or  "-r result.cimg -d 3" gives result_???.cimg)
+    -d               6                        number of digit for file names
+    -s               1024                     size   of udp buffer
+    -n               123                      number of vector
+    -b               12                       size   of vector buffer (total size is b*s*4 Bytes)
+    -c               2                        thread count (2 for receiving only or threads above 3 are processing one)
+    -p               1234                     port where the packets are sent on the receiving device
+    --CPU-factory    count                    CPU processing type, e.g. count or kernel
+    --do-check       false                    do data check, e.g. test pass (or -C option)
+    --do-check-exit  false                    do data check exit on first error (or -E option)
+    --do-warmup      false                    do data warmup, e.g. allocation and fill (or -W option)
+    --help           true                     help (or -h option)
+    --info           false                    show compilation options (or -I option)
+    --version        false                    show version (or -v option)
