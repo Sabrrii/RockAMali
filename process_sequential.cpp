@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.3g"
+#define VERSION "v0.7.3h"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -323,11 +323,18 @@ int main(int argc,char **argv)
 //! \bug [GPU_PROFILING and NetCDF] force close of file ?!
       if(use_GPU)
       {
+        //close NC file
         CDataProcessorGPU<Tdata,Tproc, Taccess>*gpuprocess=(CDataProcessorGPU<Tdata,Tproc, Taccess>*)process;
         gpuprocess->nc.pNCFile->close();
       }//use_GPU
 #endif //DO_NETCDF
 #endif //DO_GPU_PROFILING
+
+#ifdef DO_NETCDF
+      //close NC file
+      CDataGenerator_Peak<Tdata,Tproc, Taccess>*genNC=(CDataGenerator_Peak<Tdata,Tproc, Taccess>*)generate;
+      genNC->nc.pNCFile->close();
+#endif //DO_NETCDF
 
       break;
     }//sequential

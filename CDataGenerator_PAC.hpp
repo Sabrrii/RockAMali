@@ -45,8 +45,8 @@ public:
   //variable names (and its unit)
   std::vector<std::string> var_names;
   std::vector<std::string> unit_names;
-
 #endif //DO_NETCDF
+  //! get all parameters from NC file (i.e. compiled CDL)
   int Get_Parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base)
   {
     int Tau;
@@ -130,7 +130,7 @@ public:
     Get_Parameters(nb_tB, nb_tA, tau, A, B);//Signal Parameters	
     nb_tA+=nb_tB; //nb_tA is position
     this->check_locks(lock);
-    #ifdef DO_NETCDF
+#ifdef DO_NETCDF
     nc_img.assign(3, 1,1,1,1, -99);
     std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
     is_netcdf_init=false;
@@ -138,17 +138,16 @@ public:
     dim_names.push_back("dim1");
     std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
     //variable names (and its unit)
-  var_names.push_back("A");
-  var_names.push_back("tau");
-  var_names.push_back("tb");
-  unit_names.push_back("digit");
-  unit_names.push_back("tic (10ns)");
-  unit_names.push_back("tic (10ns)");
+    var_names.push_back("A");
+    var_names.push_back("tau");
+    var_names.push_back("tb");
+    unit_names.push_back("digit");
+    unit_names.push_back("tic (10ns)");
+    unit_names.push_back("tic (10ns)");
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
+     cimglist_for (nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator_",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
 
-   cimglist_for (nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator_",this->class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding kernel name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
-
-//! todo add other parameters
+//! todo [high] add other parameters
 #endif //DO_NETCDF
   }//constructor
 
@@ -176,6 +175,12 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
 
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
+#ifdef DO_NETCDF
+    nc_img[0]=A;
+    nc_img[1]=tau;
+    nc_img[2]=nb_tB;
+std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+#endif //DO_NETCDF
   }//iteration
 
 };//CDataGenerator_Peak
