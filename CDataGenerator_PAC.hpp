@@ -372,7 +372,7 @@ public:
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-    int noise_Amplitude,noise_BaseLine,noise_Tau,min_baseline,max_baseline,noise_ta;
+    int noise_Amplitude,noise_BaseLine,noise_Tau,noise_tB,noise_ta;
     ///parameter class
     CParameterNetCDF fp;
     //open file
@@ -409,22 +409,14 @@ public:
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<noise_Tau<<std::endl;
-    ///min_tB
-    attribute_name="min_tB";
-    if (error = fp.loadAttribute(attribute_name,min_baseline)!=0)
+    ///noise_tB
+    attribute_name="noise_tB";
+    if (error = fp.loadAttribute(attribute_name,noise_tB)!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
-    std::cout<<"  "<<attribute_name<<"="<<min_baseline<<std::endl;
-    ///max_tB
-    attribute_name="max_tB";
-    if (error = fp.loadAttribute(attribute_name,max_baseline)!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<max_baseline<<std::endl;
+    std::cout<<"  "<<attribute_name<<"="<<noise_tB<<std::endl;
     ///noise_tA
     attribute_name="noise_tA";
     if (error = fp.loadAttribute(attribute_name,noise_ta)!=0)
@@ -441,8 +433,8 @@ public:
     max_B=this->B+noise_BaseLine/2;
     min_T=this->tau-noise_Tau/2;
     max_T=this->tau+noise_Tau/2;
-    min_tb=min_baseline;
-    max_tb=max_baseline;
+    min_tb=this->nb_tB-noise_tB;
+    max_tb=this->nb_tB+noise_tB;
     min_ta=this->nb_tA-noise_ta/2;
     max_ta=this->nb_tA+noise_ta/2;
   } //Read_Paramaters
