@@ -244,7 +244,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
   }//constructor
 
   //! fill the image with the filter
-  virtual int trapezoidal_filter(CImg<Tdata> e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
+  virtual void trapezoidal_filter(CImg<Tdata> e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
   {
   //create a filter
     cimg_for_inX(s,decalage, s.width()-1,n)
@@ -322,7 +322,7 @@ std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
 	cimg_for_inX(imageC,Ti+qDelay,Ti+qDelay+number,i) imageC(i,0,0,3)=in.max();
 	imageC.display_graph("red = Filter, green = N baseline, Blue = Q delay, yellow = N flat top");
   }//Display_Trapeze_Paramaters
-  #endif //#cimg_display
+  #endif //cimg_display
 
   //! compution kernel for an iteration
   virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tproc> &out)

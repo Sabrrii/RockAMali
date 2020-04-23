@@ -5,12 +5,12 @@
  usage: ./process -h
         ./process -s 1024 -n 123 -o result.nc
 
- version: v0.7.3m
+ version: v0.7.3n
           CImg_NetCDF.v0.8.3
           CParameterNetCDF.v0.5.0
           NcTypeInfo.v0.1.4
  compiled types <Tdata,Tproc, Taccess(,Tnetcdf)>=<unsigned int,float, unsigned char(, int)>
- compilation date: (Apr 23 2020, 15:16:57)
+ compilation date: (Apr 23 2020, 15:32:59)
 
     [1m-o              [0;0;0m samples/sample.cimg      [0;32;59moutput file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     [1m-r              [0;0;0m results/sample.cimg      [0;32;59mresult file name (e.g. "-r result.nc" or  "-r result.cimg -d 3" gives result_???.cimg)[0;0;0m
