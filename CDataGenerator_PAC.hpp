@@ -73,7 +73,7 @@ public:
      std::cout<<process_name<<"="<<process<<std::endl;
      ///nb_tB
      std::string attribute_name="nb_tB";	// 10us
-     if (error = fp.loadAttribute(attribute_name,nb_base)!=0)
+     if ((error = fp.loadAttribute(attribute_name,nb_base))!=0)
      {
        std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
        return error;
@@ -81,28 +81,28 @@ public:
     std::cout<<"  "<<attribute_name<<"="<<nb_base<<std::endl;
     ///nb_tA
     attribute_name="nb_tA";		//100 ns
-    if (error = fp.loadAttribute(attribute_name,nb_peak)!=0){
+    if ((error = fp.loadAttribute(attribute_name,nb_peak))!=0){
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<nb_peak<<std::endl;
     ///tau
     attribute_name="tau";			//5 us
-    if (error = fp.loadAttribute(attribute_name,Tau)!=0){
+    if ((error = fp.loadAttribute(attribute_name,Tau))!=0){
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<Tau<<std::endl;
     ///A
     attribute_name="A";
-    if (error = fp.loadAttribute(attribute_name,ampl)!=0){
+    if ((error = fp.loadAttribute(attribute_name,ampl))!=0){
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<ampl<<std::endl;		 
     ///B
     attribute_name="B";
-    if (error = fp.loadAttribute(attribute_name,base)!=0){
+    if ((error = fp.loadAttribute(attribute_name,base))!=0){
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
@@ -390,7 +390,7 @@ public:
     std::cout<<process_name<<"="<<process<<std::endl;
     ///noise_Amplitude
     std::string attribute_name="noise_A";
-    if (error = fp.loadAttribute(attribute_name,noise_Amplitude)!=0)
+    if ((error = fp.loadAttribute(attribute_name,noise_Amplitude))!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
@@ -398,7 +398,7 @@ public:
     std::cout<<"  "<<attribute_name<<"="<<noise_Amplitude<<std::endl;
     ///noise_BaseLine
     attribute_name="noise_B";
-    if (error = fp.loadAttribute(attribute_name,noise_BaseLine)!=0)
+    if ((error = fp.loadAttribute(attribute_name,noise_BaseLine))!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
@@ -406,7 +406,7 @@ public:
     std::cout<<"  "<<attribute_name<<"="<<noise_BaseLine<<std::endl;
     ///noise_tau
     attribute_name="noise_tau";
-    if (error = fp.loadAttribute(attribute_name,noise_Tau)!=0)
+    if ((error = fp.loadAttribute(attribute_name,noise_Tau))!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
@@ -414,7 +414,7 @@ public:
     std::cout<<"  "<<attribute_name<<"="<<noise_Tau<<std::endl;
     ///noise_tB
     attribute_name="noise_tB";
-    if (error = fp.loadAttribute(attribute_name,noise_tB)!=0)
+    if ((error = fp.loadAttribute(attribute_name,noise_tB))!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
@@ -422,7 +422,7 @@ public:
     std::cout<<"  "<<attribute_name<<"="<<noise_tB<<std::endl;
     ///noise_tA
     attribute_name="noise_tA";
-    if (error = fp.loadAttribute(attribute_name,noise_ta)!=0)
+    if ((error = fp.loadAttribute(attribute_name,noise_ta))!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
