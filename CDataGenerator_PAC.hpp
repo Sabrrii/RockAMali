@@ -131,7 +131,7 @@ public:
     nb_tA+=nb_tB; //nb_tA is position
     this->check_locks(lock);
 #ifdef DO_NETCDF
-    nc_img.assign(3, 1,1,1,1, -99);
+    nc_img.assign(5, 1,1,1,1, -99);// A,B, tau, tA,tB
     std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
     is_netcdf_init=false;
     dim_time="dimF";
@@ -139,9 +139,13 @@ public:
     std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
     //variable names (and its unit)
     var_names.push_back("A");
+    var_names.push_back("B");
     var_names.push_back("tau");
+    var_names.push_back("ta");
     var_names.push_back("tb");
     unit_names.push_back("digit");
+    unit_names.push_back("digit");
+    unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
@@ -176,9 +180,13 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
 #ifdef DO_NETCDF
-    nc_img[0]=A;
-    nc_img[1]=tau;
-    nc_img[2]=nb_tB;
+    {int n=0;
+    nc_img[n++]=A;
+    nc_img[n++]=B;
+    nc_img[n++]=tau;
+    nc_img[n++]=nb_tA;
+    nc_img[n++]=nb_tB;
+    }//n
 std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
 #endif //DO_NETCDF
   }//iteration
