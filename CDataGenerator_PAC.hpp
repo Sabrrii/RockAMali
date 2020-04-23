@@ -13,12 +13,16 @@
  * generate Peak data into a shared circular buffer
  * \note Peak data except first one that is frame count value
  *
- * parameters NetCDF CDL :
+ * * user input parameters are loaded from NetCDF CDL - \see struct_parameter_NetCDF.h -, e.g. parameters.cdl :
  * - B: base line
  * - A: Amplitude
  * - nb_tA: peak duration
  * - nb_tB: baseline duration
  * - Tau: decrease time
+ * 
+ * * computer output parameters might be stored in NetCDF - \see CImg_NetCDF.h - (e.g. pac_signal_parameters.nc) \see
+ * - \c ncInit
+ * - \c ncStore
  * 
  * \ref pageSchema "Signal schema" 
 **/
@@ -35,7 +39,7 @@ public:
   int nb_tB,nb_tA,A,B;
   double tau; 
 #ifdef DO_NETCDF
-  std::string file_name="pac_signal_parameters.nc";
+  std::string file_name;
   CImgListNetCDF<Tnetcdf> nc;
   CImgList<Tnetcdf> nc_img;//temporary image for type conversion
   bool is_netcdf_init;
@@ -119,18 +123,11 @@ public:
         cimg_for_inX(images[n],nb_tA,images[n].width(),i) images[n](i)=A * exp(-t++/tau)+B;  	
   }//Peak
 
-  CDataGenerator_Peak(std::vector<omp_lock_t*> &lock
-  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
-  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
-  )
-  : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status)
-  {
-//    this->debug=true;
-    this->class_name="CDataGenerator_Peak";
-    Get_Parameters(nb_tB, nb_tA, tau, A, B);//Signal Parameters	
-    nb_tA+=nb_tB; //nb_tA is position
-    this->check_locks(lock);
 #ifdef DO_NETCDF
+  //! NetCDF initialisation
+  virtual void ncInit()
+  {
+    file_name="pac_signal_parameters.nc";
     nc_img.assign(5, 1,1,1,1, -99);// A,B, tau, tA,tB
     std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
     is_netcdf_init=false;
@@ -151,6 +148,35 @@ public:
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
 //! todo [high] add long_name(s)
      cimglist_for (nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator_",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+  }//ncInit
+
+  //! NetCDF storage
+  virtual void ncStore()
+  {
+    int n=0;
+    nc_img[n++]=A;
+    nc_img[n++]=B;
+    nc_img[n++]=tau;
+    nc_img[n++]=nb_tA;
+    nc_img[n++]=nb_tB;
+std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+    }//ncStore
+#endif //DO_NETCDF
+
+  //! constructor
+  CDataGenerator_Peak(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+  )
+  : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status)
+  {
+//    this->debug=true;
+    this->class_name="CDataGenerator_Peak";
+    Get_Parameters(nb_tB, nb_tA, tau, A, B);//Signal Parameters	
+    nb_tA+=nb_tB; //nb_tA is position
+    this->check_locks(lock);
+#ifdef DO_NETCDF
+    ncInit();
 #endif //DO_NETCDF
   }//constructor
 
@@ -179,14 +205,7 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
 #ifdef DO_NETCDF
-    {int n=0;
-    nc_img[n++]=A;
-    nc_img[n++]=B;
-    nc_img[n++]=tau;
-    nc_img[n++]=nb_tA;
-    nc_img[n++]=nb_tB;
-    }//n
-std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+    ncStore();
 #endif //DO_NETCDF
   }//iteration
 
@@ -258,7 +277,6 @@ public:
     this->class_name="CDataGenerator_Peak_Noise";	
     Get_Parameters_Noise(rand_min,rand_max);
 #ifdef DO_NETCDF
-//! [todo] . add noise prms to NetCDF
     (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
     (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
     cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
@@ -294,15 +312,7 @@ public:
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
 #ifdef DO_NETCDF
-//! \todo [high] move this to function in parent class, and call it here
-    {int n=0;
-    this->nc_img[n++]=this->A;
-    this->nc_img[n++]=this->B;
-    this->nc_img[n++]=this->tau;
-    this->nc_img[n++]=this->nb_tA;
-    this->nc_img[n++]=this->nb_tB;
-    }//n
-std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) return " << this->nc.addNetCDFData(this->nc_img) << std::endl;
+    this->ncStore();
 #endif //DO_NETCDF
 
   }//iteration
@@ -468,19 +478,14 @@ public:
     this->nb_tA+=this->nb_tB;
     std::cout<<"nb_tA+nb_tB = "<<this->nb_tA<<std::endl;
 #ifdef DO_NETCDF
-
     if(!(this->is_netcdf_init))
     {
       //add class name in NetCDF profiling file
      cimglist_for (this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
       this->is_netcdf_init=true;
     }//!is_netcdf_init
-
     //add data to NetCDF profiling file
-    this->nc_img(0)(0)=this->A;
-    this->nc_img(1)(0)=this->tau;
-    this->nc_img(2)(0)=this->nb_tB;
-    std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) return " << this->nc.addNetCDFData(this->nc_img) << std::endl;
+    this->ncStore();
 #endif //DO_NETCDF
      //noise
     if(index ==0)this->Random.assign(images[n].width());
