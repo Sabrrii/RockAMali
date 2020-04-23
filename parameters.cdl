@@ -3,7 +3,7 @@ netcdf RockAMali.parameters {//written in NetCDF CDL language
   :title = "RockAMali parameters";
   :comment = "source of parameters for RockAMali processing program";
   :history = "";
-  :version = "v0.0.0";
+  :version = "v0.0.1";
 
 dimensions:
 //  dim_string=64;
@@ -11,33 +11,33 @@ dimensions:
 
 //variable declaration and attributes
 variables:
-//graph
-  int graph;
-     graph:long_name="signal graph (activated if >0)";
-     graph:nb_tB_long_name="baseline time";
-     graph:nb_tB= 1234; 
-     graph:nb_tA_long_name="peak time"; 
-     graph:nb_tA= 10; 
-     graph:tau_long_name="time decrease";
-     graph:tau= 500;
-     graph:A_long_name="Amplitude";
-     graph:A= 2345;
-     graph:B_long_name="Baseline";
-     graph:B= 23;
+//signal
+  int signal;
+     signal:long_name="signal graph (activated if >0)";
+     signal:nb_tB_long_name="baseline time";
+     signal:nb_tB= 1234; 
+     signal:nb_tA_long_name="peak time"; 
+     signal:nb_tA= 10; 
+     signal:tau_long_name="time decrease";
+     signal:tau= 500;
+     signal:A_long_name="Amplitude";
+     signal:A= 2345;
+     signal:B_long_name="Baseline";
+     signal:B= 23;
 //Generator Random
-     graph:rand_min=0;
-     graph:rand_max=65535;
+     signal:rand_min=0;
+     signal:rand_max=65535;
 //Generator full_random
-     graph:noise=0.2;//12.3;
+     signal:noise=0.2;//12.3;
 //! \todo noise_ampl instead of min_Amp and max_Amp, same for tau, tA, tB (+B)
-     graph:min_tB=1234;
-     graph:max_tB=1235;
-     graph:min_tA=10;
-     graph:max_tA=11;
-     graph:min_Amp=2345;
-     graph:max_Amp=2346;
-     graph:min_tau=500;
-     graph:max_tau=501;
+     signal:min_tB=1234;
+     signal:max_tB=1235;
+     signal:min_tA=10;
+     signal:max_tA=11;
+     signal:min_Amp=2345;
+     signal:max_Amp=2346;
+     signal:min_tau=500;
+     signal:max_tau=501;
 
 
 //trapezoid filter
@@ -61,8 +61,8 @@ variables:
 
 //data value
 data:
-//graph
-  graph=1;
+//signal
+  signal=1;
 //trapezoid filter
   trapezoid=1;
 }

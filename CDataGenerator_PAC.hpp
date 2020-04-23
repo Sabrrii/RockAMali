@@ -65,7 +65,7 @@ public:
      if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
 
      float process; 
-     std::string process_name="graph";
+     std::string process_name="signal";
      //load process variable
      error=fp.loadVar(process,&process_name);
      if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
@@ -259,7 +259,7 @@ public:
     if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
 
     float process; 
-    std::string process_name="graph";
+    std::string process_name="signal";
     //load process variable
     error=fp.loadVar(process,&process_name);
     if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
@@ -376,7 +376,7 @@ public:
     if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
 
     float process; 
-    std::string process_name="graph";
+    std::string process_name="signal";
     //load process variable
     error=fp.loadVar(process,&process_name);
     if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
