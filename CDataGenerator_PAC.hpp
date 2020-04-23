@@ -49,6 +49,7 @@ public:
   //variable names (and its unit)
   std::vector<std::string> var_names;
   std::vector<std::string> unit_names;
+  std::vector<std::string> long_names;
 #endif //DO_NETCDF
   //! get all parameters from NC file (i.e. compiled CDL)
   int Get_Parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base)
@@ -145,9 +146,19 @@ public:
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
+    long_names.push_back("amplitude");
+    long_names.push_back("baseline");
+    long_names.push_back("exponential decrease");
+    long_names.push_back("baseline duration");
+    long_names.push_back("increase duration");
+    //variables
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
-//! todo [high] add long_name(s)
-     cimglist_for (nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator_",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    //variable long names
+    cimglist_for(nc_img,x)
+    {
+      this->nc.pNCvars[x]->add_att("long_name",long_names[x].c_str());
+      if (!(this->nc.pNCvars[x]->add_att("generator_",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    }
   }//ncInit
 
   //! NetCDF storage
