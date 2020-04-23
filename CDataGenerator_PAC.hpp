@@ -368,7 +368,7 @@ public:
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-    int min_Amplitude,max_Amplitude,min_Tau,max_Tau,min_baseline,max_baseline,min_tcroi,max_tcroi;
+    int min_Amplitude,max_Amplitude,min_Tau,max_Tau,min_baseline,max_baseline,noise_ta;
     ///parameter class
     CParameterNetCDF fp;
     //open file
@@ -429,22 +429,14 @@ public:
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<max_baseline<<std::endl;
-     ///min_tA
-    attribute_name="min_tA";
-    if (error = fp.loadAttribute(attribute_name,min_tcroi)!=0)
+     ///noise_tA
+    attribute_name="noise_tA";
+    if (error = fp.loadAttribute(attribute_name,noise_ta)!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
-    std::cout<<"  "<<attribute_name<<"="<<min_tcroi<<std::endl;
-    ///max_tA
-    attribute_name="max_tA";
-    if (error = fp.loadAttribute(attribute_name,max_tcroi)!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<max_tcroi<<std::endl;  
+    std::cout<<"  "<<attribute_name<<"="<<noise_ta<<std::endl;
 
     min_A=min_Amplitude; // convert int into Tdata
     max_A=max_Amplitude; // convert into int
@@ -452,8 +444,8 @@ public:
     max_T=max_Tau; // convert into int
     min_tb=min_baseline; // convert into int
     max_tb=max_baseline; // convert into int
-    min_ta=min_tcroi; // convert into int
-    max_ta=max_tcroi; // convert into int
+    min_ta=this->nb_tA-noise_ta/2; // convert into int
+    max_ta=this->nb_tA+noise_ta/2; // convert into int
   } //Read_Paramaters
 
 #ifdef DO_NETCDF
@@ -507,13 +499,6 @@ public:
     this->nb_tA+=this->nb_tB;
     std::cout<<"nb_tA+nb_tB = "<<this->nb_tA<<std::endl;
 #ifdef DO_NETCDF
-    if(!(this->is_netcdf_init))
-    {
-      //add class name in NetCDF profiling file
-     cimglist_for (this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
-      this->is_netcdf_init=true;
-    }//!is_netcdf_init
-    //add data to NetCDF profiling file
     this->ncStore();
 #endif //DO_NETCDF
      //noise

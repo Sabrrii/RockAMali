@@ -32,8 +32,8 @@ variables:
 //! \todo noise_ampl instead of min_Amp and max_Amp, same for tau, tA, tB (+B)
      signal:min_tB=1234;
      signal:max_tB=1235;
-     signal:min_tA=10;
-     signal:max_tA=11;
+     signal:noise_tA_long_name="peak noise time amplitude"; 
+     signal:noise_tA=2;
      signal:min_Amp=2345;
      signal:max_Amp=2346;
      signal:min_tau=500;
