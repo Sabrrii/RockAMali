@@ -78,7 +78,7 @@ class CDataGenerator_Random: public CDataGenerator<Tdata, Taccess>
 public:
   Tdata rand_min,rand_max;
   
-int Read_Paramaters (Tdata &min_limit, Tdata &max_limit)
+int read_parameters (Tdata &min_limit, Tdata &max_limit)
 {
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -97,21 +97,22 @@ int Read_Paramaters (Tdata &min_limit, Tdata &max_limit)
   std::cout<<process_name<<"="<<process<<std::endl;
    ///rand_min
   std::string attribute_name="rand_min";
-  if (error = fp.loadAttribute(attribute_name,rnd_min)!=0){
+  if ((error = fp.loadAttribute(attribute_name,rnd_min))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<rnd_min<<std::endl;
   ///rand_max
   attribute_name="rand_max";
-  if (error = fp.loadAttribute(attribute_name,rnd_max)!=0){
+  if ((error = fp.loadAttribute(attribute_name,rnd_max))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<rnd_max<<std::endl;
   min_limit=rnd_min; // convert into int
   max_limit=rnd_max; // convert into int
-} //Read_Paramaters
+  return 0;
+} //read_parameters
 
   CDataGenerator_Random(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
@@ -122,7 +123,7 @@ int Read_Paramaters (Tdata &min_limit, Tdata &max_limit)
 //    this->debug=true;
     this->class_name="CDataGenerator_Random";
     this->check_locks(lock);
-    Read_Paramaters(rand_min, rand_max);
+    read_parameters(rand_min, rand_max);
     //! \todo [lowest] setup limits from CDL (e.g. CDL aggregation with ncgen)
  }//constructor
 

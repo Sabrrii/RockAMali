@@ -53,7 +53,7 @@ public:
 #endif //DO_NETCDF
 
   //! get parameters from NC file (i.e. compiled CDL)
-  int Get_Parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base)
+  virtual int read_parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base)
   {
     int Tau;
      ///file name
@@ -109,8 +109,7 @@ public:
     std::cout<<"  "<<attribute_name<<"="<<base<<std::endl; 
     decrease=Tau; // convert into int
     return 0;
-
-  }//Get_Parameters
+  }//read_parameters
 
   void Peak (CImgList<Tdata> &images, int n)//, int index) //fill image with Peak 
   {
@@ -187,7 +186,7 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak";
-    Get_Parameters(nb_tB, nb_tA, tau, A, B);//Signal Parameters	
+    read_parameters(nb_tB, nb_tA, tau, A, B);//Signal Parameters	
     nb_tA+=nb_tB; //nb_tA is position
     this->check_locks(lock);
 #ifdef DO_NETCDF
@@ -253,7 +252,7 @@ public:
   CImg<float> Random;
 
   //! read parameters from CDL
-  int Get_Parameters_Noise(float &min_noise, float &max_noise)
+  virtual int read_parameters(float &min_noise, float &max_noise)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -273,7 +272,7 @@ public:
    
     ///noise
     std::string attribute_name="noise";
-    if (error = fp.loadAttribute(attribute_name,rnd)!=0){
+    if ((error = fp.loadAttribute(attribute_name,rnd))!=0){
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
@@ -282,7 +281,7 @@ public:
     min_noise=-(rnd/2); // convert into int
     max_noise=rnd/2; // convert into int
     return 0;
-  }//Get_Parameters_Noise
+  }//read_parameters
 
 #ifdef DO_NETCDF
   //! NetCDF initialisation
@@ -302,7 +301,7 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_Noise";	
-    Get_Parameters_Noise(rand_min,rand_max);
+    read_parameters(rand_min,rand_max);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -371,7 +370,7 @@ public:
   Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
 
   //! read parameters from CDL
-  int Read_Paramaters (Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
+  virtual int read_parameters(Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -440,7 +439,8 @@ public:
     max_tb=this->nb_tB+noise_tB;
     min_ta=this->nb_tA-this->nb_tB-noise_ta/2;
     max_ta=this->nb_tA-this->nb_tB+noise_ta/2;
-  } //Read_Paramaters
+    return 0;
+  } //read_parameters
 
 #ifdef DO_NETCDF
   //! NetCDF initialisation
@@ -459,7 +459,7 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
-    Read_Paramaters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
+    read_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -504,7 +504,7 @@ public:
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
-    //create image with the random paramaters
+    //create peak signal (with the random paramaters)
     this->Peak(images, n); 
 
     //add noise on peak
