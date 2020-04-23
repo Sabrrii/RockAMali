@@ -51,7 +51,8 @@ public:
   std::vector<std::string> unit_names;
   std::vector<std::string> long_names;
 #endif //DO_NETCDF
-  //! get all parameters from NC file (i.e. compiled CDL)
+
+  //! get parameters from NC file (i.e. compiled CDL)
   int Get_Parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base)
   {
     int Tau;
@@ -247,6 +248,8 @@ class CDataGenerator_Peak_Noise: public CDataGenerator_Peak<Tdata, Taccess>
 public:
   float rand_min,rand_max;
   CImg<float> Random;
+
+  //! read parameters from CDL
   int Get_Parameters_Noise(float &min_noise, float &max_noise)
   {
     ///file name
@@ -363,12 +366,13 @@ class CDataGenerator_Full_Random: public CDataGenerator_Peak_Noise<Tdata, Tacces
 {
 public:
   Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
-//! \todo . add noise_B
+
+  //! read parameters from CDL
   int Read_Paramaters (Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-    int noise_Amplitude,noise_BaseLine,min_Tau,max_Tau,min_baseline,max_baseline,noise_ta;
+    int noise_Amplitude,noise_BaseLine,noise_Tau,min_baseline,max_baseline,noise_ta;
     ///parameter class
     CParameterNetCDF fp;
     //open file
@@ -397,22 +401,14 @@ public:
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<noise_BaseLine<<std::endl;
-    ///min_tau
-    attribute_name="min_tau";
-    if (error = fp.loadAttribute(attribute_name,min_Tau)!=0)
+    ///noise_tau
+    attribute_name="noise_tau";
+    if (error = fp.loadAttribute(attribute_name,noise_Tau)!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
-    std::cout<<"  "<<attribute_name<<"="<<min_Tau<<std::endl;
-    ///max_tau
-    attribute_name="max_tau";
-    if (error = fp.loadAttribute(attribute_name,max_Tau)!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<max_Tau<<std::endl;
+    std::cout<<"  "<<attribute_name<<"="<<noise_Tau<<std::endl;
     ///min_tB
     attribute_name="min_tB";
     if (error = fp.loadAttribute(attribute_name,min_baseline)!=0)
@@ -443,8 +439,8 @@ public:
     max_A=this->A+noise_Amplitude/2;
     min_B=this->B-noise_BaseLine/2;
     max_B=this->B+noise_BaseLine/2;
-    min_T=min_Tau;
-    max_T=max_Tau;
+    min_T=this->tau-noise_Tau/2;
+    max_T=this->tau+noise_Tau/2;
     min_tb=min_baseline;
     max_tb=max_baseline;
     min_ta=this->nb_tA-noise_ta/2;

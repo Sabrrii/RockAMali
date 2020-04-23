@@ -29,15 +29,13 @@ variables:
      signal:rand_max=65535;
 //Generator full_random
      signal:noise=0.2;//12.3;
-//! \todo noise_ampl instead of min_Amp and max_Amp, same for tau, tA, tB (+B)
      signal:min_tB=1234;
      signal:max_tB=1235;
      signal:noise_tA_long_name="peak noise time amplitude"; 
      signal:noise_tA=2;
      signal:noise_B=3;
      signal:noise_A=12;
-     signal:min_tau=500;
-     signal:max_tau=501;
+     signal:noise_tau=4;
 
 
 //trapezoid filter
