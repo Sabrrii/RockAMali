@@ -293,7 +293,7 @@ public:
   #endif // #if cimg_display
 
   //!fill the image with 2 discri and display it, return the position of the trigger
-  virtual void Calcul_Discri(CImg<Tdata> e, CImg<Tproc> &s,CImg<Tproc> &imageDCF,int Tpeak,Tproc th, double frac,double alp) 
+  virtual void Calcul_Discri(CImg<Tdata> e, CImg<Tproc> &s,CImg<Tproc> &imageDCF,int Tpeak,double frac,double alp) 
   {
 	s.assign(e.width());
 	int delay = (3*Tpeak)/2;
@@ -346,7 +346,7 @@ public:
     Display(in, trapeze, decalage);
     #endif //#cimg_display   
     ///Discri   
-    Calcul_Discri(in,s,imageDCF, Tm,threshold, fraction,alpha);
+    Calcul_Discri(in,s,imageDCF, Tm, fraction,alpha);
     int Ti=Calcul_Ti(s,threshold);
     std::cout<< "Trigger start= " << Ti  <<std::endl;
     #if cimg_display!=0
