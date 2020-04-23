@@ -28,7 +28,7 @@ variables:
      graph:rand_min=0;
      graph:rand_max=65535;
 //Generator full_random
-     graph:noise=0.0;//12.3;
+     graph:noise=0.2;//12.3;
 //! \todo noise_ampl instead of min_Amp and max_Amp, same for tau, tA, tB (+B)
      graph:min_tB=1234;
      graph:max_tB=1235;

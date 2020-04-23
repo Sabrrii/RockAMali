@@ -149,9 +149,8 @@ public:
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
+//! todo [high] add long_name(s)
      cimglist_for (nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator_",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
-
-//! todo [high] add other parameters
 #endif //DO_NETCDF
   }//constructor
 
@@ -258,8 +257,12 @@ public:
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_Noise";	
     Get_Parameters_Noise(rand_min,rand_max);
-//! [todo] add noise prms to NetCDF
+#ifdef DO_NETCDF
+//! [todo] . add noise prms to NetCDF
+    (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
+    (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
     cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+#endif //DO_NETCDF
     this->check_locks(lock);
   }//constructor
 
@@ -291,10 +294,14 @@ public:
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
 #ifdef DO_NETCDF
-    this->nc_img[0]=this->A;
-    this->nc_img[1]=this->tau;
-    this->nc_img[2]=this->nb_tB;
-//! [todo] add noise prms to NetCDF
+//! \todo [high] move this to function in parent class, and call it here
+    {int n=0;
+    this->nc_img[n++]=this->A;
+    this->nc_img[n++]=this->B;
+    this->nc_img[n++]=this->tau;
+    this->nc_img[n++]=this->nb_tA;
+    this->nc_img[n++]=this->nb_tB;
+    }//n
 std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) return " << this->nc.addNetCDFData(this->nc_img) << std::endl;
 #endif //DO_NETCDF
 
