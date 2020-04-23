@@ -123,56 +123,56 @@ public:
   std::cout<<process_name<<"="<<process<<std::endl;
   ///k
   std::string attribute_name="k";
-  if (error = fp.loadAttribute(attribute_name,ks)!=0){
+  if ((error = fp.loadAttribute(attribute_name,ks))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<ks<<std::endl;
   ///m
   attribute_name="m";
-  if (error = fp.loadAttribute(attribute_name,ms)!=0){
+  if ((error = fp.loadAttribute(attribute_name,ms))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<ms<<std::endl;
   ///alpha
   attribute_name="alpha";
-  if (error = fp.loadAttribute(attribute_name,Alpha)!=0){
+  if ((error = fp.loadAttribute(attribute_name,Alpha))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<Alpha<<std::endl;
   ///n
   attribute_name="n";
-  if (error = fp.loadAttribute(attribute_name,number)!=0){
+  if ((error = fp.loadAttribute(attribute_name,number))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<number<<std::endl;
   ///q
   attribute_name="q";
-  if (error = fp.loadAttribute(attribute_name,qDelay)!=0){
+  if ((error = fp.loadAttribute(attribute_name,qDelay))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<qDelay<<std::endl;
   //threshold
   attribute_name="threshold";
-  if (error = fp.loadAttribute(attribute_name,Threshold)!=0){
+  if ((error = fp.loadAttribute(attribute_name,Threshold))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<Threshold<<std::endl;
   ///fraction
   attribute_name="fraction";
-  if (error = fp.loadAttribute(attribute_name,Fraction)!=0){
+  if ((error = fp.loadAttribute(attribute_name,Fraction))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
   std::cout<<"  "<<attribute_name<<"="<<Fraction<<std::endl;
   ///Tm
   attribute_name="Tm";
-  if (error = fp.loadAttribute(attribute_name,Tpeak)!=0){
+  if ((error = fp.loadAttribute(attribute_name,Tpeak))!=0){
     std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
   }
@@ -181,11 +181,12 @@ public:
   alp=Alpha;
   frac=Fraction;
   th=Threshold;
+  return 0;
   }//Read_Filters_Paramaters
 
   //! fill the image with the filter
   template<typename Tdata, typename Tproc>
-  int trapezoidal_filter(CImg<Tdata> e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
+  void trapezoidal_filter(CImg<Tdata> e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
   {
     //initiation of first parts of data
     cimg_for_inX(s,0,decalage-1,n) s(n)=e(0);
@@ -292,7 +293,7 @@ public:
   #endif // #if cimg_display
 
   //!fill the image with 2 discri and display it, return the position of the trigger
-  virtual int Calcul_Discri(CImg<Tdata> e, CImg<Tproc> &s,CImg<Tproc> &imageDCF,int Tpeak,Tproc th, double frac,double alp) 
+  virtual void Calcul_Discri(CImg<Tdata> e, CImg<Tproc> &s,CImg<Tproc> &imageDCF,int Tpeak,Tproc th, double frac,double alp) 
   {
 	s.assign(e.width());
 	int delay = (3*Tpeak)/2;
@@ -302,7 +303,6 @@ public:
 	//Discri treshold		
 	imageDCF.assign(s.width(),1,1,1, 0);
 	cimg_for_inX(imageDCF,delay,s.width(),n) imageDCF(n)=s(n-delay)-frac*s(n);
-	//find the position of the trigger		
   }//Calcul_Discri
 
   #if cimg_display!=0
@@ -373,3 +373,4 @@ public:
 #endif //NetCDF
 
 #endif //_DATA_PROCESSOR_ENERGY_
+

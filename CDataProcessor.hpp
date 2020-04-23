@@ -12,7 +12,7 @@ using namespace cimg_library;
 #ifdef DO_NETCDF
 #include <netcdfcpp.h>
 #include "struct_parameter_NetCDF.h"
-#endif
+#endif //DO_NETCDF
 
 template<typename Tdata, typename Tproc, typename Taccess=unsigned char>
 class CDataProcessor : public CDataBuffer<Tdata, Taccess>
