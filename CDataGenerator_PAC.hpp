@@ -278,6 +278,16 @@ public:
     return 0;
   }//Get_Parameters_Noise
 
+#ifdef DO_NETCDF
+  //! NetCDF initialisation
+  virtual void ncInit()
+  {
+    (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
+    (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
+    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    }//ncStore
+#endif //DO_NETCDF
+
   CDataGenerator_Peak_Noise(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
@@ -288,9 +298,7 @@ public:
     this->class_name="CDataGenerator_Peak_Noise";	
     Get_Parameters_Noise(rand_min,rand_max);
 #ifdef DO_NETCDF
-    (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
-    (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
-    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    this->ncInit();
 #endif //DO_NETCDF
     this->check_locks(lock);
   }//constructor
