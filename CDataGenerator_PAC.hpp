@@ -362,13 +362,13 @@ template<typename Tdata, typename Taccess=unsigned char>
 class CDataGenerator_Full_Random: public CDataGenerator_Peak_Noise<Tdata, Taccess>
 {
 public:
-  Tdata min_Amp,max_Amp, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
-//! \todo add noise_B
-  int Read_Paramaters (Tdata &min_A, Tdata &max_A, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
+  Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
+//! \todo . add noise_B
+  int Read_Paramaters (Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-    int noise_Amplitude,min_Tau,max_Tau,min_baseline,max_baseline,noise_ta;
+    int noise_Amplitude,noise_BaseLine,min_Tau,max_Tau,min_baseline,max_baseline,noise_ta;
     ///parameter class
     CParameterNetCDF fp;
     //open file
@@ -389,6 +389,14 @@ public:
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<noise_Amplitude<<std::endl;
+    ///noise_BaseLine
+    attribute_name="noise_B";
+    if (error = fp.loadAttribute(attribute_name,noise_BaseLine)!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<noise_BaseLine<<std::endl;
     ///min_tau
     attribute_name="min_tau";
     if (error = fp.loadAttribute(attribute_name,min_Tau)!=0)
@@ -433,6 +441,8 @@ public:
     //convert input type into Tdata
     min_A=this->A-noise_Amplitude/2;
     max_A=this->A+noise_Amplitude/2;
+    min_B=this->B-noise_BaseLine/2;
+    max_B=this->B+noise_BaseLine/2;
     min_T=min_Tau;
     max_T=max_Tau;
     min_tb=min_baseline;
@@ -458,7 +468,7 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
-    Read_Paramaters(min_Amp,max_Amp, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
+    Read_Paramaters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -484,6 +494,8 @@ public:
     this->tau =  rand()%(max_tau-min_tau+1)+min_tau;
     std::cout<<"tau = "<<this->tau<<std::endl; 
     this->A =  rand()%(max_Amp-min_Amp+1)+min_Amp; 
+    std::cout<<"Amplitude = "<<this->A<<std::endl; 
+    this->B =  rand()%(max_BL-min_BL+1)+min_BL; 
     std::cout<<"Amplitude = "<<this->A<<std::endl; 
     this->nb_tB =  rand()%(max_tB-min_tB+1)+min_tB;
     std::cout<<"nb_tB = "<<this->nb_tB<<std::endl; 
