@@ -363,12 +363,12 @@ class CDataGenerator_Full_Random: public CDataGenerator_Peak_Noise<Tdata, Tacces
 {
 public:
   Tdata min_Amp,max_Amp, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
-  
+//! \todo add noise_B
   int Read_Paramaters (Tdata &min_A, Tdata &max_A, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-    int min_Amplitude,max_Amplitude,min_Tau,max_Tau,min_baseline,max_baseline,noise_ta;
+    int noise_Amplitude,min_Tau,max_Tau,min_baseline,max_baseline,noise_ta;
     ///parameter class
     CParameterNetCDF fp;
     //open file
@@ -381,22 +381,14 @@ public:
     error=fp.loadVar(process,&process_name);
     if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
     std::cout<<process_name<<"="<<process<<std::endl;
-    ///min_Amp
-    std::string attribute_name="min_Amp";
-    if (error = fp.loadAttribute(attribute_name,min_Amplitude)!=0)
+    ///noise_Amplitude
+    std::string attribute_name="noise_A";
+    if (error = fp.loadAttribute(attribute_name,noise_Amplitude)!=0)
     {
       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
       return error;
     }
-    std::cout<<"  "<<attribute_name<<"="<<min_Amplitude<<std::endl;
-    ///max_Amp
-    attribute_name="max_Amp";
-    if (error = fp.loadAttribute(attribute_name,max_Amplitude)!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<max_Amplitude<<std::endl;
+    std::cout<<"  "<<attribute_name<<"="<<noise_Amplitude<<std::endl;
     ///min_tau
     attribute_name="min_tau";
     if (error = fp.loadAttribute(attribute_name,min_Tau)!=0)
@@ -429,7 +421,7 @@ public:
       return error;
     }
     std::cout<<"  "<<attribute_name<<"="<<max_baseline<<std::endl;
-     ///noise_tA
+    ///noise_tA
     attribute_name="noise_tA";
     if (error = fp.loadAttribute(attribute_name,noise_ta)!=0)
     {
@@ -438,14 +430,15 @@ public:
     }
     std::cout<<"  "<<attribute_name<<"="<<noise_ta<<std::endl;
 
-    min_A=min_Amplitude; // convert int into Tdata
-    max_A=max_Amplitude; // convert into int
-    min_T=min_Tau; // convert into int
-    max_T=max_Tau; // convert into int
-    min_tb=min_baseline; // convert into int
-    max_tb=max_baseline; // convert into int
-    min_ta=this->nb_tA-noise_ta/2; // convert into int
-    max_ta=this->nb_tA+noise_ta/2; // convert into int
+    //convert input type into Tdata
+    min_A=this->A-noise_Amplitude/2;
+    max_A=this->A+noise_Amplitude/2;
+    min_T=min_Tau;
+    max_T=max_Tau;
+    min_tb=min_baseline;
+    max_tb=max_baseline;
+    min_ta=this->nb_tA-noise_ta/2;
+    max_ta=this->nb_tA+noise_ta/2;
   } //Read_Paramaters
 
 #ifdef DO_NETCDF
