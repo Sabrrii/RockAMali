@@ -138,9 +138,9 @@ public:
     //variable names (and its unit)
     var_names.push_back("A");
     var_names.push_back("B");
-    var_names.push_back("tau");
-    var_names.push_back("ta");
     var_names.push_back("tb");
+    var_names.push_back("ta");
+    var_names.push_back("tau");
     unit_names.push_back("digit");
     unit_names.push_back("digit");
     unit_names.push_back("tic (10ns)");
@@ -148,9 +148,9 @@ public:
     unit_names.push_back("tic (10ns)");
     long_names.push_back("amplitude");
     long_names.push_back("baseline");
-    long_names.push_back("exponential decrease");
     long_names.push_back("baseline duration");
     long_names.push_back("increase duration");
+    long_names.push_back("exponential decrease");
     //variables
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
     //variable long names
@@ -167,9 +167,9 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     int n=0;
     nc_img[n++]=A;
     nc_img[n++]=B;
-    nc_img[n++]=tau;
-    nc_img[n++]=nb_tA;
     nc_img[n++]=nb_tB;
+    nc_img[n++]=nb_tA-nb_tB;//nb_tA
+    nc_img[n++]=tau;
 std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
     }//ncStore
 #endif //DO_NETCDF
@@ -285,7 +285,7 @@ public:
     (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
     (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
     cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
-    }//ncStore
+    }//ncInit
 #endif //DO_NETCDF
 
   CDataGenerator_Peak_Noise(std::vector<omp_lock_t*> &lock
@@ -456,6 +456,15 @@ public:
     max_ta=max_tcroi; // convert into int
   } //Read_Paramaters
 
+#ifdef DO_NETCDF
+  //! NetCDF initialisation
+  virtual void ncInit()
+  {
+    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    }//ncInit
+#endif //DO_NETCDF
+
+  //! constructor
   CDataGenerator_Full_Random(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
@@ -464,11 +473,12 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
-    this->check_locks(lock);
     Read_Paramaters(min_Amp,max_Amp, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
-    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
-
- }//constructor
+#ifdef DO_NETCDF
+    this->ncInit();
+#endif //DO_NETCDF
+    this->check_locks(lock);
+  }//constructor
 
   //! one iteration for any loop
   /**
