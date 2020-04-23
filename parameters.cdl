@@ -3,7 +3,7 @@ netcdf RockAMali.parameters {//written in NetCDF CDL language
   :title = "RockAMali parameters";
   :comment = "source of parameters for RockAMali processing program";
   :history = "";
-  :version = "v0.0.1";
+  :version = "v0.0.2";
 
 dimensions:
 //  dim_string=64;
@@ -13,7 +13,11 @@ dimensions:
 variables:
 //signal
   int signal;
-     signal:long_name="signal graph (activated if >0)";
+     signal:long_name="signal graph parameters (activated if >0)";
+//Generator Random (factory: signal_random)
+     signal:rand_min=0;
+     signal:rand_max=65535;
+//Generator PAC signal (factory: signal_pac -, peak_noise and full_random-)
      signal:nb_tB_long_name="baseline time";
      signal:nb_tB= 1234; 
      signal:nb_tA_long_name="peak time"; 
@@ -24,11 +28,9 @@ variables:
      signal:A= 2345;
      signal:B_long_name="Baseline";
      signal:B= 23;
-//Generator Random
-     signal:rand_min=0;
-     signal:rand_max=65535;
-//Generator full_random
+//Generator PAC with noise (factory: peak_noise -and full_random-)
      signal:noise=0.2;//12.3;
+//Generator PAC with random parameters (factory: full_random)
      signal:noise_tB=123;
      signal:noise_tA_long_name="peak noise time amplitude"; 
      signal:noise_tA=2;
@@ -37,7 +39,7 @@ variables:
      signal:noise_tau=4;
 
 
-//trapezoid filter
+//trapezoid filter (factory: filter)
   int trapezoid;
     trapezoid:long_name="trapezoid filter (activated if >0)";
     trapezoid:k_long_name= "increase size";

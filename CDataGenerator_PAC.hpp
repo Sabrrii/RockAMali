@@ -136,22 +136,25 @@ public:
     dim_time="dimF";
     dim_names.push_back("dim1");
     std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+   ///set names
     //variable names (and its unit)
     var_names.push_back("A");
     var_names.push_back("B");
-    var_names.push_back("tb");
-    var_names.push_back("ta");
-    var_names.push_back("tau");
+    var_names.push_back("tB");
+    var_names.push_back("tA");
+    var_names.push_back("Tau");
     unit_names.push_back("digit");
     unit_names.push_back("digit");
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
+    //variable long names
     long_names.push_back("amplitude");
     long_names.push_back("baseline");
     long_names.push_back("baseline duration");
     long_names.push_back("increase duration");
     long_names.push_back("exponential decrease");
+   ///creation
     //variables
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
     //variable long names
@@ -435,8 +438,8 @@ public:
     max_T=this->tau+noise_Tau/2;
     min_tb=this->nb_tB-noise_tB;
     max_tb=this->nb_tB+noise_tB;
-    min_ta=this->nb_tA-noise_ta/2;
-    max_ta=this->nb_tA+noise_ta/2;
+    min_ta=this->nb_tA-this->nb_tB-noise_ta/2;
+    max_ta=this->nb_tA-this->nb_tB+noise_ta/2;
   } //Read_Paramaters
 
 #ifdef DO_NETCDF
