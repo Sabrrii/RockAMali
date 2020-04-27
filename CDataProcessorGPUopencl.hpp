@@ -335,31 +335,8 @@ virtual void define_opencl_source()
 
 };//CDataProcessorGPU_opencl_T4ls_fma
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <boost/compute/image/image1d.hpp>
 #include "CL_image_data_type.h"
-
 //! image1d operation with OpenCL including template types for GPU process
 /**
  *  FMA: val * 2.1 + 123.45
@@ -396,7 +373,7 @@ virtual void define_opencl_source()
     const int gid = get_global_id(0);
     const Tproc4 mul=(Tproc4)(2.1);
     const Tproc4 cst=(Tproc4)(123.45);
-//!  \todo read_imageui: read_imageT
+//!  \todo [low] opencl template: read_imageui = read_imageT
     Tproc4 in=convert_Tproc4(read_imageui(input, (int)(gid)));
     Tproc4 out=fma(in,mul,cst);
     write_imagef(output, (int)(gid), out);

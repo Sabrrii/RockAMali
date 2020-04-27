@@ -76,7 +76,6 @@ std::cout << "extention ="<<extention<< std::endl<< std::flush;
       dim_time="dimF";
       dim_names.push_back("dimS");
       //variable names (and its unit)
-//! \todo [medium] . variable name "signal" or "energy"
       if(var_unit_long_names.size()>0)
       {
         if(var_unit_long_names.size()<3){std::cerr<<__FILE__<<"::"<<__func__<<"() error: NetCDF need for "<<this->class_name<<" class, at least 3 names (variable, unit and long name)"<<std::endl; exit(2);}

@@ -6,6 +6,8 @@
 
 #ifdef DO_NETCDF
 
+//!  \todo [low] set template for opencl code \see CDataProcessorGPU_opencl_template
+
 //! discri calculation GPU process 
 /**
  * computation of the discri

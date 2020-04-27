@@ -81,7 +81,7 @@ public:
     )
   , device_vector_in(VECTOR_SIZE, ctx), device_vector_out(VECTOR_SIZE, ctx)
   {
-//! \todo [low] ? need two VECTOR_SIZE: in and out (or single output is done by CPU ?)
+//! \todo [null] NO need two VECTOR_SIZE: in and out, presently single output is done by CPU.
 //    this->debug=true;
     this->class_name="CDataProcessorGPU";
     this->image.assign(VECTOR_SIZE);
