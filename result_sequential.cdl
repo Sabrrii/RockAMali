@@ -1,0 +1,13 @@
+netcdf result_sequential {
+dimensions:
+	dimS = 1 ;
+	dimF = UNLIMITED ; // (23 currently)
+variables:
+	int signal(dimF, dimS) ;
+		signal:units = "digit" ;
+		signal:long_name = "signal" ;
+		signal:kernel = "CDataProcessor_Max_Min" ;
+
+// global attributes:
+		:kernel = "CDataProcessor_Max_Min" ;
+}

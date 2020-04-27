@@ -1,0 +1,13 @@
+netcdf sample_sequential {
+dimensions:
+	dimS = 8192 ;
+	dimF = UNLIMITED ; // (23 currently)
+variables:
+	int signal(dimF, dimS) ;
+		signal:units = "digit" ;
+		signal:long_name = "signal" ;
+		signal:generator = "CDataGenerator_Full_Random" ;
+
+// global attributes:
+		:generator = "CDataGenerator_Full_Random" ;
+}

@@ -37,6 +37,7 @@ public:
   //variable names (and its unit)
   std::string var_name;
   std::string unit_name;
+  std::string long_name;
   std::string factory_type,factory_name;
 #endif //NetCDF
   //CImg format
@@ -70,16 +71,14 @@ std::cout << "extention ="<<extention<< std::endl<< std::flush;
     if(!extention.compare(".nc")) is_netcdf_file=true; else is_netcdf_file=false;
     if(is_netcdf_file)
     {
-std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
       is_netcdf_init=false;
       dim_time="dimF";
       dim_names.push_back("dimS");
       //variable names (and its unit)
-	//! \todo [medium] variable name should be variable of this classe(and we could add a attribute to specify the factory type)
+//! \todo [medium] . variable name "signal" or "energy"
       var_name="signal";
-      unit_name="none";
-      //factory name as global attribute
-      nc.pNCFile->add_att(factory_type.c_str(),factory_name.c_str());
+      unit_name="digit";
+      long_name="signal";
     }
 #endif //NetCDF
 
@@ -100,10 +99,17 @@ std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc
 
 #ifdef DO_NETCDF
     if(is_netcdf_file) if(!is_netcdf_init)
-    {
+    {///create NetCDF file and its header
+      //create file
+std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+    //header
+      //factory name as global attribute
+      nc.pNCFile->add_att(factory_type.c_str(),factory_name.c_str());
+      //use width
       nc_img.assign(images[n].width());
 std::cout << "CImgNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
 std::cout << "CImgNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_name,unit_name) << std::endl<<std::flush;
+      nc.pNCvar->add_att("long_name",long_name.c_str());
       //factory name as var. attribute
       nc.pNCvar->add_att(factory_type.c_str(),factory_name.c_str());
       is_netcdf_init=true;

@@ -164,7 +164,10 @@ process_run:
 #	./process -c $(NT) -s $(FRAME_SIZE) -o sample.cimg --generator-factory $(GEN_FCT) --CPU-factory $(PROC) $(USE_GPU) -b $(NB) -n $(NS) $(DO_CHECK) # 2>&1 | grep -e info -e test -e failed -e double -e fault -e $(GEN_FCT) -e $(PROC) --color
 
 process_sequential_run:
-	ncgen parameters.cdl -o parameters.nc && rm -f sample_sequential.nc result_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc -r result_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n $(NS) $(USE_GPU) $(DO_CHECK) && ncdump -h sample_sequential.nc && ncdump -h result_sequential.nc && ncdump -h profiling_gpu.nc && ncdump -h profiling_process.nc #&& ncview sample_sequential.nc
+	ncgen parameters.cdl -o parameters.nc && rm -f sample_sequential.nc result_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc -r result_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n $(NS) $(USE_GPU) $(DO_CHECK)
+	ncdump -h sample_sequential.nc | tee sample_sequential.cdl && ncdump -h result_sequential.nc | tee result_sequential.cdl && ncdump -h profiling_gpu.nc | tee profiling_gpu.cdl && ncdump -h profiling_process.nc | tee profiling_process.cdl
+	git add profiling_gpu.cdl profiling_process.cdl result_sequential.cdl sample_sequential.cdl
+	#&& ncview sample_sequential.nc
 #	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n $(NS) $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
 
 process_sequential_check: result_sequential.nc  sample_sequential.nc
@@ -271,6 +274,7 @@ clear:
 	mkdir  $(DATA)/samples/ $(DATA)/results/
 	rm -f sample_??????.cimg result_??????.cimg
 	rm -f sample.nc sample_sequential.nc parameters.nc
+	rm -f kernels.cdl profiling_process.cdl profiling_gpu.cdl record.cdl result_sequential.cdl sample_sequential.cdl
 	sync
 
 clean:
