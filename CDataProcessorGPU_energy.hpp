@@ -6,6 +6,11 @@
 
 #ifdef DO_NETCDF
 
+//! discri calculation GPU process 
+/**
+ * computation of the discri
+ * return the value of energy
+**/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>
 {
@@ -34,37 +39,14 @@ compute::program make_opencl_program(const compute::context& context)
 
 public:
   bool kernel_loaded;
-  float alpha;
   compute::program program;
   compute::kernel  ocl_kernel;
+  //NetCDL
+  int k, m, n, q, Tm, decalage;
+  float/*Tproc*/ threshold;
+  float alpha, fraction; 
+  CImg<Tproc> trapeze;
 
-  int Read_Paramaters (float &alp)
-  {
-  ///file name
-  std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-  double Alpha;
-  ///parameter class
-  CParameterNetCDF fp;
-  //open file
-  int error=fp.loadFile((char *)fi.c_str());
-  if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
-
-  float process; 
-  std::string process_name="trapezoid";
-  //load process variable
-  error=fp.loadVar(process,&process_name);
-  if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
-  std::cout<<process_name<<"="<<process<<std::endl;
-  ///alpha
-  std::string attribute_name="alpha";
-  if (error = fp.loadAttribute(attribute_name,Alpha)!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<Alpha<<std::endl;
-  alp=Alpha;
-  
-  }//Read_Paramaters*/
   CDataProcessorGPU_discri_opencl(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
@@ -78,8 +60,10 @@ public:
 //    this->debug=true;
     this->class_name="CDataProcessorGPU_discri_opencl";
     this->check_locks(lock);
-    //OpenCL framework
-    Read_Paramaters(alpha);
+    ///read paramaters in NetCDF file
+    Read_Filters_Paramaters(k,m,n,q,Tm,threshold, alpha,fraction);
+    decalage= 2*k+m+2;
+    ///OpenCL framework
     program=make_opencl_program(this->ctx);
     kernel_loaded=false;
   }//constructor
@@ -103,6 +87,35 @@ public:
     this->queue.enqueue_1d_range_kernel(ocl_kernel,0,workSize,tpb);
   };//kernelGPU
 
+  //! compution kernel for an iteration
+  virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
+  {
+    /// discri computation on GPU      
+    //copy CPU to GPU
+    compute::copy(in.begin(), in.end(), this->device_vector_in.begin(), this->queue);
+    //compute
+    kernelGPU(this->device_vector_in,this->device_vector_out);
+    //copy GPU to CPU
+    compute::copy(this->device_vector_out.begin(), this->device_vector_out.end(), out.begin(), this->queue);
+    kernel_Energy(in,out);
+  };//kernel
+
+  virtual void kernel_Energy(CImg<Tdata> in, CImg<Tproc> out)
+  {
+    ///Trapezoidal computation on CPU    
+    trapeze.assign(in.width());
+    trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
+    //wait for GPU completion
+    this->queue.finish();
+//! \todo add DO_GPU_PROFILING
+    ///find trigger on CPU
+    int Ti=Calcul_Ti(out,threshold);
+    std::cout<<"Trigger value :"<<Ti<<std::endl;
+    /// energy computation on CPU    
+    float E=Calculation_Energy(trapeze, Ti, n, q);
+    std::cout<< "Energy= " << E  <<std::endl;
+  }//kernel_Energy
+
 #ifdef DO_NETCDF
   virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
   {
@@ -121,7 +134,12 @@ public:
 
 };//CDataProcessorGPU_discri_opencl
 
-
+//! discri calculation GPU process 
+/**
+ * computation of the discri
+ * return the value of energy
+ * make the computation on SIMD_2
+**/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_discri_opencl_int2 : public CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>
 {
@@ -134,6 +152,7 @@ class CDataProcessorGPU_discri_opencl_int2 : public CDataProcessorGPU_discri_ope
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
+//! \todo [medium] kernel discri_ls_fma
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha)
   {   
@@ -188,7 +207,6 @@ public:
     this->class_name="CDataProcessorGPU_discri_opencl_int2";
     this->check_locks(lock);
     //OpenCL framework
-    this->Read_Paramaters(this->alpha);
     this->program=make_opencl_program(this->ctx);
     this->kernel_loaded=false;
     in2._width=out2._width=VECTOR_SIZE/2;
@@ -214,11 +232,19 @@ public:
     kernelGPU2(device_vector_in2,device_vector_out2);
     //copy GPU to CPU
     compute::copy(device_vector_out2.begin(), device_vector_out2.end(), out2.begin(), this->queue);
+/*
     //wait for completion
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
     this->kernel_elapsed_time();
    #endif //DO_GPU_PROFILING
+*/
+    this->kernel_Energy(in,out);
+/**/
+   #ifdef DO_GPU_PROFILING
+    this->kernel_elapsed_time();
+   #endif //DO_GPU_PROFILING
+/**/
   };//kernel
 
   //! compution kernel for an iteration (compution=copy, here)
@@ -242,6 +268,12 @@ public:
 
 };//CDataProcessorGPU_discri_opencl_int2
 
+//! discri calculation GPU process 
+/**
+ * computation of the discri
+ * return the value of energy
+ * make the computation on SIMD_4
+**/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
 class CDataProcessorGPU_discri_opencl_int4 : public CDataProcessorGPU_discri_opencl<Tdata,Tproc, Taccess>
 {  
@@ -316,7 +348,6 @@ public:
     this->class_name="CDataProcessorGPU_discri_opencl_int4";
     this->check_locks(lock);
     //OpenCL framework
-    this->Read_Paramaters(this->alpha);
     this->program=make_opencl_program(this->ctx);
     this->kernel_loaded=false;
     in4._width=out4._width=VECTOR_SIZE/4;
@@ -342,11 +373,19 @@ public:
     kernelGPU4(device_vector_in4,device_vector_out4);
     //copy GPU to CPU
     compute::copy(device_vector_out4.begin(), device_vector_out4.end(), out4.begin(), this->queue);
+/*
     //wait for completion
     this->queue.finish();
    #ifdef DO_GPU_PROFILING
     this->kernel_elapsed_time();
    #endif //DO_GPU_PROFILING
+*/
+    this->kernel_Energy(in,out);
+/**/
+   #ifdef DO_GPU_PROFILING
+    this->kernel_elapsed_time();
+   #endif //DO_GPU_PROFILING
+/**/
   };//kernel
 
   //! compution kernel for an iteration (compution=copy, here)
