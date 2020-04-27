@@ -1,13 +1,13 @@
 netcdf result_sequential {
 dimensions:
-	dimS = 8192 ;
+	dimS = 1 ;
 	dimF = UNLIMITED ; // (23 currently)
 variables:
-	int signal(dimF, dimS) ;
-		signal:units = "digit" ;
-		signal:long_name = "GPU discri signal" ;
-		signal:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
+	int E(dimF, dimS) ;
+		E:units = "digit" ;
+		E:long_name = "energy" ;
+		E:kernel = "CDataProcessor_Max_Min" ;
 
 // global attributes:
-		:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
+		:kernel = "CDataProcessor_Max_Min" ;
 }
