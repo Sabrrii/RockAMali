@@ -150,6 +150,15 @@ public:
     }//do_check
   }//show_checking
 
+#ifdef DO_NETCDF
+  virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
+  {
+    var_unit_long_names.push_back("signal");
+    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("processed signal");
+  }//set_var_unit_long_names
+#endif //NetCDF
+
 };//CDataProcessor
 
 #endif //_DATA_PROCESSOR_

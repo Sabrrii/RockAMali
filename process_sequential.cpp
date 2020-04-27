@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.3q"
+#define VERSION "v0.7.3r"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -255,12 +255,10 @@ int main(int argc,char **argv)
       , var_unit_long_names
 #endif //NetCDF
       , CDataAccess::STATUS_PROCESSED);
-//! \todo [highest] var_unit_long_names should be class dependant
-//! \bug  [highest] static energy
-      var_unit_long_names.push_back("E");
-      var_unit_long_names.push_back("digit");
-      var_unit_long_names.push_back("energy");
-
+//! \todo [highest] . var_unit_long_names should be class dependant
+#ifdef DO_NETCDF
+      process->set_var_unit_long_names(var_unit_long_names);
+#endif //NetCDF
       CDataStore<Tproc,Taccess> storeR(locksR, resultfilename,digit
 #ifdef DO_NETCDF
       , "kernel", process_class_name  //processor_type or processing_type

@@ -98,6 +98,14 @@ public:
     kernelCPU_Max_Min(in,out);
   };//kernelCPU
 
+#ifdef DO_NETCDF
+  virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
+  {
+    var_unit_long_names.push_back("E");
+    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("energy");
+  }//set_var_unit_long_names
+#endif //NetCDF
 
 };//CDataProcessor_Max_Min	
 
@@ -367,6 +375,15 @@ public:
   {
     kernelCPU_Trapeze(in,out);
   };//kernelCPU
+
+#ifdef DO_NETCDF
+  virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
+  {
+    var_unit_long_names.push_back("E");
+    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("energy");
+  }//set_var_unit_long_names
+#endif //NetCDF
 
 };//CDataProcessor_Trapeze
 
