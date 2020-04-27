@@ -46,8 +46,9 @@ public:
   float/*Tproc*/ threshold;
   float alpha, fraction; 
   //temporary processing image
+  bool image_assigned;
   CImg<Tproc> discri;
-  CImg<Tproc> trapeze;
+  CImg<Tproc> trapezoid;
 
   CDataProcessorGPU_discri_opencl(std::vector<omp_lock_t*> &lock
   , compute::device device, int VECTOR_SIZE
@@ -69,6 +70,7 @@ public:
     ///OpenCL framework
     program=make_opencl_program(this->ctx);
     kernel_loaded=false;
+    image_assigned=false;
   }//constructor
 
   //! compution kernel for an iteration (compution=copy, here)
@@ -94,8 +96,7 @@ public:
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     /// discri computation on GPU      
-//! \todo [low] assign only once
-    discri.assign(in.width());
+    if(!image_assigned) {discri.assign(in.width());/*image_assigned=true;*/}
     //copy CPU to GPU
     compute::copy(in.begin(), in.end(), this->device_vector_in.begin(), this->queue);
     //compute
@@ -108,9 +109,8 @@ public:
   virtual void kernel_Energy(CImg<Tdata> &in, CImg<Tproc> &discri, CImg<Tproc> &out)
   {
     ///Trapezoidal computation on CPU    
-//! \todo [low] assign only once
-    trapeze.assign(in.width());
-    trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
+    if(!image_assigned) {trapezoid.assign(in.width());image_assigned=true;}
+    trapezoidal_filter(in,trapezoid, k,m,alpha, decalage);
     //wait for GPU completion
     this->queue.finish();
 //! \todo add DO_GPU_PROFILING
@@ -118,7 +118,7 @@ public:
     int Ti=Calcul_Ti(discri,threshold);
     std::cout<<"Trigger value :"<<Ti<<std::endl;
     /// energy computation on CPU    
-    float E=Calculation_Energy(trapeze, Ti, n, q);
+    float E=Calculation_Energy(trapezoid, Ti, n, q);
     std::cout<< "Energy= " << E  <<std::endl;
     ///store energy in image
     out(0)=E;//content: E only
@@ -160,7 +160,6 @@ class CDataProcessorGPU_discri_opencl_int2 : public CDataProcessorGPU_discri_ope
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
-//! \todo [medium] . kernel discri_ls_fma
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha)
   {
@@ -245,8 +244,7 @@ public:
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     /// discri computation on GPU      
-//! \todo [low] assign only once
-    this->discri.assign(in.width());
+    if(!(this->image_assigned)) {this->discri.assign(in.width());/*image_assigned=true;*/}
     ///share data in2=in and out2=this->discri (and vice versa)
     in2._data=(Tdata2*)in.data();
     out2._data=(Tproc2*)((this->discri).data());
@@ -391,8 +389,7 @@ public:
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     /// discri computation on GPU      
-//! \todo [low] assign only once
-    this->discri.assign(in.width());
+    if(!(this->image_assigned)) {this->discri.assign(in.width());/*image_assigned=true;*/}
     ///share data in4=in and out4=this->discri (and vice versa)
     in4._data=(Tdata4*)in.data();
     out4._data=(Tproc4*)((this->discri).data());
