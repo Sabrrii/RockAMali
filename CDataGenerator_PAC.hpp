@@ -129,7 +129,7 @@ public:
   virtual void ncInit()
   {
     file_name="pac_signal_parameters.nc";
-    nc_img.assign(5, 1,1,1,1, -99);// A,B, tau, tA,tB
+    nc_img.assign(6, 1,1,1,1, -99);// A,B, tau, tA,tB +E
     std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
     is_netcdf_init=false;
     dim_time="dimF";
@@ -142,17 +142,20 @@ public:
     var_names.push_back("tB");
     var_names.push_back("tA");
     var_names.push_back("Tau");
+    var_names.push_back("E");
     unit_names.push_back("digit");
     unit_names.push_back("digit");
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
     unit_names.push_back("tic (10ns)");
+    unit_names.push_back("digit");
     //variable long names
     long_names.push_back("amplitude");
     long_names.push_back("baseline");
     long_names.push_back("baseline duration");
     long_names.push_back("increase duration");
     long_names.push_back("exponential decrease");
+    long_names.push_back("energy (computed using E=A-B)");
    ///creation
     //variables
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
@@ -173,6 +176,7 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     nc_img[n++]=nb_tB;
     nc_img[n++]=nb_tA-nb_tB;//nb_tA
     nc_img[n++]=tau;
+    nc_img[n++]=A-B;
 std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
     }//ncStore
 #endif //DO_NETCDF
