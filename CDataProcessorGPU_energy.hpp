@@ -103,6 +103,22 @@ public:
     this->queue.enqueue_1d_range_kernel(ocl_kernel,0,workSize,tpb);
   };//kernelGPU
 
+#ifdef DO_NETCDF
+  virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
+  {
+
+    var_unit_long_names.push_back("signal");
+    var_unit_long_names.push_back("digit");
+//    var_unit_long_names.push_back("CPU trapezoid signal");
+    var_unit_long_names.push_back("GPU discri signal");
+/*
+    var_unit_long_names.push_back("E");
+    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("energy");
+*/
+  }//set_var_unit_long_names
+#endif //NetCDF
+
 };//CDataProcessorGPU_discri_opencl
 
 
@@ -356,4 +372,5 @@ public:
 
 #endif //NetCDF
 
-#endif
+#endif //_DATA_PROCESSOR_GPU_ENERGY_
+

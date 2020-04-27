@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.3r"
+#define VERSION "v0.7.3s"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -255,7 +255,6 @@ int main(int argc,char **argv)
       , var_unit_long_names
 #endif //NetCDF
       , CDataAccess::STATUS_PROCESSED);
-//! \todo [highest] . var_unit_long_names should be class dependant
 #ifdef DO_NETCDF
       process->set_var_unit_long_names(var_unit_long_names);
 #endif //NetCDF
