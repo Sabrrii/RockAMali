@@ -167,7 +167,7 @@ process_sequential_run:
 	ncgen parameters.cdl -o parameters.nc && rm -f sample_sequential.nc result_sequential.nc; ./process_sequential   -s $(FRAME_SIZE) -o sample_sequential.nc -r result_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n $(NS) $(USE_GPU) $(DO_CHECK)
 	ncdump -h sample_sequential.nc | tee sample_sequential.cdl && ncdump -h result_sequential.nc | tee result_sequential.cdl && ncdump -h profiling_gpu.nc | tee profiling_gpu.cdl && ncdump -h profiling_process.nc | tee profiling_process.cdl
 	git add profiling_gpu.cdl profiling_process.cdl result_sequential.cdl sample_sequential.cdl
-	#&& ncview sample_sequential.nc
+#	ncview sample_sequential.nc
 #	ncgen parameters.cdl -o parameters.nc && rm sample_sequential.nc; ./process_sequential.X -s $(FRAME_SIZE) -o sample_sequential.nc --generator-factory $(GEN_FCT) --CPU-factory $(PROC) -n $(NS) $(USE_GPU) $(DO_CHECK) --show && ncdump -h sample_sequential.nc
 
 process_sequential_check: result_sequential.nc  sample_sequential.nc

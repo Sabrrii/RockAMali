@@ -50,6 +50,7 @@ public:
   , std::string imagefilename, unsigned int digit
 #ifdef DO_NETCDF
   , std::string info__from_factory_type, std::string &info__from_factory_name
+  , std::vector<std::string> &var_unit_long_names
 #endif //NetCDF
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FREE
@@ -76,9 +77,20 @@ std::cout << "extention ="<<extention<< std::endl<< std::flush;
       dim_names.push_back("dimS");
       //variable names (and its unit)
 //! \todo [medium] . variable name "signal" or "energy"
-      var_name="signal";
-      unit_name="digit";
-      long_name="signal";
+      if(var_unit_long_names.size()>0)
+      {
+        if(var_unit_long_names.size()<3){std::cerr<<__FILE__<<"::"<<__func__<<"() error: NetCDF need for "<<this->class_name<<" class, at least 3 names (variable, unit and long name)"<<std::endl; exit(2);}
+        int n=0;
+        var_name=var_unit_long_names[n++];
+        unit_name=var_unit_long_names[n++];
+        long_name=var_unit_long_names[n++];
+      }
+      else
+      {
+        var_name="signal";
+        unit_name="digit";
+        long_name="signal";
+      }//default
     }
 #endif //NetCDF
 
