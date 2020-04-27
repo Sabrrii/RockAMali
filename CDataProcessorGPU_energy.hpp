@@ -45,6 +45,8 @@ public:
   int k, m, n, q, Tm, decalage;
   float/*Tproc*/ threshold;
   float alpha, fraction; 
+  //temporary processing image
+  CImg<Tproc> discri;
   CImg<Tproc> trapeze;
 
   CDataProcessorGPU_discri_opencl(std::vector<omp_lock_t*> &lock
@@ -60,6 +62,7 @@ public:
 //    this->debug=true;
     this->class_name="CDataProcessorGPU_discri_opencl";
     this->check_locks(lock);
+    this->image.assign(1);//content: E only
     ///read paramaters in NetCDF file
     Read_Filters_Paramaters(k,m,n,q,Tm,threshold, alpha,fraction);
     decalage= 2*k+m+2;
@@ -91,44 +94,49 @@ public:
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
     /// discri computation on GPU      
+//! \todo [low] assign only once
+    discri.assign(in.width());
     //copy CPU to GPU
     compute::copy(in.begin(), in.end(), this->device_vector_in.begin(), this->queue);
     //compute
     kernelGPU(this->device_vector_in,this->device_vector_out);
     //copy GPU to CPU
-    compute::copy(this->device_vector_out.begin(), this->device_vector_out.end(), out.begin(), this->queue);
-    kernel_Energy(in,out);
+    compute::copy(this->device_vector_out.begin(), this->device_vector_out.end(), discri.begin(), this->queue);
+    kernel_Energy(in,discri,out);
   };//kernel
 
-  virtual void kernel_Energy(CImg<Tdata> in, CImg<Tproc> out)
+  virtual void kernel_Energy(CImg<Tdata> &in, CImg<Tproc> &discri, CImg<Tproc> &out)
   {
     ///Trapezoidal computation on CPU    
+//! \todo [low] assign only once
     trapeze.assign(in.width());
     trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
     //wait for GPU completion
     this->queue.finish();
 //! \todo add DO_GPU_PROFILING
     ///find trigger on CPU
-    int Ti=Calcul_Ti(out,threshold);
+    int Ti=Calcul_Ti(discri,threshold);
     std::cout<<"Trigger value :"<<Ti<<std::endl;
     /// energy computation on CPU    
     float E=Calculation_Energy(trapeze, Ti, n, q);
     std::cout<< "Energy= " << E  <<std::endl;
+    ///store energy in image
+    out(0)=E;//content: E only
   }//kernel_Energy
 
 #ifdef DO_NETCDF
   virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
   {
-
+/** /
     var_unit_long_names.push_back("signal");
     var_unit_long_names.push_back("digit");
 //    var_unit_long_names.push_back("CPU trapezoid signal");
     var_unit_long_names.push_back("GPU discri signal");
-/*
+/**/
     var_unit_long_names.push_back("E");
     var_unit_long_names.push_back("digit");
     var_unit_long_names.push_back("energy");
-*/
+/**/
   }//set_var_unit_long_names
 #endif //NetCDF
 
@@ -218,9 +226,12 @@ public:
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
-    //share data
+    /// discri computation on GPU      
+//! \todo [low] assign only once
+    this->discri.assign(in.width());
+    ///share data in2=in and out2=this->discri (and vice versa)
     in2._data=(Tdata2*)in.data();
-    out2._data=(Tproc2*)out.data();
+    out2._data=(Tproc2*)((this->discri).data());
     //copy CPU to GPU
    #ifdef DO_GPU_PROFILING
     this->future=compute::copy_async
@@ -239,12 +250,15 @@ public:
     this->kernel_elapsed_time();
    #endif //DO_GPU_PROFILING
 */
-    this->kernel_Energy(in,out);
+    this->kernel_Energy(in,this->discri,out);
 /**/
    #ifdef DO_GPU_PROFILING
     this->kernel_elapsed_time();
    #endif //DO_GPU_PROFILING
 /**/
+    ///unshare data
+    in2._data=NULL;
+    out2._data=NULL;
   };//kernel
 
   //! compution kernel for an iteration (compution=copy, here)
@@ -359,9 +373,12 @@ public:
   //! compution kernel for an iteration
   virtual void kernel(CImg<Tdata> &in,CImg<Tproc> &out)
   {
-    //share data
+    /// discri computation on GPU      
+//! \todo [low] assign only once
+    this->discri.assign(in.width());
+    ///share data in4=in and out4=this->discri (and vice versa)
     in4._data=(Tdata4*)in.data();
-    out4._data=(Tproc4*)out.data();
+    out4._data=(Tproc4*)((this->discri).data());
     //copy CPU to GPU
    #ifdef DO_GPU_PROFILING
     this->future=compute::copy_async
@@ -380,12 +397,15 @@ public:
     this->kernel_elapsed_time();
    #endif //DO_GPU_PROFILING
 */
-    this->kernel_Energy(in,out);
+    this->kernel_Energy(in,this->discri,out);
 /**/
    #ifdef DO_GPU_PROFILING
     this->kernel_elapsed_time();
    #endif //DO_GPU_PROFILING
 /**/
+    ///unshare data
+    in4._data=NULL;
+    out4._data=NULL;
   };//kernel
 
   //! compution kernel for an iteration (compution=copy, here)
