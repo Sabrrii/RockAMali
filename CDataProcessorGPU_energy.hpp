@@ -160,10 +160,10 @@ class CDataProcessorGPU_discri_opencl_int2 : public CDataProcessorGPU_discri_ope
 //OpenCL function for this class
 compute::program make_opencl_program(const compute::context& context)
 {
-//! \todo [medium] kernel discri_ls_fma
+//! \todo [medium] . kernel discri_ls_fma
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void discri(__global const unsigned int*input, int size, __global float*output, float alpha)
-  {   
+  {
     const int gid = get_global_id(0)*2;
     if ( gid == 0) 
     {
@@ -177,7 +177,7 @@ compute::program make_opencl_program(const compute::context& context)
     }    
   }//discri
   __kernel void discri_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
-  {   
+  {
     const int gid = get_global_id(0)*2;
     if ( gid == 0) 
     {
@@ -192,7 +192,25 @@ compute::program make_opencl_program(const compute::context& context)
 	output[gid+1]=fma(-alpha,input[gid], input[gid+1]);
     }    
   }//discri_fma
- 
+
+  __kernel void discri_ls_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
+  {
+    const int gid = get_global_id(0);//*2;
+    const float2 alpha2=(-alpha,-alpha);
+    // load gid -1 data
+    uint   in_  =(gid==0)?input[0]:input[(gid*2)-1];
+    float  fn_  =(gid==0)?((float)(in_)/alpha):(float)in_;
+    // load 4 gid data
+    uint2  in2  =vload2(gid,input);
+    float2 fn2  =convert_float2(in2);
+    // gid - 1 data
+    float2 fn2_ =(fn_,fn2.x);
+    // discri
+    float2 out2 =fma(alpha2,fn2,fn2_);
+    // storage
+    vstore2(out2, gid, output);
+  }//discri_ls_fma
+
   );//source
   // create program
   return compute::program::build_with_source(source,context);
@@ -266,7 +284,7 @@ public:
   {
     if(!this->kernel_loaded)
     {//load kernel
-      this->ocl_kernel=compute::kernel(this->program,"discri_fma");
+      this->ocl_kernel=compute::kernel(this->program,"discri_ls_fma");
       this->ocl_kernel.set_arg(0,this->device_vector_in2.get_buffer());
       this->ocl_kernel.set_arg(1,(int)this->device_vector_in2.size());
       this->ocl_kernel.set_arg(2,this->device_vector_out2.get_buffer());
@@ -302,7 +320,7 @@ class CDataProcessorGPU_discri_opencl_int4 : public CDataProcessorGPU_discri_ope
 {
   const char source[] = BOOST_COMPUTE_STRINGIZE_SOURCE(
   __kernel void discri_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
-  {   
+  {
     const int gid = get_global_id(0)*4;
     if ( gid == 0) 
     {
@@ -310,18 +328,18 @@ class CDataProcessorGPU_discri_opencl_int4 : public CDataProcessorGPU_discri_ope
 	output[1]=fma(-alpha,input[0], input[1]);
 	output[2]=fma(-alpha,input[1], input[2]);
 	output[3]=fma(-alpha,input[2], input[3]);
-    } 
+    }
     else
-    {	
+    {
 	output[gid]=fma(-alpha,input[gid-1], input[gid]);
 	output[gid+1]=fma(-alpha,input[gid], input[gid+1]);
 	output[gid+2]=fma(-alpha,input[gid+1], input[gid+2]);
 	output[gid+3]=fma(-alpha,input[gid+2], input[gid+3]);
-    }    
+    }
   }//discri_fma
 
   __kernel void discri_ls_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
-  {   
+  {
     const int gid = get_global_id(0);//*4;
     const float4 alpha4=(-alpha,-alpha,-alpha,-alpha);
     // load gid -1 data
@@ -332,12 +350,11 @@ class CDataProcessorGPU_discri_opencl_int4 : public CDataProcessorGPU_discri_ope
     float4 fn4  =convert_float4(in4);
     // gid - 1 data
     float4 fn4_ =(fn_,fn4.x,fn4.y,fn4.z);//(fn_,fn4.xyz);
-    // discri 
+    // discri
     float4 out4 =fma(alpha4,fn4,fn4_);
     // storage
     vstore4(out4, gid, output);
   }//discri_ls_fma
-
  
   );//source
   // create program
