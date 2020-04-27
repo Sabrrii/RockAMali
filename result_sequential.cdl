@@ -4,10 +4,10 @@ dimensions:
 	dimF = UNLIMITED ; // (23 currently)
 variables:
 	int E(dimF, dimS) ;
-		E:units = "digit" ;
+		E:units = "digit*" ;
 		E:long_name = "energy" ;
-		E:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
+		E:kernel = "CDataProcessor_Trapeze" ;
 
 // global attributes:
-		:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
+		:kernel = "CDataProcessor_Trapeze" ;
 }

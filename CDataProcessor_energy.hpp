@@ -221,14 +221,14 @@ public:
   
   //! calculation of the energy based on the formula (peak-base)/number
   template<typename T>
-  float Calculation_Energy(CImg<T> trapeze, int Ti,int number, double qDelay)
+  float Calculation_Energy(CImg<T> trapezoid, int Ti,int number, double qDelay)
   {
     //sum of the n baseline value
     int base=0;
-    cimg_for_inX(trapeze,Ti-number, Ti,i) base+=trapeze(i);
+    cimg_for_inX(trapezoid,Ti-number, Ti,i) base+=trapezoid(i);
     //sum of the n peak value
     int peak=0;
-    cimg_for_inX(trapeze,Ti+qDelay, Ti+qDelay+number,i) peak+=trapeze(i);
+    cimg_for_inX(trapezoid,Ti+qDelay, Ti+qDelay+number,i) peak+=trapezoid(i);
     //print both sum and return the energy 
     std::cout<<"base="<<base/number<<std::endl;
     std::cout<<"peak="<<peak/number<<std::endl;
@@ -266,8 +266,9 @@ class CDataProcessor_Trapeze : public CDataProcessor_kernel<Tdata,Tproc, Taccess
 public:
   int k, m, n, q, Tm, decalage;
   float /*Tproc*/ threshold;
-  float alpha, fraction; 
-  CImg<Tproc> s,imageDCF, trapeze;
+  float alpha, fraction;
+  bool image_assigned;
+  CImg<Tproc> s,imageDCF, trapezoid;
 
   CDataProcessor_Trapeze(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
@@ -284,6 +285,7 @@ public:
     Read_Filters_Paramaters(k,m,n,q,Tm,threshold, alpha,fraction);
     decalage= 2*k+m+2;
     this->image.assign(1);//content: E only
+    image_assigned=false;
     this->check_locks(lock);
   }//constructor
 
@@ -294,8 +296,8 @@ public:
 	CImg<Tproc> imageC;
 	imageC.assign(in.width(),1,1,3,0);
 	imageC.get_shared_channel(0)+=in;
-	imageC.get_shared_channel(1)+=out*((Tproc)in.max()/out.max()); // trapeze normalize
-	cimg_for_inX(imageC,decalage,imageC.width(),i) imageC(i,0,0,2)=in.max();//begin of the trapeze computation
+	imageC.get_shared_channel(1)+=out*((Tproc)in.max()/out.max()); // trapezoid normalize
+	cimg_for_inX(imageC,decalage,imageC.width(),i) imageC(i,0,0,2)=in.max();//begin of the trapezoid computation
 	imageC.display_graph("red = signal, green = filter, blue = trapezoidal computation");
   }//Display
   #endif // #if cimg_display
@@ -303,13 +305,13 @@ public:
   //!fill the image with 2 discri and display it, return the position of the trigger
   virtual void Calcul_Discri(CImg<Tdata> e, CImg<Tproc> &s,CImg<Tproc> &imageDCF,int Tpeak,double frac,double alp) 
   {
-	s.assign(e.width());
+    if(!image_assigned) {s.assign(e.width());/*image_assigned=true;*/}
 	int delay = (3*Tpeak)/2;
 	//Discri simple
 	s(0)=0;
 	cimg_for_inX(s,1,s.width(),n) s(n)=e(n)-alp*e(n-1);
 	//Discri treshold		
-	imageDCF.assign(s.width(),1,1,1, 0);
+	if(!image_assigned) {imageDCF.assign(s.width(),1,1,1, 0);image_assigned=true;}
 	cimg_for_inX(imageDCF,delay,s.width(),n) imageDCF(n)=s(n-delay)-frac*s(n);
   }//Calcul_Discri
 
@@ -347,11 +349,10 @@ public:
   //! compution kernel for an iteration
   virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tproc> &out)
   {    
-//! \todo [low] trapzoid container should be assigned once only
-    trapeze.assign(in.width());
-    trapezoidal_filter(in,trapeze, k,m,alpha, decalage);
+    if(!image_assigned) {trapezoid.assign(in.width());/*image_assigned=true;*/}
+    trapezoidal_filter(in,trapezoid, k,m,alpha, decalage);
     #if cimg_display!=0
-    Display(in, trapeze, decalage);
+    Display(in, trapezoid, decalage);
     #endif //#cimg_display   
     ///Discri   
     Calcul_Discri(in,s,imageDCF, Tm, fraction,alpha);
@@ -361,11 +362,11 @@ public:
     Discri_Display(in,s,imageDCF, Tm,threshold,Ti, n, q);
     #endif //#cimg_display
     ///Energy
-    float E=Calculation_Energy(trapeze, Ti, n, q);
+    float E=Calculation_Energy(trapezoid, Ti, n, q);
     std::cout<< "Energy= " << E  <<std::endl;
     #if cimg_display!=0
     ///trapezoidal
-    Display_Trapeze_Paramaters(trapeze, Ti, n, q);
+    Display_Trapeze_Paramaters(trapezoid, Ti, n, q);
     #endif //#cimg_display
     out(0)=E;
   };//kernelCPU_Trapeze
@@ -380,7 +381,7 @@ public:
   virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
   {
     var_unit_long_names.push_back("E");
-    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("digit*");
     var_unit_long_names.push_back("energy");
   }//set_var_unit_long_names
 #endif //NetCDF

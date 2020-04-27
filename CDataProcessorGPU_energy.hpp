@@ -129,12 +129,12 @@ public:
   {
 /** /
     var_unit_long_names.push_back("signal");
-    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("digit*");
 //    var_unit_long_names.push_back("CPU trapezoid signal");
     var_unit_long_names.push_back("GPU discri signal");
 / **/
     var_unit_long_names.push_back("E");
-    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("digit*");
     var_unit_long_names.push_back("energy");
 /**/
   }//set_var_unit_long_names
