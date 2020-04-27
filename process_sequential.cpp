@@ -9,7 +9,7 @@
 //OpenMP
 #include <omp.h>
 
-#define VERSION "v0.7.4d"
+#define VERSION "v0.7.4e"
 
 //thread lock
 #include "CDataGenerator_factory.hpp"
@@ -167,8 +167,7 @@ int main(int argc,char **argv)
   boost::compute::device gpu = boost::compute::system::default_device();
   CImgList<Tproc> limages(nbuffer,width,1,1,1);
   std::vector<compute::future<void>  > waits(nbuffer);//this may be filled in kernel
-  compute::vector<Tproc> *device_vector_in;compute::vector<Tproc> *device_vector_out;//need more in process
-  #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error, gpu,limages,waits,device_vector_in,device_vector_out)
+  #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error, gpu,limages,waits)
 #else
   #pragma omp parallel shared(print_lock, access,images, accessR,results, check_error)
 #endif //!DO_GPU
