@@ -229,6 +229,106 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
 
 };//CDataGenerator_Peak
 
+template<typename Tdata, typename Taccess=unsigned char
+#ifdef DO_NETCDF
+, typename Tnetcdf=int
+#endif //DO_NETCDF
+>
+class CDataGenerator_Peak_rnd: public CDataGenerator_Peak<Tdata, Taccess>
+{
+  Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
+
+  //! read parameters from CDL
+  virtual int read_noise_parameters(Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
+  {
+    ///file name
+    std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
+    int noise_Amplitude,noise_BaseLine,noise_Tau,noise_tB,noise_ta;
+    ///parameter class
+    CParameterNetCDF fp;
+    //open file
+    int error=fp.loadFile((char *)fi.c_str());
+    if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
+
+    float process; 
+    std::string process_name="signal";
+    //load process variable
+    error=fp.loadVar(process,&process_name);
+    if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+    std::cout<<process_name<<"="<<process<<std::endl;
+    ///noise_Amplitude
+    std::string attribute_name="noise_A";
+    if ((error = fp.loadAttribute(attribute_name,noise_Amplitude))!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<noise_Amplitude<<std::endl;
+    ///noise_BaseLine
+    attribute_name="noise_B";
+    if ((error = fp.loadAttribute(attribute_name,noise_BaseLine))!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<noise_BaseLine<<std::endl;
+    ///noise_tau
+    attribute_name="noise_tau";
+    if ((error = fp.loadAttribute(attribute_name,noise_Tau))!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<noise_Tau<<std::endl;
+    ///noise_tB
+    attribute_name="noise_tB";
+    if ((error = fp.loadAttribute(attribute_name,noise_tB))!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<noise_tB<<std::endl;
+    ///noise_tA
+    attribute_name="noise_tA";
+    if ((error = fp.loadAttribute(attribute_name,noise_ta))!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<noise_ta<<std::endl;
+
+    //convert input type into Tdata
+    min_A=this->A-noise_Amplitude/2;
+    max_A=this->A+noise_Amplitude/2;
+    min_B=this->B-noise_BaseLine/2;
+    max_B=this->B+noise_BaseLine/2;
+    min_T=this->tau-noise_Tau/2;
+    max_T=this->tau+noise_Tau/2;
+    min_tb=this->nb_tB-noise_tB;
+    max_tb=this->nb_tB+noise_tB;
+    min_ta=this->nb_tA-this->nb_tB-noise_ta/2;
+    max_ta=this->nb_tA-this->nb_tB+noise_ta/2;
+    return 0;
+  } //read_noise_parameters
+
+
+  //! constructor
+  CDataGenerator_Peak_rnd(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+  )
+  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
+  {
+//    this->debug=true;
+    this->class_name="CDataGenerator_Full_Random";
+    read_noise_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
+#ifdef DO_NETCDF
+    this->ncInit();
+#endif //DO_NETCDF
+    this->check_locks(lock);
+  }//constructor
+};//CDataGenerator_Peak_rnd
+
 
 //! generate a single peak close to PAC signal with noise
 /**
@@ -374,7 +474,7 @@ public:
   Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
 
   //! read parameters from CDL
-  virtual int read_parameters(Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
+  int read_noise_parameters(Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -444,7 +544,8 @@ public:
     min_ta=this->nb_tA-this->nb_tB-noise_ta/2;
     max_ta=this->nb_tA-this->nb_tB+noise_ta/2;
     return 0;
-  } //read_parameters
+  } //read_noise_parameters
+
 
 #ifdef DO_NETCDF
   //! NetCDF initialisation
@@ -463,7 +564,7 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
-    read_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
+    read_noise_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
