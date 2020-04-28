@@ -11,7 +11,7 @@ dimensions:
 
 //variable declaration and attributes
 variables:
-//signal
+//signal: see user doc. in gitlab wiki (from doxygen doc. in C++ source, i.e. \page pageSchema)
   int signal;
      signal:long_name="signal graph parameters (activated if >0)";
 //Generator Random (factory: signal_random)
@@ -71,11 +71,12 @@ variables:
      signal:noise_tau_units = "pixel";
 
 
+//signal processing: see user doc. in gitlab wiki (from doxygen doc. in C++ source, i.e. \page pageSchema)
 
 //trapezoid filter (factory: filter)
   int trapezoid;
     trapezoid:long_name="trapezoid filter (activated if >0)";
-
+///trapezoid filter
     trapezoid:k_long_name= "increase size";
     trapezoid:k= 200;
     trapezoid:k_units= "pixel";
@@ -95,16 +96,16 @@ variables:
     trapezoid:q_long_name= "computing delay";
     trapezoid:q= 211;
     trapezoid:q_unit= "pixel";
-
+///simple discri
     trapezoid:threshold_long_name= "threshold for simple discri";
     trapezoid:threshold=3.4;
     trapezoid:threshold_unit= "digit";
-
-    trapezoid:fraction_long_name= "DCFD";
+///fraction discri
+    trapezoid:fraction_long_name= "DCFD frac";
     trapezoid:fraction=0.2;
     trapezoid:fraction_unit= "none";
 
-    trapezoid:Tm_long_name= "?";
+    trapezoid:Tm_long_name= "DCFD delay=3*Tm/2";
     trapezoid:Tm=20;
     trapezoid:Tm_unit= "";
 
