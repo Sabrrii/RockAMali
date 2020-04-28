@@ -42,7 +42,7 @@ public:
       return new CDataProcessor_Max_Min<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
 #ifdef DO_NETCDF
     factory_types.push_back   ("filter")             ;if(name == factory_types.back())
-      return new CDataProcessor_Trapeze<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
+      return new CDataProcessor_trapezoid<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check);
 #endif //NETCDF
 
 //    if(name == "error")

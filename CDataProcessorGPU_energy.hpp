@@ -7,6 +7,7 @@
 #ifdef DO_NETCDF
 
 //!  \todo [low] set template for opencl code \see CDataProcessorGPU_opencl_template
+//!  \todo [medium] setup kernel_name="vMcPcI" as in \c CDataProcessorGPU_opencl_template
 
 //! discri calculation GPU process 
 /**
@@ -32,8 +33,7 @@ compute::program make_opencl_program(const compute::context& context)
     {
         output[gid]=input[gid]-alpha*input[gid-1];
     }
-    
-  }
+  }//discri
   );//source
   // create program
   return compute::program::build_with_source(source,context);
@@ -193,7 +193,6 @@ compute::program make_opencl_program(const compute::context& context)
 	output[gid+1]=fma(-alpha,input[gid], input[gid+1]);
     }    
   }//discri_fma
-
   __kernel void discri_ls_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
   {
     const int gid = get_global_id(0);//*2;
@@ -211,7 +210,6 @@ compute::program make_opencl_program(const compute::context& context)
     // storage
     vstore2(out2, gid, output);
   }//discri_ls_fma
-
   );//source
   // create program
   return compute::program::build_with_source(source,context);
@@ -337,7 +335,6 @@ class CDataProcessorGPU_discri_opencl_int4 : public CDataProcessorGPU_discri_ope
 	output[gid+3]=fma(-alpha,input[gid+2], input[gid+3]);
     }
   }//discri_fma
-
   __kernel void discri_ls_fma(__global const unsigned int*input, int size, __global float*output, float alpha)
   {
     const int gid = get_global_id(0);//*4;
@@ -355,7 +352,6 @@ class CDataProcessorGPU_discri_opencl_int4 : public CDataProcessorGPU_discri_ope
     // storage
     vstore4(out4, gid, output);
   }//discri_ls_fma
- 
   );//source
   // create program
   std::cout<<"source = "<<source<<std::endl;

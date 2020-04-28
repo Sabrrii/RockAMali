@@ -3,6 +3,38 @@
 
 #include "CDataProcessor.hpp"
 
+//! base class for energy processing (should not be used, just for inheritance)
+template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
+class CDataProcessor_energy : public CDataProcessor_kernel<Tdata,Tproc, Taccess>
+{
+public:
+  CDataProcessor_energy(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
+  , bool do_check=false
+  )
+  : CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  {
+    std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+//    this->debug=true;
+    this->class_name="CDataProcessor_energy";
+    this->image.assign(1);//content: E only
+    this->check_locks(lock);
+  }//constructor
+
+#ifdef DO_NETCDF
+  virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
+  {
+    var_unit_long_names.push_back("E");
+    var_unit_long_names.push_back("digit");
+    var_unit_long_names.push_back("energy");
+  }//set_var_unit_long_names
+#endif //NetCDF
+
+};//CDataProcessor_energy	
+
 //! process a single simulated peak (look like PAC signal)
 /**
  * find the max, min, threshold value and the position of the  trigger, maximum, threshold
@@ -20,7 +52,7 @@
  *
 **/
 template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
-class CDataProcessor_Max_Min : public CDataProcessor_kernel<Tdata,Tproc, Taccess>
+class CDataProcessor_Max_Min : public CDataProcessor_energy<Tdata,Tproc, Taccess>
 {
 public:
   int A,B,Ai,Hi,Ti,threshold;
@@ -32,12 +64,11 @@ public:
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor_energy<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
+    std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     this->debug=true;
     this->class_name="CDataProcessor_Max_Min";
-     std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
-    this->image.assign(1);//content: E only
     this->check_locks(lock);
   }//constructor
   //! find important paramaters and their position
@@ -97,16 +128,6 @@ public:
   {
     kernelCPU_Max_Min(in,out);
   };//kernelCPU
-
-#ifdef DO_NETCDF
-  virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
-  {
-    var_unit_long_names.push_back("E");
-    var_unit_long_names.push_back("digit");
-    var_unit_long_names.push_back("energy");
-  }//set_var_unit_long_names
-#endif //NetCDF
-
 };//CDataProcessor_Max_Min	
 
 #ifdef DO_NETCDF
@@ -261,7 +282,7 @@ public:
  *
 **/
 template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
-class CDataProcessor_Trapeze : public CDataProcessor_kernel<Tdata,Tproc, Taccess>
+class CDataProcessor_trapezoid : public CDataProcessor_energy<Tdata,Tproc, Taccess>
 {
 public:
   int k, m, n, q, Tm, decalage;
@@ -270,21 +291,20 @@ public:
   bool image_assigned;
   CImg<Tproc> s,imageDCF, trapezoid;
 
-  CDataProcessor_Trapeze(std::vector<omp_lock_t*> &lock
+  CDataProcessor_trapezoid(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FILLED
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_PROCESSED
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_statusR=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_statusR=CDataAccess::STATUS_FILLED
   , bool do_check=false
   )
-  : CDataProcessor_kernel<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
+  : CDataProcessor_energy<Tdata,Tproc, Taccess>(lock,wait_status,set_status,wait_statusR,set_statusR,do_check)
   {
-    this->debug=true;
-    this->class_name="CDataProcessor_Trapeze";
     std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
+    this->debug=true;
+    this->class_name="CDataProcessor_trapezoid";
     Read_Filters_Paramaters(k,m,n,q,Tm,threshold, alpha,fraction);
     decalage= 2*k+m+2;
-    this->image.assign(1);//content: E only
     image_assigned=false;
     this->check_locks(lock);
   }//constructor
@@ -376,18 +396,7 @@ public:
   {
     kernelCPU_Trapeze(in,out);
   };//kernelCPU
-
-#ifdef DO_NETCDF
-  virtual void set_var_unit_long_names(std::vector<std::string> &var_unit_long_names)
-  {
-    var_unit_long_names.push_back("E");
-    var_unit_long_names.push_back("digit*");
-    var_unit_long_names.push_back("energy");
-  }//set_var_unit_long_names
-#endif //NetCDF
-
-};//CDataProcessor_Trapeze
-
+};//CDataProcessor_trapezoid
 #endif //NetCDF
 
 #endif //_DATA_PROCESSOR_ENERGY_

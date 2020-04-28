@@ -4,10 +4,10 @@ dimensions:
 	dimF = UNLIMITED ; // (23 currently)
 variables:
 	int E(dimF, dimS) ;
-		E:units = "digit*" ;
+		E:units = "digit" ;
 		E:long_name = "energy" ;
-		E:kernel = "CDataProcessor_Trapeze" ;
+		E:kernel = "CDataProcessor_trapezoid" ;
 
 // global attributes:
-		:kernel = "CDataProcessor_Trapeze" ;
+		:kernel = "CDataProcessor_trapezoid" ;
 }
