@@ -236,6 +236,7 @@ template<typename Tdata, typename Taccess=unsigned char
 >
 class CDataGenerator_Peak_rnd: public CDataGenerator_Peak<Tdata, Taccess>
 {
+public:
   Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
 
   //! read parameters from CDL
@@ -327,6 +328,47 @@ class CDataGenerator_Peak_rnd: public CDataGenerator_Peak<Tdata, Taccess>
 #endif //DO_NETCDF
     this->check_locks(lock);
   }//constructor
+  //! one iteration for any loop
+  /**
+   * entirely filled with the frame count value
+  **/
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+  {
+    if(this->debug)
+    {
+      this->lprint.print("",false);
+      printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+      access.print("access",false);fflush(stderr);
+      this->lprint.unset_lock();
+    }
+    //wait lock
+
+    //random values for curve parameters
+    this->tau =  rand()%(max_tau-min_tau+1)+min_tau;
+    std::cout<<"tau = "<<this->tau<<std::endl; 
+    this->A =  rand()%(max_Amp-min_Amp+1)+min_Amp; 
+    std::cout<<"Amplitude = "<<this->A<<std::endl; 
+    this->B =  rand()%(max_BL-min_BL+1)+min_BL; 
+    std::cout<<"Amplitude = "<<this->A<<std::endl; 
+    this->nb_tB =  rand()%(max_tB-min_tB+1)+min_tB;
+    std::cout<<"nb_tB = "<<this->nb_tB<<std::endl; 
+    this->nb_tA =  rand()%(max_tA-min_tA+1)+min_tA; 
+    std::cout<<"nb_tA = "<<this->nb_tA<<std::endl; 
+    this->nb_tA+=this->nb_tB;
+    std::cout<<"nb_tA+nb_tB = "<<this->nb_tA<<std::endl;
+#ifdef DO_NETCDF
+//    this->ncStore();
+#endif //DO_NETCDF
+    unsigned int c=0;
+    this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
+
+    //create peak signal (with the random paramaters)
+    this->Peak(images, n); 
+
+    //set filled
+    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
+  }//iteration
+
 };//CDataGenerator_Peak_rnd
 
 

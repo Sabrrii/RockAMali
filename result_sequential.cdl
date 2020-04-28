@@ -6,8 +6,8 @@ variables:
 	int E(dimF, dimS) ;
 		E:units = "digit" ;
 		E:long_name = "energy" ;
-		E:kernel = "CDataProcessor_trapezoid" ;
+		E:kernel = "CDataProcessor_Max_Min" ;
 
 // global attributes:
-		:kernel = "CDataProcessor_trapezoid" ;
+		:kernel = "CDataProcessor_Max_Min" ;
 }

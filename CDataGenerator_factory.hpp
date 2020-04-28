@@ -35,6 +35,8 @@ public:
       return new CDataGenerator_Full_Random<Tdata, Taccess>(lock,wait_status,set_status);
     factory_types.push_back      ("signal_pac")        ;if(name == factory_types.back())
       return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status);
+    factory_types.push_back      ("signal_pac_rnd")     ;if(name == factory_types.back())
+      return new CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status);
     factory_types.push_back      ("peak_noise")        ;if(name == factory_types.back())
       return new CDataGenerator_Peak_Noise<Tdata, Taccess>(lock,wait_status,set_status);
 #endif //NetCDF
