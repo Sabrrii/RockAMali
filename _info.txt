@@ -4,6 +4,8 @@ cat receive_help.output
 cat send_help.output
 
 #compile
+##Makefile
+##CPU/GPU: DO_GPU makes compilation of GPU code (and CPU one or not, i.e. only CPU), this is automatically sets from arch. that is compiling
 ##receiving
 make process
 make receive
@@ -14,6 +16,8 @@ make send_run
 sync ; make send && make send_run
 
 #run
+##Makefile
+##CPU/GPU: if USE_GPU= then computation in forced to CPU (even with MaliT present), else CPU or GPU used depending on present hardware (compilation).
 ##receiving
 ssh rock64@193.48.111.156
 make receive_run
