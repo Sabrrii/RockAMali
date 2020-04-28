@@ -15,48 +15,100 @@ variables:
   int signal;
      signal:long_name="signal graph parameters (activated if >0)";
 //Generator Random (factory: signal_random)
+     signal:rand_min_long_name="minimum of random values";
      signal:rand_min=0;
+     signal:rand_min_units = "digit";
+
+     signal:rand_max_long_name="maximum of random values";
      signal:rand_max=65535;
+     signal:rand_max_units = "digit";
+
 //Generator PAC signal (factory: signal_pac -, peak_noise and full_random-)
-     signal:nb_tB_long_name="baseline time";
-     signal:nb_tB= 1234; 
-     signal:nb_tA_long_name="peak time"; 
-     signal:nb_tA= 10; 
-     signal:tau_long_name="time decrease";
-     signal:tau= 500;
-     signal:A_long_name="Amplitude";
-     signal:A= 2345;
-     signal:B_long_name="Baseline";
+     signal:B_long_name="baseline";
      signal:B= 23;
+     signal:B_units = "digit";
+
+     signal:A_long_name="amplitude";
+     signal:A= 2345;
+     signal:A_units = "digit";
+
+     signal:nb_tB_long_name="baseline time";
+     signal:nb_tB= 1234;
+     signal:nb_tB_units = "pixel";
+
+     signal:nb_tA_long_name="increase time of peak"; 
+     signal:nb_tA= 10;
+     signal:nb_tA_units = "pixel";
+
+     signal:tau_long_name="exponential decrease time of peak";
+     signal:tau= 500;
+     signal:tau_units = "pixel";
+
 //Generator PAC with noise (factory: peak_noise -and full_random-)
+     signal:noise_long_name="amount of signal noise";
      signal:noise=0.2;//12.3;
+     signal:noise_units = "digit";
+
 //Generator PAC with random parameters (factory: full_random)
-     signal:noise_tB=123;
-     signal:noise_tA_long_name="peak noise time amplitude"; 
-     signal:noise_tA=2;
+     signal:noise_B_long_name="amount of baseline noise";
      signal:noise_B=3;
+     signal:noise_B_units = "digit";
+
+     signal:noise_A_long_name="amount of amplitude noise";
      signal:noise_A=12;
+     signal:noise_A_units = "digit";
+
+     signal:noise_tB_long_name="baseline size jitter"; 
+     signal:noise_tB=123;
+     signal:noise_tB_units = "pixel";
+
+     signal:noise_tA_long_name="increase size jitter"; 
+     signal:noise_tA=2;
+     signal:noise_tA_units = "pixel";
+
+     signal:noise_tau_long_name="amount of exponential decrease time noise";
      signal:noise_tau=4;
+     signal:noise_tau_units = "pixel";
+
 
 
 //trapezoid filter (factory: filter)
   int trapezoid;
     trapezoid:long_name="trapezoid filter (activated if >0)";
+
     trapezoid:k_long_name= "increase size";
     trapezoid:k= 200;
     trapezoid:k_units= "pixel";
+
     trapezoid:m_long_name= "plateau size";
     trapezoid:m= 50;
     trapezoid:m_units= "pixel";
-    trapezoid:alpha_long_name= "";
+
+    trapezoid:alpha_long_name= "compensation coefficient";
     trapezoid:alpha= 0.99800199866733306675;
-    trapezoid:alpha_units= "";
+    trapezoid:alpha_units= "none";
+
+    trapezoid:n_long_name= "none";
     trapezoid:n= 34;
+    trapezoid:n_unit= "pixel";
+
+    trapezoid:q_long_name= "computing delay";
     trapezoid:q= 211;
-    trapezoid:q_long_name= "Q computing delay";
+    trapezoid:q_unit= "pixel";
+
+    trapezoid:threshold_long_name= "threshold for simple discri";
     trapezoid:threshold=3.4;
+    trapezoid:threshold_unit= "digit";
+
+    trapezoid:fraction_long_name= "DCFD";
     trapezoid:fraction=0.2;
+    trapezoid:fraction_unit= "none";
+
+    trapezoid:Tm_long_name= "?";
     trapezoid:Tm=20;
+    trapezoid:Tm_unit= "";
+
+
 
 //data value
 data:

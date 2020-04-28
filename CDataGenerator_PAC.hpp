@@ -572,7 +572,7 @@ public:
  * \image html Signal_details.png "PAC signal details"
  *
  *   Graphic legend :   
- * - \c blue curve : signal pac values (y axis)
+ * - \c blue curve : signal PAC values (y axis)
  * - \c B: Baseline					(20)
  * - \c A: Amplitude					(1234)
  * - \c nb_tA: peak duration				(10)
@@ -585,11 +585,11 @@ public:
  * \image html filter_details.png "Trapezoidal filter details"
  *
  *  Graphic legend :  
- * - \c Signal: Signal Pac representation	
+ * - \c Signal: Signal PAC representation	
  * - \c Filter: show the energy with the formula : \n
  *  <I> s(n)=2*s(n-1)-s(n-2) + e(n-1)-alp*e(n-2) -e(n-(ks+1)) +alp*e(n-(ks+2))-e(n-(ks+ms+1))+alp*e(n-(ks+ms+2))+e(n-(2*ks+ms+1))-alp*e(n-(2*ks+ms+2)) </I> \n
  *  where alp=alpha ; s= trapezoidal; e=signal pac ; ks = increase size ; ms = plateau size;
- *  \note Filter Computation: Represent the part where computation of the filter is done
+ *  \note Filter Computation: Represent the part where computation of the filter is done, it begins only after 2k+2 pixel
  * 
  * \image html discri_details.png "discri details"
  *
