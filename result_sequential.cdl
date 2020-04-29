@@ -4,11 +4,11 @@ dimensions:
 	dimF = UNLIMITED ; // (23 currently)
 variables:
 	int E(dimF, dimS) ;
-		E:units = "digit" ;
+		E:units = "digit*" ;
 		E:long_name = "energy" ;
-		E:kernel = "CDataProcessor_Max_Min" ;
+		E:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
 
 // global attributes:
-		:architecture = "x86_64" ;
-		:kernel = "CDataProcessor_Max_Min" ;
+		:architecture = "aarch64" ;
+		:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
 }

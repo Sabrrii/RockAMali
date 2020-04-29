@@ -8,5 +8,5 @@ variables:
 		kernel_elapsed_time:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
 
 // global attributes:
-		:architecture = "ARM64" ;
+		:architecture = "aarch64" ;
 }
