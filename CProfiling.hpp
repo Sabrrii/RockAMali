@@ -8,6 +8,7 @@
 
 #ifdef DO_NETCDF
 #include "CImg_NetCDF.h"
+#include <boost/preprocessor/stringize.hpp>
 #endif //DO_NETCDF
 
 //! profiling sequential process
@@ -66,6 +67,7 @@ public:
     unit_names.push_back("us");
     unit_names.push_back("us");
     std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
+    nc.pNCFile->add_att("architecture",BOOST_PP_STRINGIZE(ARCH));
     if (!(nc.pNCvars[0]->add_att("kernel",process_class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding kernel name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[0]->add_att("frame_size",width))) std::cerr<<"error: for profiling in NetCDF, while adding storage size name attribute (NC_ERROR)."<<std::endl;
     if (!(nc.pNCvars[1]->add_att("storage",store_class_name.c_str()))) std::cerr<<"error: for profiling in NetCDF, while adding storage name attribute (NC_ERROR)."<<std::endl;

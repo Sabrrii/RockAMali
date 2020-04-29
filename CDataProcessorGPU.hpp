@@ -88,6 +88,7 @@ public:
 #ifdef DO_NETCDF
     nc_img.assign(1,1,1,1,-99);
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+    nc.pNCFile->add_att("architecture",BOOST_PP_STRINGIZE(ARCH));
     is_netcdf_init=false;
     dim_time="dimF";
     dim_names.push_back("dimP");

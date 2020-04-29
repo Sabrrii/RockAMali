@@ -8,6 +8,7 @@ using namespace cimg_library;
 //NetCDF
 #ifdef DO_NETCDF
 #include "CImg_NetCDF.h"
+#include <boost/preprocessor/stringize.hpp>
 #endif //DO_NETCDF
 
 //thread lock
@@ -113,6 +114,7 @@ std::cout << "extention ="<<extention<< std::endl<< std::flush;
     {///create NetCDF file and its header
       //create file
 std::cout << "CImgNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+      nc.pNCFile->add_att("architecture",BOOST_PP_STRINGIZE(ARCH));
     //header
       //factory name as global attribute
       nc.pNCFile->add_att(factory_type.c_str(),factory_name.c_str());

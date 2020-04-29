@@ -5,6 +5,7 @@
 
 #ifdef DO_NETCDF
 #include "CImg_NetCDF.h"
+#include <boost/preprocessor/stringize.hpp>
 
 //! generate a single peak close to PAC signal, i.e. ideal curve
 /**
@@ -132,6 +133,7 @@ public:
     nc_img.assign(6, 1,1,1,1, -99);// A,B, tau, tA,tB +E
     std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
     is_netcdf_init=false;
+    nc.pNCFile->add_att("architecture",BOOST_PP_STRINGIZE(ARCH));
     dim_time="dimF";
     dim_names.push_back("dim1");
     std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;

@@ -9,5 +9,6 @@ variables:
 		E:kernel = "CDataProcessor_Max_Min" ;
 
 // global attributes:
+		:architecture = "AMD64" ;
 		:kernel = "CDataProcessor_Max_Min" ;
 }
