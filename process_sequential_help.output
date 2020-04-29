@@ -6,11 +6,11 @@
         ./process -s 1024 -n 123 -o result.nc
 
  version: v0.7.4r
-          CImg_NetCDF.v0.8.4
+          CImg_NetCDF.v0.8.3
           CParameterNetCDF.v0.5.1
           NcTypeInfo.v0.1.4
  compiled types <Tdata,Tproc, Taccess(,Tnetcdf)>=<unsigned int,float, unsigned char(, int)>
- compilation date: (Apr 29 2020, 15:27:43)
+ compilation date: (Apr 29 2020, 13:28:18)
 
     [1m-o              [0;0;0m samples/sample.cimg      [0;32;59moutput file name (e.g. "-o data.nc" or  "-o data.cimg -d 3" gives data_???.cimg)[0;0;0m
     [1m-r              [0;0;0m results/sample.cimg      [0;32;59mresult file name (e.g. "-r result.nc" or  "-r result.cimg -d 3" gives result_???.cimg)[0;0;0m
@@ -19,6 +19,8 @@
     [1m-n              [0;0;0m 256                      [0;32;59mnumber of frames[0;0;0m
     [1m--generator-factory[0;0;0m count                    [0;32;59mgenerator type, e.g. count, random or peak[0;0;0m
     [1m--CPU-factory   [0;0;0m count                    [0;32;59mCPU processing type, e.g. count or kernel[0;0;0m
+    [1m--use-GPU       [0;0;0m false                    [0;32;59muse GPU for compution (or -G option)[0;0;0m
+    [1m--GPU-factory   [0;0;0m program                  [0;32;59mGPU processing type, e.g. program or function[0;0;0m
     [1m--do-check      [0;0;0m false                    [0;32;59mdo data check, e.g. test pass (or -C option)[0;0;0m
     [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
     [1m--info          [0;0;0m false                    [0;32;59mshow compilation options (or -I option)[0;0;0m
