@@ -9,6 +9,6 @@ variables:
 		signal:generator = "CDataGenerator_Full_Random" ;
 
 // global attributes:
-		:architecture = "AMD64" ;
+		:architecture = "ARM64" ;
 		:generator = "CDataGenerator_Full_Random" ;
 }

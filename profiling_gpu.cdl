@@ -6,4 +6,7 @@ variables:
 	int kernel_elapsed_time(dimF, dimP) ;
 		kernel_elapsed_time:units = "us" ;
 		kernel_elapsed_time:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
+
+// global attributes:
+		:architecture = "ARM64" ;
 }
