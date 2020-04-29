@@ -15,7 +15,7 @@
  * return the value of energy
 **/
 template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
-class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>
+class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>, public CData_Filter
 {
 
 //OpenCL function for this class
@@ -43,10 +43,6 @@ public:
   bool kernel_loaded;
   compute::program program;
   compute::kernel  ocl_kernel;
-  //NetCDL
-  int k, m, n, q, Tm, decalage;
-  float/*Tproc*/ threshold;
-  float alpha, fraction; 
   //temporary processing image
   bool image_assigned;
   CImg<Tproc> discri;
