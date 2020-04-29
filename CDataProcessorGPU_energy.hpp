@@ -79,7 +79,7 @@ public:
       ocl_kernel.set_arg(0,this->device_vector_in.get_buffer());
       ocl_kernel.set_arg(1,(int)this->device_vector_in.size());
       ocl_kernel.set_arg(2,this->device_vector_out.get_buffer());
-      ocl_kernel.set_arg(3,alpha);
+      ocl_kernel.set_arg(3,this->alpha);
       kernel_loaded=true;
     }//load kernel once
     //compute
@@ -107,15 +107,15 @@ public:
   {
     ///Trapezoidal computation on CPU    
     if(!image_assigned) {trapezoid.assign(in.width());image_assigned=true;}
-    trapezoidal_filter(in,trapezoid, k,m,alpha, decalage);
+    this->trapezoidal_filter(in,trapezoid, this->k,this->m,this->alpha, this->decalage);
     //wait for GPU completion
     this->queue.finish();
 //! \todo add DO_GPU_PROFILING
     ///find trigger on CPU
-    int Ti=Calcul_Ti(discri,threshold);
+    int Ti=this->Calcul_Ti(discri,this->threshold);
     std::cout<<"Trigger value :"<<Ti<<std::endl;
     /// energy computation on CPU    
-    float E=Calculation_Energy(trapezoid, Ti, n, q);
+    float E=this->Calculation_Energy(trapezoid, Ti, this->n, this->q);
     std::cout<< "Energy= " << E  <<std::endl;
     ///store energy in image
     out(0)=E;//content: E only
