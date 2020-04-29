@@ -23,7 +23,7 @@ variables:
      signal:rand_max=65535;
      signal:rand_max_units = "digit";
 
-//Generator PAC signal (factory: signal_pac -, peak_noise and full_random-)
+//Generator PAC signal (factory: signal_pac -, signal_pac_rnd, peak_noise and full_random-)
      signal:B_long_name="baseline";
      signal:B= 23;
      signal:B_units = "digit";
@@ -46,10 +46,10 @@ variables:
 
 //Generator PAC with noise (factory: peak_noise -and full_random-)
      signal:noise_long_name="amount of signal noise";
-     signal:noise=100.2;//12.3;
+     signal:noise=0.2;//12.3;
      signal:noise_units = "digit";
 
-//Generator PAC with random parameters (factory: full_random)
+//Generator PAC with random parameters (factory: signal_pac_rnd -and full_random-)
      signal:noise_B_long_name="amount of baseline noise";
      signal:noise_B=3;
      signal:noise_B_units = "digit";

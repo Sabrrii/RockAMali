@@ -35,6 +35,6 @@ variables:
 		E:generator = "CDataGenerator_Full_Random" ;
 
 // global attributes:
-		:signal_noise_min = -50.1f ;
-		:signal_noise_max = 50.1f ;
+		:signal_noise_min = -0.1f ;
+		:signal_noise_max = 0.1f ;
 }

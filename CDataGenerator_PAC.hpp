@@ -6,7 +6,7 @@
 #ifdef DO_NETCDF
 #include "CImg_NetCDF.h"
 
-//! generate a single peak close to PAC signal
+//! generate a single peak close to PAC signal, i.e. ideal curve
 /**
  * generate a single curve looking like PAC signal
  *
@@ -14,8 +14,8 @@
  * \note Peak data except first one that is frame count value
  *
  * * user input parameters are loaded from NetCDF CDL - \see struct_parameter_NetCDF.h -, e.g. parameters.cdl :
- * - B: base line
- * - A: Amplitude
+ * - B: baseline
+ * - A: amplitude
  * - nb_tA: peak duration
  * - nb_tB: baseline duration
  * - Tau: decrease time
@@ -56,28 +56,28 @@ public:
   virtual int read_parameters(int &nb_base, int &nb_peak, double &decrease, int &ampl, int &base)
   {
     int Tau;
-     ///file name
-     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
+    ///file name
+    std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
   
-     ///parameter class
-     CParameterNetCDF fp;
-     //open file
-     int error=fp.loadFile((char *)fi.c_str());
-     if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
+    ///parameter class
+    CParameterNetCDF fp;
+    //open file
+    int error=fp.loadFile((char *)fi.c_str());
+    if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
 
-     float process; 
-     std::string process_name="signal";
-     //load process variable
-     error=fp.loadVar(process,&process_name);
-     if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
-     std::cout<<process_name<<"="<<process<<std::endl;
-     ///nb_tB
-     std::string attribute_name="nb_tB";	// 10us
-     if ((error = fp.loadAttribute(attribute_name,nb_base))!=0)
-     {
-       std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-       return error;
-     }
+    float process; 
+    std::string process_name="signal";
+    //load process variable
+    error=fp.loadVar(process,&process_name);
+    if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+    std::cout<<process_name<<"="<<process<<std::endl;
+    ///nb_tB
+    std::string attribute_name="nb_tB";	// 10us
+    if ((error = fp.loadAttribute(attribute_name,nb_base))!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
     std::cout<<"  "<<attribute_name<<"="<<nb_base<<std::endl;
     ///nb_tA
     attribute_name="nb_tA";		//100 ns
@@ -113,15 +113,15 @@ public:
 
   void Peak (CImgList<Tdata> &images, int n)//, int index) //fill image with Peak 
   {
-	//Baseline
-	cimg_for_inX(images[n],0,nb_tB,i) images[n](i)=B;
-        //Peak
-	const float step =(float)A/(nb_tA - nb_tB);
-        int j=0;
-        cimg_for_inX(images[n],nb_tB,nb_tA,i) images[n](i)=step*j++ +B;
-	//Exponential decrease
-	int t=0;
-        cimg_for_inX(images[n],nb_tA,images[n].width(),i) images[n](i)=A * exp(-t++/tau)+B;  	
+    //Baseline
+    cimg_for_inX(images[n],0,nb_tB,i) images[n](i)=B;
+    //Peak
+    const float step =(float)A/(nb_tA - nb_tB);
+    int j=0;
+    cimg_for_inX(images[n],nb_tB,nb_tA,i) images[n](i)=step*j++ +B;
+    //Exponential decrease
+    int t=0;
+    cimg_for_inX(images[n],nb_tA,images[n].width(),i) images[n](i)=A * exp(-t++/tau)+B;  	
   }//Peak
 
 #ifdef DO_NETCDF
@@ -229,6 +229,19 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
 
 };//CDataGenerator_Peak
 
+//! peak with random parameters vs frame, i.e. diffferent ideal curve at each iteration
+/**
+ * ideal PAC peak each time with new parameters in range set by [value-noise/2,value+noise/2]
+ *
+ * parameters NetCDF CDL :
+ * - noise_A: noise for Amplitude
+ * - noise_B: noise for BaseLine
+ * - noise_tA: noise for peak duration
+ * - noise_tB: noise for baseline duration
+ * - noise_tau: noise for decrease time
+ * 
+ * \note load noise for all parameters (i.e. noise for A,B, nb,na,tau) from CDL
+**/
 template<typename Tdata, typename Taccess=unsigned char
 #ifdef DO_NETCDF
 , typename Tnetcdf=int
@@ -431,7 +444,7 @@ public:
 };//CData_Noise
 
 
-//! generate a single peak close to PAC signal with noise
+//! generate a single peak close to PAC signal with noise, i.e. noisy curve
 /**
  * generate a single curve looking like PAC signal with some noise
  *
@@ -516,23 +529,13 @@ public:
 
 };//CDataGenerator_Peak_Noise
 
-//! generate a single peak close to PAC signal with differents values
+//! generate a single peak close to PAC signal with differents values, i.e. different noisy curve at each iteration
 /**
  * generate a single curve looking like PAC signal with a random values at each iteration
  *
  * generate Peak data into a shared circular buffer
  * \note Peak data except first one that is frame count value
  *
- * parameters NetCDF CDL :
- * - min_Amp: minimum Amplitude
- * - max_Amp: maximum Amplitude
- * - min_tA: minimum peak duration
- * - max_tA: maximum peak duration
- * - min_tB: minimum baseline duration
- * - max_tB: maximum baseline duration
- * - min_tau: minimum decrease time
- * - max_tau: maximum decrease time
- * 
  * \ref pageSchema "Signal schema" 
 **/
 
