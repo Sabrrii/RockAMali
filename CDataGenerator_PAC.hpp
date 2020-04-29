@@ -312,6 +312,13 @@ public:
     return 0;
   } //read_noise_parameters
 
+#ifdef DO_NETCDF
+  //! NetCDF initialisation
+  virtual void ncInit()
+  {
+    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    }//ncInit
+#endif //DO_NETCDF
 
   //! constructor
   CDataGenerator_Peak_rnd(std::vector<omp_lock_t*> &lock
@@ -321,7 +328,7 @@ public:
   : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
   {
 //    this->debug=true;
-    this->class_name="CDataGenerator_Full_Random";
+    this->class_name="CDataGenerator_Peak_rnd";
     read_noise_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
 #ifdef DO_NETCDF
     this->ncInit();
@@ -349,7 +356,7 @@ public:
     this->A =  rand()%(max_Amp-min_Amp+1)+min_Amp; 
     std::cout<<"Amplitude = "<<this->A<<std::endl; 
     this->B =  rand()%(max_BL-min_BL+1)+min_BL; 
-    std::cout<<"Amplitude = "<<this->A<<std::endl; 
+    std::cout<<"BaseLine = "<<this->B<<std::endl; 
     this->nb_tB =  rand()%(max_tB-min_tB+1)+min_tB;
     std::cout<<"nb_tB = "<<this->nb_tB<<std::endl; 
     this->nb_tA =  rand()%(max_tA-min_tA+1)+min_tA; 
@@ -357,7 +364,7 @@ public:
     this->nb_tA+=this->nb_tB;
     std::cout<<"nb_tA+nb_tB = "<<this->nb_tA<<std::endl;
 #ifdef DO_NETCDF
-//    this->ncStore();
+    this->ncStore();
 #endif //DO_NETCDF
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
