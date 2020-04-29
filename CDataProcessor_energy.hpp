@@ -132,6 +132,17 @@ public:
 
 #ifdef DO_NETCDF
 
+//! trapezoidal data from CDL parameters
+/**
+ * get from CDL parameter values for trapezoidal filter (including simple dicri ones)
+**/
+class CData_Filter
+{
+public:
+  int k, m, n, q, Tm, decalage;
+  float /*Tproc*/ threshold;
+  float alpha, fraction;
+
   //! read processing parameters from CDL parameter file (as .nc)
   int Read_Filters_Paramaters (int &ks, int &ms, int &number, int &qDelay, int &Tpeak, float &th, float &alp, float &frac)
   {
@@ -255,6 +266,7 @@ public:
     std::cout<<"peak="<<peak/number<<std::endl;
     return (peak-base)/number;
   }//Calculation_Energy
+};//CData_Filter
 
 //! process a single peak from PAC signal 
 /**
@@ -282,12 +294,9 @@ public:
  *
 **/
 template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
-class CDataProcessor_trapezoid : public CDataProcessor_energy<Tdata,Tproc, Taccess>
+class CDataProcessor_trapezoid : public CDataProcessor_energy<Tdata,Tproc, Taccess>, public CData_Filter
 {
 public:
-  int k, m, n, q, Tm, decalage;
-  float /*Tproc*/ threshold;
-  float alpha, fraction;
   bool image_assigned;
   CImg<Tproc> s,imageDCF, trapezoid;
 
