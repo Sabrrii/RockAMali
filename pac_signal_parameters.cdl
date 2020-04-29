@@ -35,7 +35,7 @@ variables:
 		E:generator = "CDataGenerator_Full_Random" ;
 
 // global attributes:
-		:architecture = "ARM64" ;
+		:architecture = "x86_64" ;
 		:signal_noise_min = -0.1f ;
 		:signal_noise_max = 0.1f ;
 }

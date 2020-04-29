@@ -43,6 +43,10 @@ FIN=sample.cimg
 FOUT=$(FIN)
 
 #compiler options
+##architecture
+ARCH=$(shell uname -p)
+
+##library
 LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
 LIB_CIMG=-I../CImg -Wall -W -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
 LIB_BOOST_ASIO=-lboost_system
@@ -50,11 +54,9 @@ LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VE
 #NetCDF library (depending on target architecture)
 ifeq ($(shell uname -p),x86_64)
 ##AMD64 (gan*)
-	ARCH=AMD64
 	LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 else
 ##ARM64 (RockPro64)
-	ARCH=ARM64
 	LIB_NETCDF= -I/usr/include/ -lnetcdf_c++ -L/usr/lib/aarch64-linux-gnu/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 endif #NetCDF
 
