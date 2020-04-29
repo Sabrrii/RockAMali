@@ -63,8 +63,7 @@ public:
     this->check_locks(lock);
     this->image.assign(1);//content: E only
     ///read paramaters in NetCDF file
-    Read_Filters_Paramaters(k,m,n,q,Tm,threshold, alpha,fraction);
-    decalage= 2*k+m+2;
+    read_parameters_and_setup(k,m,n,q,Tm,threshold, alpha,fraction);
     ///OpenCL framework
     program=make_opencl_program(this->ctx);
     kernel_loaded=false;

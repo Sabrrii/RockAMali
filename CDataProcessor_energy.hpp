@@ -144,7 +144,7 @@ public:
   float alpha, fraction;
 
   //! read processing parameters from CDL parameter file (as .nc)
-  int Read_Filters_Paramaters (int &ks, int &ms, int &number, int &qDelay, int &Tpeak, float &th, float &alp, float &frac)
+  int read_parameters(int &ks, int &ms, int &number, int &qDelay, int &Tpeak, float &th, float &alp, float &frac)
   {
   ///file name
   std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -222,7 +222,16 @@ public:
   frac=Fraction;
   th=Threshold;
   return 0;
-  }//Read_Filters_Paramaters
+  }//read_parameters
+
+  //! read processing parameters from CDL parameter and setup other variable for processing
+  int read_parameters_and_setup(int &ks, int &ms, int &number, int &qDelay, int &Tpeak, float &th, float &alp, float &frac)
+  {
+    //read CDL
+    read_parameters(k,m,n,q,Tm,threshold, alpha,fraction);
+    //setup for processing
+    decalage= 2*k+m+2;
+  }//read_parameters_and_setup
 
   //! fill the image with the filter
   template<typename Tdata, typename Tproc>
@@ -312,8 +321,7 @@ public:
     std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     this->debug=true;
     this->class_name="CDataProcessor_trapezoid";
-    Read_Filters_Paramaters(k,m,n,q,Tm,threshold, alpha,fraction);
-    decalage= 2*k+m+2;
+    read_parameters_and_setup(k,m,n,q,Tm,threshold, alpha,fraction);
     image_assigned=false;
     this->check_locks(lock);
   }//constructor

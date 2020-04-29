@@ -5,7 +5,7 @@ dimensions:
 variables:
 	int iteration(dimF, dim1) ;
 		iteration:units = "us" ;
-		iteration:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
+		iteration:kernel = "CDataProcessor_Max_Min" ;
 		iteration:frame_size = 8192 ;
 	int storage(dimF, dim1) ;
 		storage:units = "us" ;
@@ -19,15 +19,14 @@ variables:
 		process_sequential_elapsed_time_per_iteration:profiling = "CProfilingSequential" ;
 
 // global attributes:
-		:architecture = "aarch64" ;
+		:architecture = "x86_64" ;
 		:process_sequential = "v0.7.4r" ;
-		:CImg_NetCDF = "v0.8.3" ;
+		:CImg_NetCDF = "v0.8.4" ;
 		:CParameterNetCDF = "v0.5.1" ;
 		:NcTypeInfo = "v0.1.4" ;
-		:ClTypeInfo = "v0.1.4" ;
-		:kernel = "CDataProcessorGPU_discri_opencl_int4" ;
+		:kernel = "CDataProcessor_Max_Min" ;
 		:profiling = "CProfilingSequential" ;
-		:process_sequential_elapsed_time = 98843 ;
+		:process_sequential_elapsed_time = 24710 ;
 		:process_sequential_elapsed_time_units = "us" ;
-		:process_sequential_elapsed_time_per_iteration = 4297 ;
+		:process_sequential_elapsed_time_per_iteration = 1074 ;
 }
