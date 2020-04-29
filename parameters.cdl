@@ -46,7 +46,7 @@ variables:
 
 //Generator PAC with noise (factory: peak_noise -and full_random-)
      signal:noise_long_name="amount of signal noise";
-     signal:noise=0.2;//12.3;
+     signal:noise=100.2;//12.3;
      signal:noise_units = "digit";
 
 //Generator PAC with random parameters (factory: full_random)

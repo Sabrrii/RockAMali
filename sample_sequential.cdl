@@ -6,8 +6,8 @@ variables:
 	int signal(dimF, dimS) ;
 		signal:units = "digit" ;
 		signal:long_name = "signal" ;
-		signal:generator = "CDataGenerator_Full_Random" ;
+		signal:generator = "CDataGenerator_Peak_Noise" ;
 
 // global attributes:
-		:generator = "CDataGenerator_Full_Random" ;
+		:generator = "CDataGenerator_Peak_Noise" ;
 }

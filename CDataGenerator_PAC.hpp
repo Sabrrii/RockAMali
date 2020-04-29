@@ -385,34 +385,19 @@ public:
 
 };//CDataGenerator_Peak_rnd
 
-
-//! generate a single peak close to PAC signal with noise
+//! noise data from CDL parameters
 /**
- * generate a single curve looking like PAC signal with some noise
- *
- * generate Peak data into a shared circular buffer
- * \note Peak data except first one that is frame count value
- *
- * parameters NetCDF CDL :
- * - B: base line
- * - A: Amplitude
- * - nb_tA: peak duration
- * - nb_tB: baseline duration
- * - Tau: decrease time
- * - noise: value of the noise added
- *
- * \ref pageSchema "Signal schema" 
+ * get from CDL a minimum and maximum values for a signal noise
+ * both min. and max. limits are stored, as well as an array \c Random to contain random values
 **/
-
-template<typename Tdata, typename Taccess=unsigned char>
-class CDataGenerator_Peak_Noise: public CDataGenerator_Peak<Tdata, Taccess>
+class CData_Noise
 {
 public:
   float rand_min,rand_max;
   CImg<float> Random;
 
   //! read parameters from CDL
-  virtual int read_parameters(float &min_noise, float &max_noise)
+  virtual int read_noise_parameters(float &min_noise, float &max_noise)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -443,6 +428,32 @@ public:
     return 0;
   }//read_parameters
 
+};//CData_Noise
+
+
+//! generate a single peak close to PAC signal with noise
+/**
+ * generate a single curve looking like PAC signal with some noise
+ *
+ * generate Peak data into a shared circular buffer
+ * \note Peak data except first one that is frame count value
+ *
+ * parameters NetCDF CDL :
+ * - B: base line
+ * - A: Amplitude
+ * - nb_tA: peak duration
+ * - nb_tB: baseline duration
+ * - Tau: decrease time
+ * - noise: value of the noise added
+ *
+ * \ref pageSchema "Signal schema" 
+**/
+
+template<typename Tdata, typename Taccess=unsigned char>
+class CDataGenerator_Peak_Noise: public CDataGenerator_Peak<Tdata, Taccess>, CData_Noise
+{
+public:
+
 #ifdef DO_NETCDF
   //! NetCDF initialisation
   virtual void ncInit()
@@ -461,7 +472,7 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_Noise";	
-    read_parameters(rand_min,rand_max);
+    this->read_noise_parameters(this->rand_min,this->rand_max);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -483,8 +494,9 @@ public:
     }
 
     //image random
-    if(index == 0)Random.assign(images[n].width());
-    Random.rand(rand_min,rand_max);
+    if(index == 0) this->Random.assign(images[n].width());
+    this->Random.rand(rand_min,rand_max);
+
     //wait lock
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
