@@ -239,8 +239,8 @@ class CDataGenerator_Peak_rnd: public CDataGenerator_Peak<Tdata, Taccess>
 public:
   Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
 
-  //! read parameters from CDL
-  virtual int read_noise_parameters(Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
+  //! read noise parameters from CDL
+  virtual int read_parameters(Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -310,7 +310,7 @@ public:
     min_ta=this->nb_tA-this->nb_tB-noise_ta/2;
     max_ta=this->nb_tA-this->nb_tB+noise_ta/2;
     return 0;
-  } //read_noise_parameters
+  } //read_parameters
 
 #ifdef DO_NETCDF
   //! NetCDF initialisation
@@ -329,7 +329,7 @@ public:
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_rnd";
-    read_noise_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
+    read_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -397,7 +397,7 @@ public:
   CImg<float> Random;
 
   //! read parameters from CDL
-  virtual int read_noise_signal_parameters(float &min_noise, float &max_noise)
+  virtual int read_parameters(float &min_noise, float &max_noise)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -458,8 +458,8 @@ public:
   //! NetCDF initialisation
   virtual void ncInit()
   {
-    (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
-    (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
+    (this->nc).pNCFile->add_att("signal_noise_min",this->rand_min);
+    (this->nc).pNCFile->add_att("signal_noise_max",this->rand_max);
     cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
     }//ncInit
 #endif //DO_NETCDF
@@ -473,7 +473,7 @@ public:
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_Noise";
     //get CDL prms (CData_Noise)
-    this->read_noise_signal_parameters(this->rand_min,this->rand_max);
+    this->CData_Noise::read_parameters(this->rand_min,this->rand_max);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -550,7 +550,7 @@ public:
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
     //get CDL prms (CData_Noise)
-    this->read_noise_signal_parameters(this->rand_min,this->rand_max);
+    this->CData_Noise::read_parameters(this->rand_min,this->rand_max);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -561,8 +561,8 @@ public:
   //! NetCDF initialisation
   virtual void ncInit()
   {
-    (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
-    (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
+    (this->nc).pNCFile->add_att("signal_noise_min",this->rand_min);
+    (this->nc).pNCFile->add_att("signal_noise_max",this->rand_max);
     cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
     }//ncInit
 #endif //DO_NETCDF
