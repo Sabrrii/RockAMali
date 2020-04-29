@@ -147,82 +147,82 @@ public:
   //! read processing parameters from CDL parameter file (as .nc)
   int read_parameters(int &ks, int &ms, int &number, int &qDelay, int &Tpeak, float &th, float &alp, float &frac)
   {
-  ///file name
-  std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-  double Alpha, Fraction, Threshold;
-  ///parameter class
-  CParameterNetCDF fp;
-  //open file
-  int error=fp.loadFile((char *)fi.c_str());
-  if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
+    ///file name
+    std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
+    double Alpha, Fraction, Threshold;
+    ///parameter class
+    CParameterNetCDF fp;
+    //open file
+    int error=fp.loadFile((char *)fi.c_str());
+    if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
 
-  float process; 
-  std::string process_name="trapezoid";
-  //load process variable
-  error=fp.loadVar(process,&process_name);
-  if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
-  std::cout<<process_name<<"="<<process<<std::endl;
-  ///k
-  std::string attribute_name="k";
-  if ((error = fp.loadAttribute(attribute_name,ks))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+    float process; 
+    std::string process_name="trapezoid";
+    //load process variable
+    error=fp.loadVar(process,&process_name);
+    if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+    std::cout<<process_name<<"="<<process<<std::endl;
+    ///k
+    std::string attribute_name="k";
+    if ((error = fp.loadAttribute(attribute_name,ks))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<ks<<std::endl;
+    ///m
+    attribute_name="m";
+    if ((error = fp.loadAttribute(attribute_name,ms))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<ms<<std::endl;
+    ///alpha
+    attribute_name="alpha";
+    if ((error = fp.loadAttribute(attribute_name,Alpha))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<Alpha<<std::endl;
+    ///n
+    attribute_name="n";
+    if ((error = fp.loadAttribute(attribute_name,number))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<number<<std::endl;
+    ///q
+    attribute_name="q";
+    if ((error = fp.loadAttribute(attribute_name,qDelay))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<qDelay<<std::endl;
+    ///threshold
+    attribute_name="threshold";
+    if ((error = fp.loadAttribute(attribute_name,Threshold))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<Threshold<<std::endl;
+    ///fraction
+    attribute_name="fraction";
+    if ((error = fp.loadAttribute(attribute_name,Fraction))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
     return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<ks<<std::endl;
-  ///m
-  attribute_name="m";
-  if ((error = fp.loadAttribute(attribute_name,ms))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<ms<<std::endl;
-  ///alpha
-  attribute_name="alpha";
-  if ((error = fp.loadAttribute(attribute_name,Alpha))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<Alpha<<std::endl;
-  ///n
-  attribute_name="n";
-  if ((error = fp.loadAttribute(attribute_name,number))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<number<<std::endl;
-  ///q
-  attribute_name="q";
-  if ((error = fp.loadAttribute(attribute_name,qDelay))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<qDelay<<std::endl;
-  //threshold
-  attribute_name="threshold";
-  if ((error = fp.loadAttribute(attribute_name,Threshold))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<Threshold<<std::endl;
-  ///fraction
-  attribute_name="fraction";
-  if ((error = fp.loadAttribute(attribute_name,Fraction))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<Fraction<<std::endl;
-  ///Tm
-  attribute_name="Tm";
-  if ((error = fp.loadAttribute(attribute_name,Tpeak))!=0){
-    std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-    return error;
-  }
-  std::cout<<"  "<<attribute_name<<"="<<Tpeak<<std::endl;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<Fraction<<std::endl;
+    ///Tm
+    attribute_name="Tm";
+    if ((error = fp.loadAttribute(attribute_name,Tpeak))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<Tpeak<<std::endl;
 
-  alp=Alpha;
-  frac=Fraction;
-  th=Threshold;
-  return 0;
+    alp=Alpha;
+    frac=Fraction;
+    th=Threshold;
+    return 0;
   }//read_parameters
 
   //! read processing parameters from CDL parameter and setup other variable for processing
@@ -235,7 +235,7 @@ public:
   }//read_parameters_and_setup
 
   //! fill the image with the filter
-  void trapezoidal_filter(CImg<Tdata> e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
+  void trapezoidal_filter(const CImg<Tdata> &e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
   {
     //initiation of first parts of data
     cimg_for_inX(s,0,decalage-1,n) s(n)=e(0);
@@ -246,21 +246,20 @@ public:
 					+e(n-(2*ks+ms+1))-alp*e(n-(2*ks+ms+2));		
   }//trapezoidal_filter
 
-  //!fill the image with 2 discri and display it, return the position of the trigger
-  int Calcul_Ti(CImg<Tproc> s, float th) 
+  //! find position of the trigger
+  int Calcul_Ti(const CImg<Tproc> &s, float th) 
   {
-	//find the position of the trigger
-	int Ti=0;
-	for (int i=0;s(i) < th; i++)
-	{
-	  Ti=i+1;
-	}
-	return Ti;
+    //find the position of the trigger
+    int Ti=0;
+    for (int i=0;s(i) < th; i++)
+    {
+      Ti=i+1;
+    }
+    return Ti;
   }//Calcul_Ti
-
   
   //! calculation of the energy based on the formula (peak-base)/number
-  float Calculation_Energy(CImg<Tproc> trapezoid, int Ti,int number, double qDelay)
+  Tproc Calculation_Energy(const CImg<Tproc> &trapezoid, int Ti,int number, double qDelay)
   {
     //sum of the n baseline value
     int base=0;
@@ -271,7 +270,7 @@ public:
     //print both sum and return the energy 
     std::cout<<"base="<<base/number<<std::endl;
     std::cout<<"peak="<<peak/number<<std::endl;
-    return (peak-base)/number;
+    return (Tproc)(peak-base)/(Tproc)number;
   }//Calculation_Energy
 };//CData_Filter
 
@@ -338,7 +337,7 @@ public:
   #endif // #if cimg_display
 
   //!fill the image with 2 discri and display it, return the position of the trigger
-  virtual void Calcul_Discri(CImg<Tdata> e, CImg<Tproc> &s,CImg<Tproc> &imageDCF,int Tpeak,double frac,double alp) 
+  virtual void Calcul_Discri(const CImg<Tdata> &e, CImg<Tproc> &s,CImg<Tproc> &imageDCF,int Tpeak,double frac,double alp) 
   {
     if(!image_assigned) {s.assign(e.width());/*image_assigned=true;*/}
 	int delay = (3*Tpeak)/2;
@@ -387,7 +386,7 @@ public:
     if(!image_assigned) {trapezoid.assign(in.width());/*image_assigned=true;*/}
     this->trapezoidal_filter(in,trapezoid, this->k,this->m,this->alpha, this->decalage);
     #if cimg_display!=0
-    Display(in, trapezoid, decalage);
+    Display(in, trapezoid, this->decalage);
     #endif //#cimg_display   
     ///Discri   
     Calcul_Discri(in,s,imageDCF, this->Tm, this->fraction,this->alpha);

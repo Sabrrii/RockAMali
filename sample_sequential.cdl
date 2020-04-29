@@ -6,9 +6,9 @@ variables:
 	int signal(dimF, dimS) ;
 		signal:units = "digit" ;
 		signal:long_name = "signal" ;
-		signal:generator = "CDataGenerator_Full_Random" ;
+		signal:generator = "CDataGenerator_Peak_rnd" ;
 
 // global attributes:
-		:architecture = "aarch64" ;
-		:generator = "CDataGenerator_Full_Random" ;
+		:architecture = "x86_64" ;
+		:generator = "CDataGenerator_Peak_rnd" ;
 }

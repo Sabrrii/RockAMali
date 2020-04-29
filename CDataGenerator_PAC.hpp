@@ -157,7 +157,7 @@ public:
     long_names.push_back("baseline duration");
     long_names.push_back("increase duration");
     long_names.push_back("exponential decrease");
-    long_names.push_back("energy (computed using E=A-B)");
+    long_names.push_back("energy (i.e. A)");
    ///creation
     //variables
 std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
@@ -178,7 +178,7 @@ std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << 
     nc_img[n++]=nb_tB;
     nc_img[n++]=nb_tA-nb_tB;//nb_tA
     nc_img[n++]=tau;
-    nc_img[n++]=A-B;
+    nc_img[n++]=A;
 std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
     }//ncStore
 #endif //DO_NETCDF
@@ -593,7 +593,7 @@ public:
     this->ncStore();
 #endif //DO_NETCDF
     //noise
-    if(index ==0)this->Random.assign(images[n].width());
+    if(index==0) this->Random.assign(images[n].width());
     this->Random.rand(this->rand_min,this->rand_max);
 
     unsigned int c=0;

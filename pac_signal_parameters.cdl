@@ -7,35 +7,33 @@ variables:
 		A:units = "digit" ;
 		A:long_name = "amplitude" ;
 		A:generator_ = "CDataGenerator_Peak" ;
-		A:generator = "CDataGenerator_Full_Random" ;
+		A:generator = "CDataGenerator_Peak_rnd" ;
 	int B(dimF, dim1) ;
 		B:units = "digit" ;
 		B:long_name = "baseline" ;
 		B:generator_ = "CDataGenerator_Peak" ;
-		B:generator = "CDataGenerator_Full_Random" ;
+		B:generator = "CDataGenerator_Peak_rnd" ;
 	int tB(dimF, dim1) ;
 		tB:units = "tic (10ns)" ;
 		tB:long_name = "baseline duration" ;
 		tB:generator_ = "CDataGenerator_Peak" ;
-		tB:generator = "CDataGenerator_Full_Random" ;
+		tB:generator = "CDataGenerator_Peak_rnd" ;
 	int tA(dimF, dim1) ;
 		tA:units = "tic (10ns)" ;
 		tA:long_name = "increase duration" ;
 		tA:generator_ = "CDataGenerator_Peak" ;
-		tA:generator = "CDataGenerator_Full_Random" ;
+		tA:generator = "CDataGenerator_Peak_rnd" ;
 	int Tau(dimF, dim1) ;
 		Tau:units = "tic (10ns)" ;
 		Tau:long_name = "exponential decrease" ;
 		Tau:generator_ = "CDataGenerator_Peak" ;
-		Tau:generator = "CDataGenerator_Full_Random" ;
+		Tau:generator = "CDataGenerator_Peak_rnd" ;
 	int E(dimF, dim1) ;
 		E:units = "digit" ;
-		E:long_name = "energy (computed using E=A-B)" ;
+		E:long_name = "energy (i.e. A)" ;
 		E:generator_ = "CDataGenerator_Peak" ;
-		E:generator = "CDataGenerator_Full_Random" ;
+		E:generator = "CDataGenerator_Peak_rnd" ;
 
 // global attributes:
-		:architecture = "aarch64" ;
-		:signal_noise_min = -0.1f ;
-		:signal_noise_max = 0.1f ;
+		:architecture = "x86_64" ;
 }

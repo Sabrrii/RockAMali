@@ -24,7 +24,7 @@ PORT=20485
 NS=23
 NB=12
 NP=2
-GEN_FCT=full_random
+GEN_FCT=signal_pac_rnd
 PROC=pac
 USE_GPU=--use-GPU --GPU-factory discri_int4
 #USE_GPU=
@@ -184,6 +184,9 @@ process_sequential_check: result_sequential.nc  sample_sequential.nc
 	cp -p  sample_sequential.nc  all_sequential.nc && ncks -A result_sequential.nc -o all_sequential.nc && ncdump -h all_sequential.nc
 	ncap2 -s "ncoprocess=signal*2.1+123.45; diff=process-ncoprocess" all_sequential.nc -o diff_sequential.nc --overwrite && ncdump -h diff_sequential.nc
 	ncview diff_sequential.nc &
+
+process_sequential_energy_check: result_sequential.nc pac_signal_parameters.nc
+	./process_sequential_energy_check.sh | tee process_sequential_energy_check.txt
 
 #data check for all factory kernels
 process_sequential_vMcPc_check:
