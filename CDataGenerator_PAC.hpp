@@ -397,7 +397,7 @@ public:
   CImg<float> Random;
 
   //! read parameters from CDL
-  virtual int read_noise_parameters(float &min_noise, float &max_noise)
+  virtual int read_noise_signal_parameters(float &min_noise, float &max_noise)
   {
     ///file name
     std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
@@ -471,8 +471,9 @@ public:
   : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
   {
 //    this->debug=true;
-    this->class_name="CDataGenerator_Peak_Noise";	
-    this->read_noise_parameters(this->rand_min,this->rand_max);
+    this->class_name="CDataGenerator_Peak_Noise";
+    //get CDL prms (CData_Noise)
+    this->read_noise_signal_parameters(this->rand_min,this->rand_max);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -536,7 +537,7 @@ public:
 **/
 
 template<typename Tdata, typename Taccess=unsigned char>
-class CDataGenerator_Full_Random: public CDataGenerator_Peak_rnd<Tdata, Taccess>
+class CDataGenerator_Full_Random: public CDataGenerator_Peak_rnd<Tdata, Taccess>, CData_Noise
 {
 public:
   //! constructor
@@ -546,14 +547,25 @@ public:
   )
   : CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status)
   {
-//! \todo [high] friend CDataGenerator_Peak_Noise
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
+    //get CDL prms (CData_Noise)
+    this->read_noise_signal_parameters(this->rand_min,this->rand_max);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
     this->check_locks(lock);
   }//constructor
+
+#ifdef DO_NETCDF
+  //! NetCDF initialisation
+  virtual void ncInit()
+  {
+    (this->nc).pNCFile->add_att("signal_noise_min",rand_min);
+    (this->nc).pNCFile->add_att("signal_noise_max",rand_max);
+    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    }//ncInit
+#endif //DO_NETCDF
 
   //! one iteration for any loop
   /**
@@ -575,20 +587,19 @@ public:
 #ifdef DO_NETCDF
     this->ncStore();
 #endif //DO_NETCDF
-/*
-     //noise
+    //noise
     if(index ==0)this->Random.assign(images[n].width());
     this->Random.rand(this->rand_min,this->rand_max);
-*/
+
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
     //create peak signal (with the random paramaters)
     this->Peak(images, n); 
-/*
+
     //add noise on peak
     images[n]+=this->Random;
-*/
+
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration

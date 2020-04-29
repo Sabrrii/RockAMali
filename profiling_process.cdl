@@ -19,13 +19,13 @@ variables:
 		process_sequential_elapsed_time_per_iteration:profiling = "CProfilingSequential" ;
 
 // global attributes:
-		:process_sequential = "v0.7.4m" ;
+		:process_sequential = "v0.7.4n" ;
 		:CImg_NetCDF = "v0.8.3" ;
 		:CParameterNetCDF = "v0.5.0" ;
 		:NcTypeInfo = "v0.1.4" ;
 		:kernel = "CDataProcessor_Max_Min" ;
 		:profiling = "CProfilingSequential" ;
-		:process_sequential_elapsed_time = 25614 ;
+		:process_sequential_elapsed_time = 23587 ;
 		:process_sequential_elapsed_time_units = "us" ;
-		:process_sequential_elapsed_time_per_iteration = 1113 ;
+		:process_sequential_elapsed_time_per_iteration = 1025 ;
 }
