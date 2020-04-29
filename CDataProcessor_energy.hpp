@@ -136,6 +136,7 @@ public:
 /**
  * get from CDL parameter values for trapezoidal filter (including simple dicri ones)
 **/
+template<typename Tdata, typename Tproc>
 class CData_Filter
 {
 public:
@@ -225,7 +226,7 @@ public:
   }//read_parameters
 
   //! read processing parameters from CDL parameter and setup other variable for processing
-  int read_parameters_and_setup(int &ks, int &ms, int &number, int &qDelay, int &Tpeak, float &th, float &alp, float &frac)
+  int read_parameters_and_setup()
   {
     //read CDL
     read_parameters(k,m,n,q,Tm,threshold, alpha,fraction);
@@ -234,7 +235,6 @@ public:
   }//read_parameters_and_setup
 
   //! fill the image with the filter
-  template<typename Tdata, typename Tproc>
   void trapezoidal_filter(CImg<Tdata> e, CImg<Tproc> &s, int ks, int ms, double alp, int decalage) 
   {
     //initiation of first parts of data
@@ -247,8 +247,7 @@ public:
   }//trapezoidal_filter
 
   //!fill the image with 2 discri and display it, return the position of the trigger
-  template<typename T>
-  int Calcul_Ti(CImg<T> s, float th) 
+  int Calcul_Ti(CImg<Tproc> s, float th) 
   {
 	//find the position of the trigger
 	int Ti=0;
@@ -261,8 +260,7 @@ public:
 
   
   //! calculation of the energy based on the formula (peak-base)/number
-  template<typename T>
-  float Calculation_Energy(CImg<T> trapezoid, int Ti,int number, double qDelay)
+  float Calculation_Energy(CImg<Tproc> trapezoid, int Ti,int number, double qDelay)
   {
     //sum of the n baseline value
     int base=0;
@@ -303,7 +301,7 @@ public:
  *
 **/
 template<typename Tdata, typename Tproc=Tdata, typename Taccess=unsigned char>
-class CDataProcessor_trapezoid : public CDataProcessor_energy<Tdata,Tproc, Taccess>, public CData_Filter
+class CDataProcessor_trapezoid : public CDataProcessor_energy<Tdata,Tproc, Taccess>, public CData_Filter<Tdata,Tproc>
 {
 public:
   bool image_assigned;
@@ -321,7 +319,7 @@ public:
     std::cout<<__FILE__<<"::"<<__func__<<"(...)"<<std::endl;
     this->debug=true;
     this->class_name="CDataProcessor_trapezoid";
-    read_parameters_and_setup(k,m,n,q,Tm,threshold, alpha,fraction);
+    this->read_parameters_and_setup();
     image_assigned=false;
     this->check_locks(lock);
   }//constructor
@@ -387,23 +385,23 @@ public:
   virtual void kernelCPU_Trapeze(CImg<Tdata> &in,CImg<Tproc> &out)
   {    
     if(!image_assigned) {trapezoid.assign(in.width());/*image_assigned=true;*/}
-    trapezoidal_filter(in,trapezoid, k,m,alpha, decalage);
+    this->trapezoidal_filter(in,trapezoid, this->k,this->m,this->alpha, this->decalage);
     #if cimg_display!=0
     Display(in, trapezoid, decalage);
     #endif //#cimg_display   
     ///Discri   
-    Calcul_Discri(in,s,imageDCF, Tm, fraction,alpha);
-    int Ti=Calcul_Ti(s,threshold);
+    Calcul_Discri(in,s,imageDCF, this->Tm, this->fraction,this->alpha);
+    int Ti=this->Calcul_Ti(s,this->threshold);
     std::cout<< "Trigger start= " << Ti  <<std::endl;
     #if cimg_display!=0
-    Discri_Display(in,s,imageDCF, Tm,threshold,Ti, n, q);
+    Discri_Display(in,s,imageDCF, this->Tm,this->threshold,Ti, this->n, this->q);
     #endif //#cimg_display
     ///Energy
-    float E=Calculation_Energy(trapezoid, Ti, n, q);
+    float E=this->Calculation_Energy(trapezoid, Ti, this->n, this->q);
     std::cout<< "Energy= " << E  <<std::endl;
     #if cimg_display!=0
     ///trapezoidal
-    Display_Trapeze_Paramaters(trapezoid, Ti, n, q);
+    Display_Trapeze_Paramaters(trapezoid, Ti, this->n, this->q);
     #endif //#cimg_display
     out(0)=E;
   };//kernelCPU_Trapeze

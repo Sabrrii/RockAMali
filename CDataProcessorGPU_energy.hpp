@@ -14,8 +14,8 @@
  * computation of the discri
  * return the value of energy
 **/
-template<typename Tdata=unsigned int,typename Tproc=unsigned int, typename Taccess=unsigned char>
-class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>, public CData_Filter
+template<typename Tdata=unsigned int,typename Tproc=float, typename Taccess=unsigned char>
+class CDataProcessorGPU_discri_opencl : public CDataProcessorGPU<Tdata,Tproc, Taccess>, public CData_Filter<Tdata,Tproc>
 {
 
 //OpenCL function for this class
@@ -63,7 +63,7 @@ public:
     this->check_locks(lock);
     this->image.assign(1);//content: E only
     ///read paramaters in NetCDF file
-    read_parameters_and_setup(k,m,n,q,Tm,threshold, alpha,fraction);
+    this->read_parameters_and_setup();
     ///OpenCL framework
     program=make_opencl_program(this->ctx);
     kernel_loaded=false;
