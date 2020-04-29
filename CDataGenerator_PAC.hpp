@@ -335,6 +335,24 @@ public:
 #endif //DO_NETCDF
     this->check_locks(lock);
   }//constructor
+
+  //! set random values in curve parameters
+  virtual void random_parameter()
+  {
+    this->tau =  rand()%(max_tau-min_tau+1)+min_tau;
+    std::cout<<"tau = "<<this->tau<<std::endl; 
+    this->A =  rand()%(max_Amp-min_Amp+1)+min_Amp; 
+    std::cout<<"Amplitude = "<<this->A<<std::endl; 
+    this->B =  rand()%(max_BL-min_BL+1)+min_BL; 
+    std::cout<<"BaseLine = "<<this->B<<std::endl; 
+    this->nb_tB =  rand()%(max_tB-min_tB+1)+min_tB;
+    std::cout<<"nb_tB = "<<this->nb_tB<<std::endl; 
+    this->nb_tA =  rand()%(max_tA-min_tA+1)+min_tA; 
+    std::cout<<"nb_tA = "<<this->nb_tA<<std::endl; 
+    this->nb_tA+=this->nb_tB;
+    std::cout<<"nb_tA+nb_tB = "<<this->nb_tA<<std::endl;
+  }//constructor
+
   //! one iteration for any loop
   /**
    * entirely filled with the frame count value
@@ -351,18 +369,7 @@ public:
     //wait lock
 
     //random values for curve parameters
-    this->tau =  rand()%(max_tau-min_tau+1)+min_tau;
-    std::cout<<"tau = "<<this->tau<<std::endl; 
-    this->A =  rand()%(max_Amp-min_Amp+1)+min_Amp; 
-    std::cout<<"Amplitude = "<<this->A<<std::endl; 
-    this->B =  rand()%(max_BL-min_BL+1)+min_BL; 
-    std::cout<<"BaseLine = "<<this->B<<std::endl; 
-    this->nb_tB =  rand()%(max_tB-min_tB+1)+min_tB;
-    std::cout<<"nb_tB = "<<this->nb_tB<<std::endl; 
-    this->nb_tA =  rand()%(max_tA-min_tA+1)+min_tA; 
-    std::cout<<"nb_tA = "<<this->nb_tA<<std::endl; 
-    this->nb_tA+=this->nb_tB;
-    std::cout<<"nb_tA+nb_tB = "<<this->nb_tA<<std::endl;
+    this->random_parameter();
 #ifdef DO_NETCDF
     this->ncStore();
 #endif //DO_NETCDF
@@ -517,103 +524,19 @@ public:
 **/
 
 template<typename Tdata, typename Taccess=unsigned char>
-class CDataGenerator_Full_Random: public CDataGenerator_Peak_Noise<Tdata, Taccess>
+class CDataGenerator_Full_Random: public CDataGenerator_Peak_rnd<Tdata, Taccess>
 {
 public:
-  Tdata min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA;
-
-  //! read parameters from CDL
-  int read_noise_parameters(Tdata &min_A, Tdata &max_A, Tdata &min_B, Tdata &max_B, Tdata &min_T, Tdata &max_T, Tdata &min_tb, Tdata &max_tb, Tdata &min_ta, Tdata &max_ta)
-  {
-    ///file name
-    std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
-    int noise_Amplitude,noise_BaseLine,noise_Tau,noise_tB,noise_ta;
-    ///parameter class
-    CParameterNetCDF fp;
-    //open file
-    int error=fp.loadFile((char *)fi.c_str());
-    if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
-
-    float process; 
-    std::string process_name="signal";
-    //load process variable
-    error=fp.loadVar(process,&process_name);
-    if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
-    std::cout<<process_name<<"="<<process<<std::endl;
-    ///noise_Amplitude
-    std::string attribute_name="noise_A";
-    if ((error = fp.loadAttribute(attribute_name,noise_Amplitude))!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<noise_Amplitude<<std::endl;
-    ///noise_BaseLine
-    attribute_name="noise_B";
-    if ((error = fp.loadAttribute(attribute_name,noise_BaseLine))!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<noise_BaseLine<<std::endl;
-    ///noise_tau
-    attribute_name="noise_tau";
-    if ((error = fp.loadAttribute(attribute_name,noise_Tau))!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<noise_Tau<<std::endl;
-    ///noise_tB
-    attribute_name="noise_tB";
-    if ((error = fp.loadAttribute(attribute_name,noise_tB))!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<noise_tB<<std::endl;
-    ///noise_tA
-    attribute_name="noise_tA";
-    if ((error = fp.loadAttribute(attribute_name,noise_ta))!=0)
-    {
-      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
-      return error;
-    }
-    std::cout<<"  "<<attribute_name<<"="<<noise_ta<<std::endl;
-
-    //convert input type into Tdata
-    min_A=this->A-noise_Amplitude/2;
-    max_A=this->A+noise_Amplitude/2;
-    min_B=this->B-noise_BaseLine/2;
-    max_B=this->B+noise_BaseLine/2;
-    min_T=this->tau-noise_Tau/2;
-    max_T=this->tau+noise_Tau/2;
-    min_tb=this->nb_tB-noise_tB;
-    max_tb=this->nb_tB+noise_tB;
-    min_ta=this->nb_tA-this->nb_tB-noise_ta/2;
-    max_ta=this->nb_tA-this->nb_tB+noise_ta/2;
-    return 0;
-  } //read_noise_parameters
-
-
-#ifdef DO_NETCDF
-  //! NetCDF initialisation
-  virtual void ncInit()
-  {
-    cimglist_for(this->nc_img,x)if (!(this->nc.pNCvars[x]->add_att("generator",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
-    }//ncInit
-#endif //DO_NETCDF
-
   //! constructor
   CDataGenerator_Full_Random(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
   )
-  : CDataGenerator_Peak_Noise<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status)
   {
+//! \todo [high] friend CDataGenerator_Peak_Noise
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
-    read_noise_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
 #ifdef DO_NETCDF
     this->ncInit();
 #endif //DO_NETCDF
@@ -636,34 +559,24 @@ public:
     //wait lock
 
     //random values for curve parameters
-    this->tau =  rand()%(max_tau-min_tau+1)+min_tau;
-    std::cout<<"tau = "<<this->tau<<std::endl; 
-    this->A =  rand()%(max_Amp-min_Amp+1)+min_Amp; 
-    std::cout<<"Amplitude = "<<this->A<<std::endl; 
-    this->B =  rand()%(max_BL-min_BL+1)+min_BL; 
-    std::cout<<"Amplitude = "<<this->A<<std::endl; 
-    this->nb_tB =  rand()%(max_tB-min_tB+1)+min_tB;
-    std::cout<<"nb_tB = "<<this->nb_tB<<std::endl; 
-    this->nb_tA =  rand()%(max_tA-min_tA+1)+min_tA; 
-    std::cout<<"nb_tA = "<<this->nb_tA<<std::endl; 
-    this->nb_tA+=this->nb_tB;
-    std::cout<<"nb_tA+nb_tB = "<<this->nb_tA<<std::endl;
+    this->random_parameter();
 #ifdef DO_NETCDF
     this->ncStore();
 #endif //DO_NETCDF
+/*
      //noise
     if(index ==0)this->Random.assign(images[n].width());
     this->Random.rand(this->rand_min,this->rand_max);
-
+*/
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
 
     //create peak signal (with the random paramaters)
     this->Peak(images, n); 
-
+/*
     //add noise on peak
     images[n]+=this->Random;
-
+*/
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
