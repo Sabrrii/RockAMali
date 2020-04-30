@@ -26,7 +26,7 @@ variables:
 		:NcTypeInfo = "v0.1.4" ;
 		:kernel = "CDataProcessor_Max_Min" ;
 		:profiling = "CProfilingSequential" ;
-		:process_sequential_elapsed_time = 20173 ;
+		:process_sequential_elapsed_time = 20962 ;
 		:process_sequential_elapsed_time_units = "us" ;
-		:process_sequential_elapsed_time_per_iteration = 877 ;
+		:process_sequential_elapsed_time_per_iteration = 911 ;
 }

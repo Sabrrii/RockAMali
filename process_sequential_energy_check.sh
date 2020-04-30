@@ -11,9 +11,12 @@ statistics='maximum minimum mean'
 #short names for statistics
 #stats='maxi mini mean'
 stats=
+vars=
 for o in $statistics
 do
-  stats=$stats' '${o:0:4}
+  suf=${o:0:4}
+  stats=$stats' '$suf
+  vars=$vars' E_'$suf  
 done
 
 echo 'parse a few factory entities to compare to "'$gen'" simulation:'
@@ -43,7 +46,7 @@ do
     fo=$fb'_'$o.nc
     list=$list' '$fo
     ncwa -y $o -O $fb'_diff.nc' -o $fo
-    var=E_`echo $stats | cut -d' ' -f$i`
+    var=`echo $vars | cut -d' ' -f$i`
     ncrename -v E,$var $fo
     ncatted -a long_name,$var,m,c,"$o energy" $fo
     ((++i))
@@ -63,6 +66,8 @@ do
   ncdump $fo
   ##next loop
   stat_list=$stat_list' '$fo
+  #clean
+  rm $list
 done
 
 for f in $stat_list
@@ -70,10 +75,10 @@ do
   ncdump $f
 done
 
-#check close to zero
+#check if diff is close to zero
 ##prepare
 fo=parameters_stats.nc
-###extract E
+###extract E and convert to float (last sed)
 E=`ncdump -v signal parameters.nc | grep ':A ' | cut -d':' -f2 | sed 's/A/E/' | sed 's/ ;/f ;/'`
 ncap2 -O -s "$E" parameters.nc -o tmp.nc
 ncks -O -v E tmp.nc -o parameters_E.nc
@@ -97,21 +102,27 @@ for f in $stat_list
 do
   fo=`basename $f .nc`_percentage.nc
   #vars='E_maxi*=100;E_mini*=100;E_mean*=100;'
-  vars=
-  for o in $stats
+  ops=
+  i=1
+  for o in $vars
   do
-    vars=$vars'E_'$o'*=100; '
+    var=`echo $vars | cut -d' ' -f$i`
+    ops=$ops' '$var'*=100; '
+    ((++i))
   done
-  ncap2 -O -s "$vars" $f -o tmp.nc
+  ##percentage compution
+  ncap2 -O -s "$ops" $f -o tmp.nc
   ncbo -O --op_typ='/' tmp.nc parameters_stats.nc -o $fo
-  ##percentage
-  for o in $stats
+  ##percentage names
+  i=1
+  for o in $vars
   do
-    var=E_$o
-    varp=E_$o'_%'
+    var=`echo $vars | cut -d' ' -f$i`
+    varp=$var'_%'
     ncrename -v $var,$varp $fo
     ncatted -a units,$varp,m,c,"%" $fo
     ncatted -a long_name,$varp,a,c," percentage" $fo
+    ((++i))
   done
   ##clear history
   ncatted --history -a history,global,d,, -a history_of_appended_files,global,d,, $fo
@@ -120,8 +131,5 @@ do
 done
 #clean
 rm tmp.nc parameters_stats.nc
-
-#o. do a loop on processor (CPU factory, GPU ...)
-
 
 
