@@ -270,7 +270,7 @@ public:
     //print both sum and return the energy 
     std::cout<<"base="<<base/number<<std::endl;
     std::cout<<"peak="<<peak/number<<std::endl;
-    return (Tproc)(peak-base)/(Tproc)number;
+    return (Tproc)(peak-base)/(Tproc)number/207;//! \bug [highest] static norm. !!
   }//Calculation_Energy
 };//CData_Filter
 
