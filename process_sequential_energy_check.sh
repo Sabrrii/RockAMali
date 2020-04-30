@@ -18,7 +18,7 @@ for o in $statistics
 do
   suf=${o:0:4}
   stats=$stats' '$suf
-  vars=$vars' E_'$suf #'_err'
+  vars=$vars' E_'$suf'_err'
 done
 
 echo 'parse a few factory entities to compare to "'$gen'" simulation:'
@@ -50,7 +50,7 @@ do
     ncwa -y $o -O $fb'_diff.nc' -o $fo
     var=`echo $vars | cut -d' ' -f$i`
     ncrename -v E,$var $fo
-    ncatted -a long_name,$var,m,c,"$o energy error" $fo
+    ncatted -a long_name,$var,m,c,"$o error on energy" $fo
     ((++i))
     ##show
     if [ $debug ] ; then ncdump $fo; fi
@@ -82,11 +82,13 @@ ncks -O -v E tmp.nc -o parameters_E.nc
 rm tmp.nc
 ###stat E
 rm parameters_stats.nc
-for o in $stats
+i=1
+for o in $vars
 do
-  var=E_$o
+  var=`echo $vars | cut -d' ' -f$i`
   ncrename -O -v E,$var parameters_E.nc -o tmp.nc
   ncks -A tmp.nc -o $fo
+  ((++i))
 done
 rm tmp.nc parameters_E.nc
 ##clear history
@@ -118,7 +120,7 @@ do
     varp=$var'_%'
     ncrename -v $var,$varp $fo
     ncatted -a units,$varp,m,c,"%" $fo
-    ncatted -a long_name,$varp,a,c," percentage" $fo
+    ncatted -a long_name,$varp,a,c," as percentage vs simulated energy" $fo
     ((++i))
   done
   ##gather
