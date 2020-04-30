@@ -5,6 +5,8 @@
 gen="signal_pac_rnd"
 proc_list="pac filter"
 ns=123
+debug=
+#debug=debug
 
 statistics='maximum mean minimum'
 
@@ -16,7 +18,7 @@ for o in $statistics
 do
   suf=${o:0:4}
   stats=$stats' '$suf
-  vars=$vars' E_'$suf  
+  vars=$vars' E_'$suf #'_err'
 done
 
 echo 'parse a few factory entities to compare to "'$gen'" simulation:'
@@ -35,8 +37,8 @@ do
   fo=$fb'_diff.nc'
   ncdiff -O result_sequential.nc pac_signal_parameters.nc -o $fo
   ##show
-  ncdump $fo
-  grep -e 'signal:A=' -e 'signal:B=' parameters.cdl --color
+  if [ $debug ] ; then ncdump $fo; fi
+  echo; echo "parameters.nc:"; ncdump parameters.nc | grep -e 'signal:A =' -e 'signal:B =' --color
 
   #statistics
   list=
@@ -48,10 +50,10 @@ do
     ncwa -y $o -O $fb'_diff.nc' -o $fo
     var=`echo $vars | cut -d' ' -f$i`
     ncrename -v E,$var $fo
-    ncatted -a long_name,$var,m,c,"$o energy" $fo
+    ncatted -a long_name,$var,m,c,"$o energy error" $fo
     ((++i))
     ##show
-    ncdump $fo
+    if [ $debug ] ; then ncdump $fo; fi
   done
   ##gather
   fo=process_sequential_energy_check_stats_$p.nc
@@ -63,16 +65,11 @@ do
   ##clear history
   ncatted --history -a history,global,d,, -a history_of_appended_files,global,d,, $fo
   ##show
-  ncdump $fo
+  if [ $debug ] ; then ncdump $fo; fi
   ##next loop
   stat_list=$stat_list' '$fo
   #clean
   rm $list
-done
-
-for f in $stat_list
-do
-  ncdump $f
 done
 
 #check if diff is close to zero
@@ -95,7 +92,7 @@ rm tmp.nc parameters_E.nc
 ##clear history
 ncatted --history -a history,global,d,, -a history_of_appended_files,global,d,, $fo
 ##show
-ncdump $fo
+if [ $debug ] ; then ncdump $fo; fi
 
 ##%
 for f in $stat_list
