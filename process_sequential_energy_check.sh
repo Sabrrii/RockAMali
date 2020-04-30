@@ -4,12 +4,12 @@
 
 gen="signal_pac_rnd"
 proc_list="pac filter"
-ns=23
+ns=123
 
-statistics='maximum minimum mean'
+statistics='maximum mean minimum'
 
 #short names for statistics
-#stats='maxi mini mean'
+#stats='maxi mean mini'
 stats=
 vars=
 for o in $statistics
@@ -124,10 +124,14 @@ do
     ncatted -a long_name,$varp,a,c," percentage" $fo
     ((++i))
   done
+  ##gather
+  ncks -A $fo $f
   ##clear history
-  ncatted --history -a history,global,d,, -a history_of_appended_files,global,d,, $fo
+  ncatted --history -a history,global,d,, -a history_of_appended_files,global,d,, $f
   ##show
-  ncdump $fo
+  ncdump $f
+  #clean
+  rm $fo
 done
 #clean
 rm tmp.nc parameters_stats.nc
