@@ -270,8 +270,9 @@ public:
     //print both sum and return the energy 
     std::cout<<"base="<<base/number<<std::endl;
     std::cout<<"peak="<<peak/number<<std::endl;
-    return (Tproc)(peak-base)/(Tproc)number/207;//! \bug [highest] static norm. !!
+    return (Tproc)(peak-base)/(Tproc)number;
   }//Calculation_Energy
+//! \todo [medium] add normalisation of computed energy, so E simulated is close to E measured !
 };//CData_Filter
 
 //! process a single peak from PAC signal 

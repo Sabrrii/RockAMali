@@ -20,13 +20,13 @@ variables:
 
 // global attributes:
 		:architecture = "x86_64" ;
-		:process_sequential = "v0.7.4u" ;
+		:process_sequential = "v0.7.4v" ;
 		:CImg_NetCDF = "v0.8.4" ;
 		:CParameterNetCDF = "v0.5.1" ;
 		:NcTypeInfo = "v0.1.4" ;
 		:kernel = "CDataProcessor_Max_Min" ;
 		:profiling = "CProfilingSequential" ;
-		:process_sequential_elapsed_time = 21445 ;
+		:process_sequential_elapsed_time = 20101 ;
 		:process_sequential_elapsed_time_units = "us" ;
-		:process_sequential_elapsed_time_per_iteration = 932 ;
+		:process_sequential_elapsed_time_per_iteration = 873 ;
 }
