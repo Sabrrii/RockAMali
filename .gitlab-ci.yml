@@ -47,7 +47,9 @@ doc:
 
   ##make all e.g. bin, doc, run, ...
   - make doc
-  - ls *
+  - ls html
+  - ls doc
+  - ls doc/html
 
   artifacts:
     expose_as: 'built in container'
