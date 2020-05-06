@@ -44,7 +44,7 @@ FOUT=$(FIN)
 
 #compiler options
 ##architecture
-ARCH=$(shell uname -p)
+ARCH=$(shell uname -m)
 
 ##library
 LIB_XWINDOWS=-I/usr/X11R6/include -L/usr/X11R6/lib -lX11
@@ -52,7 +52,7 @@ LIB_CIMG=-I../CImg -Wall -W -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 #NetCDF library (depending on target architecture)
-ifeq ($(shell uname -p),x86_64)
+ifeq ($(shell uname -m),x86_64)
 ##AMD64 (gan*)
 	LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 else
@@ -64,7 +64,7 @@ endif #NetCDF
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF) -DARCH=$(ARCH)
 DO_NETCDF=
 #DO_GPU (depending on target architecture)
-ifeq ($(shell uname -p),x86_64)
+ifeq ($(shell uname -m),x86_64)
 ##AMD64 (gan*)
 	DO_GPU=
 	DO_GPU_PROFILING=

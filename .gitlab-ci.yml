@@ -28,7 +28,7 @@ udp:
   - pwd
   - ls ..
   - ls ../*
-  - mv CImg ..
+#  - mv CImg ..
 
   ##make all e.g. bin, doc, run, ...
   - make udp_receive
@@ -55,7 +55,6 @@ doc:
   ##make all e.g. bin, doc, run, ...
 #  - make doc
   - ./doxygen.sh
-  - ls html
   - ls doc
   - ls doc/html
 
@@ -65,6 +64,5 @@ doc:
     - ARCH.txt
     - VERSION
     - VERSIONS
-    - html
-#    - doc/html
+    - doc/html
 
