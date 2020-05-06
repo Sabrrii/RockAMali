@@ -1,0 +1,39 @@
+stages:
+  - build
+
+image: debian:latest
+
+before_script:
+  ##g++
+  - apt-get update -qq && apt-get install -y g++ build-essential  doxygen graphviz  git
+  - g++ --version
+  - which g++
+  ##git
+  - git config --global user.email "$GITLAB_USER_EMAIL"
+  - git config --global user.name  "$GITLAB_USER_NAME"
+  ##boost
+  - apt-get install -y libboost-dev
+  ##docker container
+#  - printenv
+
+udp:
+  stage: build
+  script:
+  ##docker container
+  - uname -m
+  - uname -m > ARCH.txt
+  ##imported repository
+  - cd $CI_PROJECT_DIR
+
+  ##make all e.g. bin, doc, run, ...
+  - make udp_receive doc
+  - ls *
+
+  artifacts:
+    expose_as: 'built in container'
+    paths:
+    - ARCH.txt
+    - VERSION
+    - VERSIONS
+    - doc/html
+
