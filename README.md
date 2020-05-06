@@ -8,7 +8,7 @@ status (branch: dev_udp_ml507):
 
 # description
 
-TODO
+WiP
 
 # compile
 
@@ -21,16 +21,25 @@ TODO
 sudo apt-get install cimg-dev cimg-doc cimg-examples libxrandr-dev
 ~~~
 
+- [`NetCDF`]()
+
 ## git clone
 
-git for both `CImg` and `claLUT`
+git for both RockAMali and linked libraries
 
 ~~~ { .bash }
+cd code.RockAMali/
+#CImg
 git clone https://github.com/dtschump/CImg.git
-git clone git@github.com:coupdair/claLUT.git
-#or
-git clone https://github.com/dtschump/CImg.git
-git clone https://github.com/coupdair/claLUT.git
+#NetCDF
+git clone git@gitlab.in2p3.fr:SebastienCOUDERT/NetCDF.git
+##NetCDF tools
+git clone git@gitlab.in2p3.fr:SebastienCOUDERT/NetCDF.Tool.git && cd NetCDF.Tool && git checkout RockAMali && cd ..
+##CImg tools
+git clone git@gitlab.in2p3.fr:SebastienCOUDERT/CImg.Tool.git   && cd CImg.Tool   && git checkout RockAMali && cd ..
+git clone git@gitlab.in2p3.fr:RockPro64/RockAMali.git
+cd RockAMali/
+git checkout dev_udp_ml507 && make
 ~~~
 
 ## C++ compilation
@@ -40,10 +49,21 @@ cf. [`_info.txt`](_info.txt)
 e.g.
 
 ~~~ { .bash }
-make
+make udp_receive
 ~~~
 
 # use
 
-TODO
+cf. [`help.output`](udp_receive_help.output)
+
+e.g.
+
+~~~ { .bash }
+make udp_receive_run
+~~~
+
+## external tools
+
+- [`NCO`]() (NetCDF)
+- [`NCview`]() (NetCDF)
 
