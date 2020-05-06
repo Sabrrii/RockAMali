@@ -1,3 +1,11 @@
+status (branch: dev_udp_ml507):
+
+[![pipeline status](https://gitlab.in2p3.fr/RockPro64/RockAMali/badges/dev_udp_ml507/pipeline.svg)](https://gitlab.in2p3.fr/RockPro64/RockAMali/commits/dev_udp_ml507)
+
+
+[![build status](https://gitlab.in2p3.fr/RockPro64/RockAMali/badges/dev_udp_ml507/build.svg)](https://gitlab.in2p3.fr/RockPro64/RockAMali/commits/dev_udp_ml507)
+
+
 # description
 
 TODO
@@ -11,20 +19,6 @@ TODO
 
 ~~~ { .bash }
 sudo apt-get install cimg-dev cimg-doc cimg-examples libxrandr-dev
-~~~
-
-- [`ImageMagick`](http://imagemagick.org) via `CImg`
-     - `convert` for PNG output
-
-~~~ { .bash }
-sudo apt-get install imagemagick
-~~~
-
-- or [`libPNG`](http://libpng.org/pub/png) via `CImg`
-     - embedded PNG output, need compilation option.
-
-~~~ { .bash }
-sudo apt-get install libpng-dev
 ~~~
 
 ## git clone
