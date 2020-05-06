@@ -24,6 +24,8 @@ udp:
   - uname -m > ARCH.txt
   ##imported repository
   - cd $CI_PROJECT_DIR
+#temporary
+  - mv CImg ..
 
   ##make all e.g. bin, doc, run, ...
   - make udp_receive
@@ -44,9 +46,12 @@ doc:
   - uname -m > ARCH.txt
   ##imported repository
   - cd $CI_PROJECT_DIR
+#temporary
+  - mv CImg ..
 
   ##make all e.g. bin, doc, run, ...
-  - make doc
+#  - make doc
+  - ./doxygen.sh
   - ls html
   - ls doc
   - ls doc/html
