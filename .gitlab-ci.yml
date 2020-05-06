@@ -25,6 +25,9 @@ udp:
   ##imported repository
   - cd $CI_PROJECT_DIR
 #temporary
+  - pwd
+  - ls ..
+  - ls ../*
   - mv CImg ..
 
   ##make all e.g. bin, doc, run, ...
