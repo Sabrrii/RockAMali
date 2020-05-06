@@ -101,7 +101,7 @@ std_high_res_clock: std_high_res_clock.cpp Makefile
 
 udp_receive: udp_receive.cpp Makefile
 #	g++ -Wall udp_receive.cpp -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
-	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(DO_CPU_AFFINITY) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I | tee udp_receive_help.output && ./udp_receive -v > VERSION
+	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(DO_CPU_AFFINITY) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I 2>&1 | tee udp_receive_help.output && ./udp_receive -v > VERSION
 	#./udp_receive -n 12 -w 1 --debug --simulation --verbose
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"

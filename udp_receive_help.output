@@ -1,0 +1,48 @@
+
+ [0;31;59mudp_receive[0;0;0m: receive UDP frame with increment (i.e. index) as first uint32 of content. If full content contains index, it could be checked.
+ It uses different GNU libraries (see --info option)
+
+ usage: ./receive -h
+        ./receive -s 1024 -n 123 -o result.nc
+
+ version: v0.1.6
+ compilation date: (May  6 2020, 16:37:48)
+
+    [1m-s              [0;0;0m 1024                     [0;32;59msize of UDP buffer [byte], might be schrunk (but not expanded !)[0;0;0m
+    [1m-B              [0;0;0m 0                        [0;32;59mlinux ethernet buffer [MByte], 0 for default[0;0;0m
+    [1m--crc           [0;0;0m true                     [0;32;59mcheck UDP CRC[0;0;0m
+    [1m-n              [0;0;0m 256                      [0;32;59mnumber of frames[0;0;0m
+    [1m--no-endian-swap[0;0;0m false                    [0;32;59mdo not swap endianess, by default it is done if needed (arch. dep.)[0;0;0m
+    [1m--do-check      [0;0;0m false                    [0;32;59mdo data check, e.g. test pass (or -C option)[0;0;0m
+    [1m--verbose       [0;0;0m false                    [0;32;59mProduce verbose output[0;0;0m
+    [1m--simulation    [0;0;0m false                    [0;32;59mframe simulation, by default UDP frame are received[0;0;0m
+    [1m--debug         [0;0;0m false                    [0;32;59mdebug output[0;0;0m
+    [1m-p              [0;0;0m 20485                    [0;32;59mport where the packets are received[0;0;0m
+    [1m-i              [0;0;0m 10.10.17.202             [0;32;59mip address of the sender[0;0;0m
+    [1m-w              [0;0;0m 3                        [0;32;59mtime out for receiving next frame [s][0;0;0m
+    [1m--do-warmup     [0;0;0m false                    [0;32;59mdo data warmup, e.g. allocation and fill (or -W option)[0;0;0m
+    [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
+    [1m--info          [0;0;0m true                     [0;32;59mshow compilation options (or -I option)[0;0;0m
+
+ [0;31;59m[1mCImg Library 2.6.7[0;0;0m, compiled May  6 2020 ( 16:37:48 ) with the following flags:
+
+  > Operating System:       [1mUnix         [0;0;0m [0;32;59m('cimg_OS'=1)[0;0;0m
+  > CPU endianness:         [1mLittle Endian[0;0;0m
+  > Verbosity mode:         [1mConsole      [0;0;0m [0;32;59m('cimg_verbosity'=1)[0;0;0m
+  > Stricts warnings:       [1mNo           [0;0;0m [0;32;59m('cimg_strict_warnings' undefined)[0;0;0m
+  > Support for C++11:      [1mNo           [0;0;0m [0;32;59m('cimg_use_cpp11'=0)[0;0;0m
+  > Using VT100 messages:   [1mYes          [0;0;0m [0;32;59m('cimg_use_vt100' defined)[0;0;0m
+  > Display type:           [1mNo display   [0;0;0m [0;32;59m('cimg_display'=0)[0;0;0m
+  > Using OpenMP:           [1mYes          [0;0;0m [0;32;59m('cimg_use_openmp' defined)[0;0;0m
+  > Using PNG library:      [1mNo           [0;0;0m [0;32;59m('cimg_use_png' undefined)[0;0;0m
+  > Using JPEG library:     [1mNo           [0;0;0m [0;32;59m('cimg_use_jpeg' undefined)[0;0;0m
+  > Using TIFF library:     [1mNo           [0;0;0m [0;32;59m('cimg_use_tiff' undefined)[0;0;0m
+  > Using Magick++ library: [1mNo           [0;0;0m [0;32;59m('cimg_use_magick' undefined)[0;0;0m
+  > Using FFTW3 library:    [1mNo           [0;0;0m [0;32;59m('cimg_use_fftw3' undefined)[0;0;0m
+  > Using LAPACK library:   [1mNo           [0;0;0m [0;32;59m('cimg_use_lapack' undefined)[0;0;0m
+  > Path of ImageMagick:    [1m"convert"    [0;0;0m
+  > Path of GraphicsMagick: [1m"gm"         [0;0;0m
+  > Path of 'medcon':       [1m"medcon"     [0;0;0m
+  > Temporary path:         [1m"/tmp"       [0;0;0m
+
+    [1m--version       [0;0;0m false                    [0;32;59mshow version (or -v option)[0;0;0m
