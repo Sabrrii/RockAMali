@@ -2,26 +2,26 @@
 ## ushort = 2uchar: 4096*2 = 8192BoF
 ## uint   = 4uchar: 2048*2 = 8192BoF
 ##RockAMali <- gansacq2
-FRAME_SIZE=8192
-WAIT4RATE=256
-DELTAWAIT=128
-RECO=--crc false -B 2 -w 1
-RECO=-w 1
-RAMP=--do-ramp -r 128
-#RAMP=
-IPERF=--bandwidth 1G --udp
-DST_IP=10.10.15.1
-ETH=enp1s0
-CPU_AFFINITY="0"
+#FRAME_SIZE=8192
+#WAIT4RATE=256
+#DELTAWAIT=128
+#RECO=--crc false -B 2 -w 1
+#RECO=-w 1
+#RAMP=--do-ramp -r 128
+##RAMP=
+#IPERF=--bandwidth 1G --udp
+#DST_IP=10.10.15.1
+#ETH=enp1s0
+#CPU_AFFINITY="0"
 ###ganp484 <- gansacq2 (10GEth copper)
 #DST_IP=10.10.16.1
 #ETH=eth1
 ##ml507 -> ganp157
-#FRAME_SIZE=256
-#DST_IP=10.10.17.202
-#ETH=p1p2
+FRAME_SIZE=2048
+DST_IP=10.10.17.202
+ETH=p1p2
 PORT=20485
-NS=23
+NS=1234
 NB=12
 NP=2
 GEN_FCT=signal_pac_rnd
@@ -87,12 +87,12 @@ SRC_NETCDF=../NetCDF.Tool/NetCDFinfo.h ../NetCDF.Tool/struct_parameter_NetCDF.h 
 #all: process_sequential process send receive version factory doc
 #all: process_sequential process version factory doc
 #all: send receive version factory doc
-all: process_sequential version factory process_sequential_run process_sequential_energy_check
+#all: process_sequential version factory process_sequential_run process_sequential_energy_check
 #all: send receive version factory
 
 ##lib. code test
 #all: time_copy
-#all: udp_receive udp_send
+all: udp_receive udp_send
 time_copy: time_copy.cpp Makefile
 	g++ -O0 -o time_copy time_copy.cpp $(DO_GPU) && ./time_copy
 
@@ -101,7 +101,8 @@ std_high_res_clock: std_high_res_clock.cpp Makefile
 
 udp_receive: udp_receive.cpp Makefile
 #	g++ -Wall udp_receive.cpp -o udp_receive && ./udp_receive --help && ./udp_receive -i 12 -D -s --verbose
-	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(DO_CPU_AFFINITY) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I && ./udp_receive -v > VERSION && ./udp_receive -n 12 -w 1 --debug --simulation --verbose
+	g++ -O0 -o udp_receive  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(DO_CPU_AFFINITY) -Dcimg_display=0 $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive --help -I && ./udp_receive -v > VERSION
+	#./udp_receive -n 12 -w 1 --debug --simulation --verbose
 #	g++ -O0 udp_receive.X  udp_receive.cpp $(LIB_CIMG) $(DO_NETCDF) $(LIB_XWINDOWS)  $(DO_GPU) $(DO_GPU_PROFILING) && ./udp_receive.X -h -I && ./udp_receive.X -v > VERSION
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_receive_run:
