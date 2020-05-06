@@ -57,5 +57,6 @@ doc:
     - ARCH.txt
     - VERSION
     - VERSIONS
-    - doc/html
+    - html
+#    - doc/html
 
