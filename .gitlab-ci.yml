@@ -26,7 +26,27 @@ udp:
   - cd $CI_PROJECT_DIR
 
   ##make all e.g. bin, doc, run, ...
-  - make udp_receive doc
+  - make udp_receive
+  - ls *
+
+  artifacts:
+    expose_as: 'built in container'
+    paths:
+    - ARCH.txt
+    - VERSION
+    - VERSIONS
+
+doc:
+  stage: build
+  script:
+  ##docker container
+  - uname -m
+  - uname -m > ARCH.txt
+  ##imported repository
+  - cd $CI_PROJECT_DIR
+
+  ##make all e.g. bin, doc, run, ...
+  - make doc
   - ls *
 
   artifacts:

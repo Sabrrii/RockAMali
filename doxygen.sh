@@ -3,6 +3,7 @@
 #get version
 program=process
 program=process_sequential
+program=udp_receive
 make $program && ./$program --version | grep 'v.\..\..' | head -n 1 > VERSION
 
 #documentation
@@ -26,6 +27,9 @@ cp -p process_perfs.png doc/store_plot.png
 doxygen
 
 ls doc/html/index.html
+
+exit
+
 #GUI notify
 notify-send 'documentation for RockAMali '$VERSION' doxygen ends,\ni.e. '$0' from "'$PWD'".' --icon=/usr/share/hardinfo/pixmaps/report-large.png -t 4321
 
