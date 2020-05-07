@@ -220,7 +220,9 @@ int main(int argc, char **argv)
           if(done)
           {//other thread done
             i=current_i;
+#ifdef DO_NETCDF
             const bool test_status=(i==max_iter-1);
+#endif //NetCDF
             omp_unset_lock(&lock);
 #ifdef DO_NETCDF
             //add total statistics in NetCDF (global attr.)
@@ -270,7 +272,7 @@ int main(int argc, char **argv)
       if (setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {fprintf(stderr,"error: while setting timeout to %d us.\n",twait);exit(2);}
 
       //Linux socket tune
-      if(receive_buf_size!=0) if (setsockopt(udpSocket,SOL_SOCKET, SO_RCVBUF, &receive_buf_size, sizeof(receive_buf_size)) < 0) {fprintf(stderr,"error: while setting linux receive buffer size to %d MB.\n",receive_buf_size/1024/1024);exit(2);}
+      if(receive_buf_size!=0) if (setsockopt(udpSocket,SOL_SOCKET, SO_RCVBUF, &receive_buf_size, sizeof(receive_buf_size)) < 0) {fprintf(stderr,"error: while setting linux receive buffer size to %ld MB.\n",receive_buf_size/1024/1024);exit(2);}
       if (setsockopt(udpSocket,SOL_SOCKET, SO_NO_CHECK, (void*)&disable_UDP_CRC_check, sizeof(disable_UDP_CRC_check)) < 0) {fprintf(stderr,"error: while setting UDP CRC check to %sable\n",do_check_UDP_CRC?" en":"dis");exit(2);}
 
       //configure settings in address struct
@@ -385,7 +387,7 @@ int main(int argc, char **argv)
             }//timeout
           }//other frames
           //may resize (if width was bigger than first received frame)
-          if(i==0) if(nBytes!=width)
+          if(i==0) if(nBytes!=(int)width)
           {
             //set new size for containers
             width=nBytes;
