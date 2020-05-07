@@ -7,7 +7,7 @@
 
  version: v0.1.6
           CImg_NetCDF.v0.8.4
- compilation date: (May  7 2020, 18:24:56)
+ compilation date: (May  7 2020, 19:01:46)
 
     [1m-s              [0;0;0m 1024                     [0;32;59msize of UDP buffer [byte], might be schrunk (but not expanded !)[0;0;0m
     [1m-B              [0;0;0m 0                        [0;32;59mlinux ethernet buffer [MByte], 0 for default[0;0;0m
@@ -30,7 +30,7 @@
     [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
     [1m--info          [0;0;0m true                     [0;32;59mshow compilation options (or -I option)[0;0;0m
 
- [0;31;59m[1mCImg Library 2.6.7[0;0;0m, compiled May  7 2020 ( 18:24:56 ) with the following flags:
+ [0;31;59m[1mCImg Library 2.6.7[0;0;0m, compiled May  7 2020 ( 19:01:46 ) with the following flags:
 
   > Operating System:       [1mUnix         [0;0;0m [0;32;59m('cimg_OS'=1)[0;0;0m
   > CPU endianness:         [1mLittle Endian[0;0;0m

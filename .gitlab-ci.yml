@@ -27,6 +27,7 @@ udp:
   ##docker container
   - uname -m
   - uname -m > ARCH.txt
+  - uname --kernel-release
   ##imported repository
   - cd $CI_PROJECT_DIR
 #temporary
