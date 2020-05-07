@@ -17,6 +17,7 @@ before_script:
 #  - apt-get install -y cimg-dev cimg-doc cimg-examples #libxrandr-dev
   ##NetCDF
   - apt-get install -y netcdf-bin libnetcdf-cxx-legacy-dev
+  - find / 2>/dev/null | grep -e libnetcdf.a -e libnetcdf.so
   ##docker container
 #  - printenv
 
