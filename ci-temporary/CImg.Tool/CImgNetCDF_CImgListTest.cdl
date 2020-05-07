@@ -1,0 +1,10 @@
+netcdf CImgNetCDF_CImgListTest {
+dimensions:
+	dimS = 4096 ;
+	dimF = UNLIMITED ; // (12 currently)
+variables:
+	float u(dimF, dimS) ;
+		u:units = "pixel" ;
+	float v(dimF, dimS) ;
+		v:units = "pixel" ;
+}

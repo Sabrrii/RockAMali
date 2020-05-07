@@ -1,0 +1,12 @@
+netcdf CImgNetCDF_CImgListnCImgTest.4D+1 {
+dimensions:
+	dimS = 4096 ;
+	dimF = UNLIMITED ; // (2 currently)
+variables:
+	float u(dimF, dimS) ;
+		u:units = "pixel" ;
+	float v(dimF, dimS) ;
+		v:units = "pixel" ;
+	int signal(dimF, dimS) ;
+		signal:units = "none" ;
+}

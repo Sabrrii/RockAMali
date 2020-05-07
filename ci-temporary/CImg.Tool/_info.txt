@@ -1,0 +1,13 @@
+make
+make write_run
+make read_run
+
+exit
+
+./compile.cpp.sh writeCImgNetCDF_test.cpp && ./writeCImgNetCDF_test --help --version
+./writeCImgNetCDF_test && ncdump -h CImgNetCDF_CImgTest.nc && ncdump -h  CImgNetCDF_CImgListTest.nc
+
+./compile.cpp.sh readCImgNetCDF_test.cpp && ./readCImgNetCDF_test --help --version
+ncdump -h CImgNetCDF_cimgListTest.4d-1.nc && ./readCImgNetCDF_test
+
+

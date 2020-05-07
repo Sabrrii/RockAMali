@@ -1,0 +1,13 @@
+netcdf CImgNetCDF_CImgTest {
+dimensions:
+	dimS = 4096 ;
+	dimF = UNLIMITED ; // (12 currently)
+variables:
+	int signal(dimF, dimS) ;
+		signal:units = "none" ;
+		signal:long_name = "fake test signal, e.g. data (lib/class CImgNetCDF)" ;
+
+// global attributes:
+		:library = "CImg_NetCDF" ;
+		:library_version = "v0.8.3" ;
+}
