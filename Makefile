@@ -62,7 +62,7 @@ endif #NetCDF
 
 ##do compile
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF) -DARCH=$(ARCH)
-DO_NETCDF=
+#DO_NETCDF=
 #DO_GPU (depending on target architecture)
 ifeq ($(shell uname -m),x86_64)
 ##AMD64 (gan*)

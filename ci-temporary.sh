@@ -17,4 +17,5 @@ fi
 
 ##NetCDF
 #TODO
+ncgen parameters.cdl -o parameters.nc
 
