@@ -14,7 +14,7 @@ before_script:
   ##boost
   - apt-get install -y libboost-dev
   ##CImg
-  - apt-get install -y cimg-dev cimg-doc cimg-examples #libxrandr-dev
+#  - apt-get install -y cimg-dev cimg-doc cimg-examples #libxrandr-dev
   ##NetCDF
   - apt-get install -y netcdf-bin libnetcdf-cxx-legacy-dev
   ##docker container
