@@ -21,7 +21,11 @@ WiP
 sudo apt-get install cimg-dev cimg-doc cimg-examples libxrandr-dev
 ~~~
 
-- [`NetCDF`]()
+- [`NetCDF`](http://unidata.github.io/netcdf-cxx4/)
+
+~~~ { .bash }
+sudo apt-get install netcdf-bin libnetcdf-cxx-legacy-dev
+~~~
 
 ## git clone
 
@@ -38,6 +42,9 @@ git clone git@gitlab.in2p3.fr:SebastienCOUDERT/NetCDF.Tool.git && cd NetCDF.Tool
 ##CImg tools
 git clone git@gitlab.in2p3.fr:SebastienCOUDERT/CImg.Tool.git   && cd CImg.Tool   && git checkout RockAMali && cd ..
 git clone git@gitlab.in2p3.fr:RockPro64/RockAMali.git
+#list all repository folders
+ls -d CImg NetCDF NetCDF.Tool CImg.Tool RockAMali
+#go in RockAMali one and onto targeted branch
 cd RockAMali/
 git checkout dev_udp_ml507 && make
 ~~~
@@ -99,6 +106,6 @@ misc.:
 
 ## external tools
 
-- [`NCO`]() (NetCDF)
-- [`NCview`]() (NetCDF)
+- [`NCO`](https://www.unidata.ucar.edu/software/netcdf/docs/index.html) (NetCDF)
+- [`NCview`](http://meteora.ucsd.edu/~pierce/ncview_home_page.html) (NetCDF)
 
