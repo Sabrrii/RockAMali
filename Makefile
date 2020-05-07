@@ -54,7 +54,7 @@ LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VE
 #NetCDF library (depending on target architecture)
 ifeq ($(shell uname -m),x86_64)
 ##AMD64 (gan*)
-	LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
+	LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L/usr/lib/x86_64-linux-gnu/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 else
 ##ARM64 (RockPro64)
 	LIB_NETCDF= -I/usr/include/ -lnetcdf_c++ -L/usr/lib/aarch64-linux-gnu/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
