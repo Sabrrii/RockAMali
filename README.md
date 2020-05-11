@@ -23,7 +23,7 @@ WiP
 sudo apt-get install libxrandr-dev
 ~~~
 
-- full distribution install
+- full distribution install (this might install OpenCV that is very big and not used)
 
 ~~~ { .bash }
 sudo apt-get install cimg-dev cimg-doc cimg-examples libxrandr-dev
