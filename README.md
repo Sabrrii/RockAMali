@@ -14,7 +14,7 @@ WiP
 
 ## C++
 
-0. GNU compiler `g++` and other tools, e.g. `make` or `C++::boost` for `BOOST_PP_STRINGIZE`
+0. [`GNU compiler`](https://gcc.gnu.org/) `g++` and other tools, e.g. `make` or `C++::boost` for `BOOST_PP_STRINGIZE`
 
 ~~~ { .bash }
 sudo apt-get install g++ build-essential libboost-dev
