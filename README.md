@@ -14,16 +14,18 @@ WiP
 
 ## C++
 
-GNU compiler `g++` and other tools, e.g. `make` 
+0. GNU compiler `g++` and other tools, e.g. `make` or `C++::boost` for `BOOST_PP_STRINGIZE`
 
 ~~~ { .bash }
-sudo apt-get install g++ build-essential
+sudo apt-get install g++ build-essential libboost-dev
 ~~~
 
 ## external library
 
 1. [`CImg`](http://www.cimg.eu/)
      - XWindows via `X11` development library for window output
+
+array container (and debug display in window)
 
 - minimal X install (then should use clone CImg in ../CImg/)
 
@@ -39,8 +41,22 @@ sudo apt-get install cimg-dev cimg-doc cimg-examples libxrandr-dev
 
 2. [`NetCDF`](http://unidata.github.io/netcdf-cxx4/)
 
+store result and log in compact NetCDF format
+
 ~~~ { .bash }
 sudo apt-get install netcdf-bin libnetcdf-cxx-legacy-dev
+~~~
+
+3. optional `boost::compute`
+
+**TODO**
+
+to compile `OpenCL` for computing on **GPU**:
+
+~~~ { .bash }
+#sudo apt-get install boost::compute ...
+#or
+#git clone ...
 ~~~
 
 ## git clone
