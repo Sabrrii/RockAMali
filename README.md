@@ -12,6 +12,14 @@ WiP
 
 # compile
 
+## C++
+
+GNU compiler `g++` and other tools, e.g. `make` 
+
+~~~ { .bash }
+sudo apt-get install g++ build-essential
+~~~
+
 ## external library
 
 1. [`CImg`](http://www.cimg.eu/)
