@@ -14,7 +14,7 @@ WiP
 
 ## external library
 
-- [`CImg`](http://www.cimg.eu/)
+1. [`CImg`](http://www.cimg.eu/)
      - XWindows via `X11` development library for window output
 
 - minimal X install (then should use clone CImg in ../CImg/)
@@ -29,7 +29,7 @@ sudo apt-get install libxrandr-dev
 sudo apt-get install cimg-dev cimg-doc cimg-examples libxrandr-dev
 ~~~
 
-- [`NetCDF`](http://unidata.github.io/netcdf-cxx4/)
+2. [`NetCDF`](http://unidata.github.io/netcdf-cxx4/)
 
 ~~~ { .bash }
 sudo apt-get install netcdf-bin libnetcdf-cxx-legacy-dev
