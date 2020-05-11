@@ -20,7 +20,7 @@ WiP
 - minimal X install (then should use clone CImg in ../CImg/)
 
 ~~~ { .bash }
-sudo apt-get install libxrandr-dev
+sudo apt-get install g++ libxrandr-dev
 ~~~
 
 - full distribution install (this might install OpenCV that is very big and not used)
