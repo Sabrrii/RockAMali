@@ -18,7 +18,7 @@
 #ETH=eth1
 ##ml507 -> ganp157
 FRAME_SIZE=2048
-DST_IP=10.10.17.202
+DST_IP=10.10.17.205
 ETH=p1p2
 PORT=20485
 NS=1234
@@ -34,8 +34,9 @@ DO_PROFILING=-DDO_PROFILING
 #DO_PROFILING=
 
 DATA=./
-DATA=/media/temp/
+#DATA=/media/temp/
 #DATA=/tmp/
+DATA=/space/temp/
 DIN=samples/
 DOUT=results/
 FIN=sample.cimg
