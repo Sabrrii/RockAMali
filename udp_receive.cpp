@@ -24,7 +24,7 @@
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo tests: . ml507, . RockAMali, _ numexo2
 
-#define VERSION "v0.1.6"
+#define VERSION "v0.1.7d"
 
 using namespace cimg_library;
 
@@ -245,7 +245,7 @@ int main(int argc, char **argv)
       }//infinite loop
       break;
     }//watchdog
-    case 4:
+    case 1:
     {//receive
 #ifdef DO_CPU_AFFINITY
       printf("receiving thread#%d has CPU#%d affinity\n",id,cpuaff);fflush(stdout);
