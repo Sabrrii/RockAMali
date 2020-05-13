@@ -24,7 +24,7 @@
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo tests: . ml507, . RockAMali, _ numexo2
 
-#define VERSION "v0.1.7d"
+#define VERSION "v0.1.7e"
 
 using namespace cimg_library;
 
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   const bool udp=!cimg_option("--simulation",false,"frame simulation, by default UDP frame are received");
   const bool debug=cimg_option("--debug",false,"debug output");
   const unsigned short port=cimg_option("-p",20485,"port where the packets are received");
-  const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the sender");
+  const std::string ip=cimg_option("-i", "10.10.17.202", "ip address of the receiver");
   const int twait=cimg_option("-w", 3, "time out for receiving next frame [s]");
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
