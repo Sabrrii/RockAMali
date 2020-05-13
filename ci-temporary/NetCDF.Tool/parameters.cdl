@@ -1,0 +1,38 @@
+netcdf RockAMali.parameters {//written in NetCDF CDL language
+  :institution = "GANIL";
+  :title = "RockAMali parameters";
+  :comment = "source of parameters for RockAMali processing program";
+  :history = "";
+  :version = "v0.0.0";
+
+dimensions:
+//  dim_string=64;
+//  dim_=unlimited;
+
+//variable declaration and attributes
+variables:
+//trapezoid filter
+  int trapezoid;
+    trapezoid:long_name="trapezoid filter (activated if >0)";
+    trapezoid:k_long_name= "increase size";
+    trapezoid:k= 200;
+    trapezoid:k_units= "pixel";
+    trapezoid:m_long_name= "plateau size";
+    trapezoid:m= 50;
+    trapezoid:m_units= "pixel";
+    trapezoid:alpha_long_name= "";
+    trapezoid:alpha= 0.998;
+    trapezoid:alpha_units= "";
+
+//energy
+  int energy;
+    energy:long_name="energy measurement (activated if >0)";
+    energy:n= "1, 12, 123";
+
+//data value
+data:
+//trapezoid filter
+  trapezoid=1;
+  energy=0;
+}
+
