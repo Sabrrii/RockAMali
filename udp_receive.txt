@@ -2,3 +2,54 @@
 libgomp: Invalid value for enviroment variable GOMP_CPU_AFFINITY
 
 info: running 4 threads
+information: do warmup.
+information: checking data, i.e. test, activated (slow process !)
+CImgListNetCDF::saveNetCDFFile(CImgNetCDF::saveNetCDFFile(udp_receive.ncudp_receive_rate.nc,...) return ,...) return 00
+
+CImgNetCDF::CImgNetCDF::addNetCDFDimsaddNetCDFDims(CImg<int(CImg<float>,dims=dimS,  dimFw)
+>,dims=dimS,  dimF)
+ncdimid: ncdimid: ncid 5ncid 4: Invalid dimension id or name
+Information: create new "dimS" dimension.
+: Invalid dimension id or nameCImgListNetCDF::addNetCDFDims(udp_receive.nc,...) return 0
+
+Information: create new "dimS" dimension.
+CImgListNetCDF::addNetCDFVar(udp_receive.nc,...) return 0
+CImgListNetCDF::addNetCDFData(udp_receive.nc,...)
+CImgNetCDF::addNetCDFDims(udp_receive_rate.nc,...) return 0
+CImgNetCDF::addNetCDFVar(udp_receive_rate.nc,...) return 0
+CImgListNetCDF::addNetCDFVar(udp_receive_received.nc,...) return 0
+CImgNetCDF::addNetCDFData(udp_receive_rate.nc,...)
+CImgNetCDF::saveNetCDFFile(udp_receive_drop.nc,...) return 0
+CImgNetCDF::addNetCDFDims(CImg<int>,dims=dimS,  dimF)
+ncdimid: ncid 6: Invalid dimension id or name
+Information: create new "dimS" dimension.
+CImgNetCDF::addNetCDFDims(udp_receive_drop.nc,...) return 0
+CImgNetCDF::addNetCDFVar(udp_receive_drop.nc,...) return 0
+CImgNetCDF::addNetCDFData(udp_receive_drop.nc,...)
+# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops
+#           0: 01 00 10 00   16781312    16781312check: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           1: 01 00 10 00   16781312           0; drop:            1 drops,            1 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           2: 01 00 10 00   16781312           0; drop:            2 drops,            2 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           3: 01 00 10 00   16781312           0; drop:            3 drops,            3 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           4: 01 00 10 00   16781312           0; drop:            4 drops,            4 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           5: 01 00 10 00   16781312           0; drop:            5 drops,            5 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           6: 01 00 10 00   16781312           0; drop:            6 drops,            6 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           7: 01 00 10 00   16781312           0; drop:            7 drops,            7 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           8: 01 00 10 00   16781312           0; drop:            8 drops,            8 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#           9: 01 00 10 00   16781312           0; drop:            9 drops,            9 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#          10: 01 00 10 00   16781312           0; drop:           10 drops,           10 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+#          11: 01 00 10 00   16781312           0; drop:           11 drops,           11 index dropscheck: full content check failed for #16781312, i.e. 1048577with net endian.
+
+test fail: in total,           11 drops,           11 index drops (i.e. 91.6667%) on 8192 BoF (Bytes of Frame).
+count=12, elapsed time: 1ms, rate=93.750MB/s.

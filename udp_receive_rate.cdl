@@ -1,41 +1,41 @@
 netcdf udp_receive_rate {
 dimensions:
 	dimS = 1 ;
-	dimFw = UNLIMITED ; // (121483 currently)
+	dimFw = UNLIMITED ; // (0 currently)
 variables:
 	float rate(dimFw, dimS) ;
 		rate:units = "MB/s" ;
 		rate:long_name = "UDP transfer rate" ;
-		rate:frame_size = 32768 ;
+		rate:frame_size = 8192 ;
 		rate:frame_size_unit = "Byte" ;
-		rate:time_interval = 1 ;
+		rate:time_interval = 3 ;
 		rate:time_interval_unit = "s" ;
 	int index(dimFw, dimS) ;
 		index:units = "none" ;
 		index:long_name = "last received index" ;
-		index:frame_size = 32768 ;
+		index:frame_size = 8192 ;
 		index:frame_size_unit = "Byte" ;
-		index:time_interval = 1 ;
+		index:time_interval = 3 ;
 		index:time_interval_unit = "s" ;
 	int received(dimFw, dimS) ;
 		received:units = "frame" ;
 		received:long_name = "number of received frames" ;
-		received:frame_size = 32768 ;
+		received:frame_size = 8192 ;
 		received:frame_size_unit = "Byte" ;
-		received:time_interval = 1 ;
+		received:time_interval = 3 ;
 		received:time_interval_unit = "s" ;
 
 // global attributes:
 		:library = "CImg_NetCDF" ;
-		:library_version = "v0.8.3" ;
-		:frame_size = 32768 ;
+		:library_version = "v0.8.4" ;
+		:frame_size = 8192 ;
 		:frame_size_unit = "BoF" ;
-		:test_status = 0 ;
-		:test_status_string = "fail" ;
-		:expected_frame = 123456 ;
+		:test_status = 1 ;
+		:test_status_string = "pass" ;
+		:expected_frame = 12 ;
 		:expected_frame_unit = "frame" ;
-		:received_frame = 121482 ;
+		:received_frame = 11 ;
 		:received_frame_unit = "frame" ;
-		:time_interval = 1 ;
+		:time_interval = 3 ;
 		:time_interval_unit = "s" ;
 }
