@@ -53,11 +53,15 @@ LIB_CIMG=-I../CImg -Wall -W -pedantic -Dcimg_use_vt100 -lpthread -lm -fopenmp
 LIB_BOOST_ASIO=-lboost_system
 LIB_BOOST_COMPUTE=-lMali -L/usr/lib/aarch64-linux-gnu/ -DBOOST_COMPUTE_MAX_CL_VERSION=102
 #NetCDF library (depending on target architecture)
-ifeq ($(shell uname -m),x86_64)
+ifeq ($(shell uname -p),x86_64)
 ##AMD64 (gan*)
 	LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L../NetCDF/lib/  -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
-#	LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L/usr/lib/x86_64-linux-gnu/  -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
-else
+endif #NetCDF AMD64
+ifeq ($(shell uname -p),unknown)
+##AMD64 (docker)
+	LIB_NETCDF= -I../NetCDF/include/ -lnetcdf_c++ -L/usr/lib/x86_64-linux-gnu/  -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
+endif #NetCDF docker
+ifeq ($(shell uname -p),aarch64)
 ##ARM64 (RockPro64)
 	LIB_NETCDF= -I/usr/include/      -lnetcdf_c++ -L/usr/lib/aarch64-linux-gnu/ -lnetcdf -I../NetCDF.Tool/ -I../CImg.Tool/
 endif #NetCDF
