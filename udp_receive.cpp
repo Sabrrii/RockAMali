@@ -24,7 +24,7 @@
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo tests: . ml507, . RockAMali, _ numexo2
 
-#define VERSION "v0.1.7e"
+#define VERSION "v0.1.7g"
 
 using namespace cimg_library;
 
@@ -429,7 +429,7 @@ int main(int argc, char **argv)
           //print loop index
           printf("\n#% 12ld: ",i);
           //print frame index as 4 bytes (as is in net buffer)
-          for(unsigned int b=0;b<4;++b){unsigned char o=buffer(b); printf("%02x ",o);}
+          for(unsigned int b=0;b<4;++b){unsigned char o=*(buffer.data()+shift+b); printf("%02x ",o);}
           //print frame index as uint32 (with endianess swap)
           printf("% 10u",index);
         }//drop|debug

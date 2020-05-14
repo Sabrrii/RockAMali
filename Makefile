@@ -29,7 +29,7 @@ PROC=pac
 USE_GPU=--use-GPU --GPU-factory discri_int4
 #USE_GPU=
 DO_CHECK=--do-check --do-fill
-#DO_CHECK=
+DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
 #DO_PROFILING=
 
