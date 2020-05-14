@@ -24,7 +24,7 @@
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo tests: . ml507, . RockAMali, _ numexo2
 
-#define VERSION "v0.1.7g"
+#define VERSION "v0.1.7h"
 
 using namespace cimg_library;
 
@@ -327,7 +327,8 @@ int main(int argc, char **argv)
       //add attributes
       for(int v;v<nc_imgs.size();++v)
       {
-        if (!(nc.pNCvars[v]->add_att("long_name","received index (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+        if(v==0) if (!(nc.pNCvars[v]->add_att("long_name","received index (from frame content)")))     std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
+        else     if (!(nc.pNCvars[v]->add_att("long_name","received increment (from frame content)"))) std::cerr<<"error: while adding attribute long name (NC_ERROR)."<<std::endl;
         if(!do_netcdf) if (!(nc.pNCvar->add_att("do_not_store_data","true"))) std::cerr<<"error: while adding attribute store data  (NC_ERROR)."<<std::endl;
         if (!(nc.pNCvars[v]->add_att("frame_size_unit","Byte"))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
         if (!(nc.pNCvars[v]->add_att("frame_size",(int)width))) std::cerr<<"error: while adding attribute frame size  (NC_ERROR)."<<std::endl;
