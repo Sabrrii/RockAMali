@@ -60,6 +60,9 @@ int main(int argc, char **argv)
   const int twait=cimg_option("-w", 3, "time out for receiving next frame [s]");
   const bool do_warmup_W=cimg_option("-W",false,NULL);//-W hidden option
   bool do_warmup=cimg_option("--do-warmup",do_warmup_W,"do data warmup, e.g. allocation and fill (or -W option)");do_warmup=do_warmup_W|do_warmup;//same --do-warmup or -W option
+
+  const int shift=cimg_option("-b", 4*4, "shift in data buffer [char]");
+
 #ifdef DO_NETCDF
   const bool do_netcdf=cimg_option("--nc",true,"do store data in NetCDF");
   const std::string file_name=cimg_option("-o","udp_receive.nc","output file name (e.g. -o data.nc)");//ouput file name for a few parameters, especially received and drops
@@ -418,7 +421,7 @@ int main(int argc, char **argv)
           if(debug) bindex.print("bindex",false);
         }//simulation
         //! get frame index as first uint32 of buffer content
-        {const unsigned int *b=(unsigned int *)buffer.data();index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
+        {const unsigned int *b=(unsigned int *)(buffer.data()+shift);index=(!endian_swap)?(*b):ntohl(*b);}//frame index (with endianess)
         //! check increment
         inc=(long)index-(long)prev_index;
         if( (inc!=1) || debug)

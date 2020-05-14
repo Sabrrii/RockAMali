@@ -7,7 +7,7 @@
 
  version: v0.1.7e
           CImg_NetCDF.v0.8.4
- compilation date: (May 13 2020, 17:08:33)
+ compilation date: (May 14 2020, 09:23:47)
 
     [1m-s              [0;0;0m 1024                     [0;32;59msize of UDP buffer [byte], might be schrunk (but not expanded !)[0;0;0m
     [1m-B              [0;0;0m 0                        [0;32;59mlinux ethernet buffer [MByte], 0 for default[0;0;0m
@@ -22,6 +22,7 @@
     [1m-i              [0;0;0m 10.10.17.202             [0;32;59mip address of the receiver[0;0;0m
     [1m-w              [0;0;0m 3                        [0;32;59mtime out for receiving next frame [s][0;0;0m
     [1m--do-warmup     [0;0;0m false                    [0;32;59mdo data warmup, e.g. allocation and fill (or -W option)[0;0;0m
+    [1m-b              [0;0;0m 16                       [0;32;59mshift in data buffer [char][0;0;0m
     [1m--nc            [0;0;0m true                     [0;32;59mdo store data in NetCDF[0;0;0m
     [1m-o              [0;0;0m udp_receive.nc           [0;32;59moutput file name (e.g. -o data.nc)[0;0;0m
     [1m-od             [0;0;0m udp_receive_drop.nc      [0;32;59moutput file name (e.g. -od datad.nc)[0;0;0m
@@ -30,7 +31,7 @@
     [1m--help          [0;0;0m true                     [0;32;59mhelp (or -h option)[0;0;0m
     [1m--info          [0;0;0m true                     [0;32;59mshow compilation options (or -I option)[0;0;0m
 
- [0;31;59m[1mCImg Library 2.6.7[0;0;0m, compiled May 13 2020 ( 17:08:33 ) with the following flags:
+ [0;31;59m[1mCImg Library 2.6.7[0;0;0m, compiled May 14 2020 ( 09:23:47 ) with the following flags:
 
   > Operating System:       [1mUnix         [0;0;0m [0;32;59m('cimg_OS'=1)[0;0;0m
   > CPU endianness:         [1mLittle Endian[0;0;0m
