@@ -23,8 +23,9 @@
 
 //! \todo drop of exactly 2^32 should not be taken into drops
 //! \todo tests: . ml507, . RockAMali, _ numexo2
+//! \bug do_netcdf=false is not working (as it stop too fast)
 
-#define VERSION "v0.1.7h"
+#define VERSION "v0.1.7i"
 
 using namespace cimg_library;
 
