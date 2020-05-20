@@ -21,7 +21,7 @@ FRAME_SIZE=2048
 DST_IP=10.10.17.202
 ETH=p1p2
 PORT=20485
-NS=1234567
+NS=12345 --nc false
 NB=16
 NP=2
 GEN_FCT=signal_pac_rnd
@@ -68,7 +68,7 @@ endif #NetCDF
 
 ##do compile
 DO_NETCDF=-DDO_NETCDF $(LIB_NETCDF) -DARCH=$(ARCH)
-DO_NETCDF=
+#DO_NETCDF=
 #DO_GPU (depending on target architecture)
 ifeq ($(shell uname -m),x86_64)
 ##AMD64 (gan*)
@@ -114,7 +114,7 @@ udp_receive: udp_receive.cpp Makefile
 udp_receive_run:
 	/sbin/ifconfig $(ETH) | grep RX | grep dropped #; ethtool -S $(ETH) | grep InDropped --color
 	env GOMP_CPU_AFFINITY=$(CPU_AFFINITY) ./udp_receive -s `echo $(FRAME_SIZE)*4 | bc` -i $(DST_IP) -p $(PORT) -n $(NS) $(DO_CHECK) --do-warmup $(RECO) 2>&1 | tee udp_receive.txt
-#	ncdump -h udp_receive.nc | tee udp_receive.cdl ;ncdump -h udp_receive_rate.nc | tee udp_receive_rate.cdl ; ncdump -h udp_receive_drop.nc | tee udp_receive_drop.cdl
+	ncdump -h udp_receive.nc | tee udp_receive.cdl ;ncdump -h udp_receive_rate.nc | tee udp_receive_rate.cdl ; ncdump -h udp_receive_drop.nc | tee udp_receive_drop.cdl
 	/sbin/ifconfig $(ETH) | grep RX | grep dropped #; ethtool -S $(ETH) | grep InDropped --color
 	@echo "sync; make && make udp_receive_run 2>&1 | tee udp_receive.txt"
 udp_send: udp_send.cpp Makefile
