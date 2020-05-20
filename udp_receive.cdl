@@ -1,16 +1,15 @@
 netcdf udp_receive {
 dimensions:
 	dimS = 1 ;
-	dimF = UNLIMITED ; // (12 currently)
+	dimF = UNLIMITED ; // (1234567 currently)
 variables:
 	int index(dimF, dimS) ;
 		index:units = "none" ;
-		index:long_name = "received index (from frame content)" ;
+		index:long_name = "received increment (from frame content)" ;
 		index:frame_size_unit = "Byte" ;
 		index:frame_size = 8192 ;
 	int increment(dimF, dimS) ;
 		increment:units = "none" ;
-		increment:long_name = "received index (from frame content)" ;
 		increment:frame_size_unit = "Byte" ;
 		increment:frame_size = 8192 ;
 
@@ -21,18 +20,18 @@ variables:
 		:frame_size_unit = "BoF" ;
 		:test_status = 0 ;
 		:test_status_string = "fail" ;
-		:mean_rate = 93.74999f ;
+		:mean_rate = 114.7265f ;
 		:mean_rate_unit = "MB/s" ;
-		:elapsed_time = 1 ;
+		:elapsed_time = 84070 ;
 		:elapsed_time_unit = "ms" ;
-		:expected_frame = 12 ;
+		:expected_frame = 1234567 ;
 		:expected_frame_unit = "frame" ;
-		:received_frame = 12 ;
+		:received_frame = 1234567 ;
 		:received_frame_unit = "frame" ;
-		:total_drop = 11 ;
+		:total_drop = 268 ;
 		:total_drop_unit = "drop" ;
-		:total_index_drop = 11 ;
+		:total_index_drop = 1590 ;
 		:total_index_drop_unit = "index" ;
-		:total_index_drop_percentage = 91.66666f ;
+		:total_index_drop_percentage = 0.1287901f ;
 		:total_index_drop_percentage_unit = "%" ;
 }
