@@ -1,7 +1,7 @@
 netcdf udp_receive {
 dimensions:
 	dimS = 1 ;
-	dimF = UNLIMITED ; // (123456 currently)
+	dimF = UNLIMITED ; // (12 currently)
 variables:
 	int index(dimF, dimS) ;
 		index:units = "none" ;
@@ -20,18 +20,18 @@ variables:
 		:frame_size_unit = "BoF" ;
 		:test_status = 0 ;
 		:test_status_string = "fail" ;
-		:mean_rate = 114.8488f ;
+		:mean_rate = 46.875f ;
 		:mean_rate_unit = "MB/s" ;
-		:elapsed_time = 8398 ;
+		:elapsed_time = 2 ;
 		:elapsed_time_unit = "ms" ;
-		:expected_frame = 123456 ;
+		:expected_frame = 12 ;
 		:expected_frame_unit = "frame" ;
-		:received_frame = 123456 ;
+		:received_frame = 12 ;
 		:received_frame_unit = "frame" ;
-		:total_drop = 24 ;
+		:total_drop = 2 ;
 		:total_drop_unit = "drop" ;
-		:total_index_drop = 135 ;
+		:total_index_drop = 107 ;
 		:total_index_drop_unit = "index" ;
-		:total_index_drop_percentage = 0.1093507f ;
+		:total_index_drop_percentage = 891.6667f ;
 		:total_index_drop_percentage_unit = "%" ;
 }

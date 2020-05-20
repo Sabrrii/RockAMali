@@ -1,7 +1,7 @@
 netcdf udp_receive_drop {
 dimensions:
 	dimS = 1 ;
-	dimF = UNLIMITED ; // (123590 currently)
+	dimF = UNLIMITED ; // (118 currently)
 variables:
 	int drop(dimF, dimS) ;
 		drop:units = "none" ;

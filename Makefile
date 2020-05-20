@@ -21,7 +21,7 @@ FRAME_SIZE=2048
 DST_IP=10.10.17.202
 ETH=p1p2
 PORT=20485
-NS=123456 --crc false -B 8
+NS=12 --debug true
 NB=16
 NP=2
 GEN_FCT=signal_pac_rnd
@@ -29,7 +29,7 @@ PROC=pac
 USE_GPU=--use-GPU --GPU-factory discri_int4
 #USE_GPU=
 DO_CHECK=--do-check --do-fill
-DO_CHECK=
+#DO_CHECK=
 DO_PROFILING=-DDO_PROFILING
 #DO_PROFILING=
 

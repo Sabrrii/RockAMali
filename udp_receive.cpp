@@ -262,7 +262,7 @@ int main(int argc, char **argv)
       //! content buffer (as char)
       CImg<unsigned char> buffer(width);
       //! buffer as index (shared with buffer), i.e. cast to uint32, but still in net endian !
-      CImg<unsigned int>  bindex((unsigned int*)buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);
+      CImg<unsigned int>  bindex((unsigned int*)(buffer.data()+shift),buffer.width()/4-shift/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);
       struct sockaddr_in receiverAddr;
       struct sockaddr_storage serverStorage;
       socklen_t addr_size;
@@ -399,7 +399,7 @@ int main(int argc, char **argv)
             fprintf(stderr,"\nwarning: resizing containers as received frame is %dBoF.\n",width);fflush(stderr);
             //resize
             buffer.assign(width);
-            bindex.assign((unsigned int*)buffer.data(),buffer.width()/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);//shared
+            bindex.assign((unsigned int*)buffer.data()+shift,buffer.width()/4-shift/4,buffer.height(),buffer.depth(),buffer.spectrum(),true);//shared
           }//resize
           //!rate
           //locked section
