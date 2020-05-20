@@ -3,6 +3,13 @@ libgomp: Invalid value for enviroment variable GOMP_CPU_AFFINITY
 
 info: running 4 threads
 information: do warmup.
+CImgListNetCDF::saveNetCDFFile(udp_receive.nc,...) return 0
+CImgNetCDF::addNetCDFDims(CImg<int>,dims=dimS,  dimF)
+ncdimid: ncid 5: Invalid dimension id or name
+Information: create new "dimS" dimension.
+CImgListNetCDF::addNetCDFDims(udp_receive.nc,...) return 0
+CImgListNetCDF::addNetCDFVar(udp_receive.nc,...) return 0
+CImgListNetCDF::addNetCDFData(udp_receive.nc,...)
 CImgNetCDF::saveNetCDFFile(udp_receive_rate.nc,...) return 0
 CImgNetCDF::addNetCDFDims(CImg<float>,dims=dimS,  dimFw)
 ncdimid: ncid 4: Invalid dimension id or name
@@ -11,10 +18,41 @@ CImgNetCDF::addNetCDFDims(udp_receive_rate.nc,...) return 0
 CImgNetCDF::addNetCDFVar(udp_receive_rate.nc,...) return 0
 CImgListNetCDF::addNetCDFVar(udp_receive_received.nc,...) return 0
 CImgNetCDF::addNetCDFData(udp_receive_rate.nc,...)
-ncvarinq: ncid 5: Variable not found
-CImgListNetCDF::saveNetCDFFile(udp_receive.nc,...) return 0
+ncvarinq: ncid 6: Variable not found
+CImgNetCDF::saveNetCDFFile(udp_receive_drop.nc,...) return 0
 CImgNetCDF::addNetCDFDims(CImg<int>,dims=dimS,  dimF)
-ncdimid: ncid 5: Invalid dimension id or name
+ncdimid: ncid 6: Invalid dimension id or name
 Information: create new "dimS" dimension.
-CImgListNetCDF::addNetCDFDims(udp_receive.nc,...) return 0
-CImgListNetCDF::addNetCDFVar(udp_receive.nc,...) return 0
+CImgNetCDF::addNetCDFDims(udp_receive_drop.nc,...) return 0
+CImgNetCDF::addNetCDFVar(udp_receive_drop.nc,...) return 0
+CImgNetCDF::addNetCDFData(udp_receive_drop.nc,...)
+# index iter.:   frame hex       dec.   increment; drop:         drop      ,  index drops
+#           0: 0c 6d 47 39  208488249   208488249
+#          16: 0c 6d 47 b9  208488377         113; drop:            1 drops,          112 index drops
+#          33: 0c 6d 47 cb  208488395           2; drop:            2 drops,          113 index drops
+#        5728: 0c 6d 5e 0b  208494091           2; drop:            3 drops,          114 index drops
+#        5912: 0c 6d 5e c4  208494276           2; drop:            4 drops,          115 index drops
+#       16587: 0c 6d 88 78  208504952           2; drop:            5 drops,          116 index drops
+#       16771: 0c 6d 89 31  208505137           2; drop:            6 drops,          117 index drops
+#       27631: 0c 6d b3 9e  208515998           2; drop:            7 drops,          118 index drops
+#       27815: 0c 6d b4 57  208516183           2; drop:            8 drops,          119 index drops
+#       38490: 0c 6d de 0b  208526859           2; drop:            9 drops,          120 index drops
+#       38674: 0c 6d de c4  208527044           2; drop:           10 drops,          121 index drops
+information: i=44054, received=44055, dt=3000ms, rate=114.727MB/s.
+#       49349: 0c 6e 08 78  208537720           2; drop:           11 drops,          122 index drops
+#       49533: 0c 6e 09 31  208537905           2; drop:           12 drops,          123 index drops
+#       60393: 0c 6e 33 9e  208548766           2; drop:           13 drops,          124 index drops
+#       60577: 0c 6e 34 57  208548951           2; drop:           14 drops,          125 index drops
+#       71252: 0c 6e 5e 0b  208559627           2; drop:           15 drops,          126 index drops
+#       71436: 0c 6e 5e c4  208559812           2; drop:           16 drops,          127 index drops
+#       82111: 0c 6e 88 78  208570488           2; drop:           17 drops,          128 index drops
+#       82295: 0c 6e 89 31  208570673           2; drop:           18 drops,          129 index drops
+information: i=91244, received=47190, dt=3210ms, rate=114.851MB/s.
+#       93155: 0c 6e b3 9e  208581534           2; drop:           19 drops,          130 index drops
+#       93339: 0c 6e b4 57  208581719           2; drop:           20 drops,          131 index drops
+#      104014: 0c 6e de 0b  208592395           2; drop:           21 drops,          132 index drops
+#      104198: 0c 6e de c4  208592580           2; drop:           22 drops,          133 index drops
+#      114873: 0c 6f 08 78  208603256           2; drop:           23 drops,          134 index drops
+#      115057: 0c 6f 09 31  208603441           2; drop:           24 drops,          135 index drops
+test fail: in total,           24 drops,          135 index drops (i.e. 0.1094%) on 8192 BoF (Bytes of Frame).
+count=123456, elapsed time: 8398ms, rate=114.849MB/s.
