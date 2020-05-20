@@ -25,7 +25,7 @@
 //! \todo tests: . ml507, . RockAMali, _ numexo2
 //! \bug do_netcdf=false is not working (as it stop too fast)
 
-#define VERSION "v0.1.7j"
+#define VERSION "v0.1.7"
 
 using namespace cimg_library;
 
