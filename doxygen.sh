@@ -16,7 +16,7 @@ cat Doxyfile.template | sed 's/##VERSION##/'$VERSION'/' > Doxyfile
 for f in *_help.output
 do
   ft=`basename $f _help.output`.help.output
-  cat $f | sed 's/..0.31.59m//;s/..1m//;s/..0.0.0m//;s/..0.32.59m//;' > $ft
+  cat $f | sed 's/..0.31.59m//g;s/..1m//g;s/..0.0.0m//g;s/..0.32.59m//g;' > $ft
   mv $ft $f
 done
 
