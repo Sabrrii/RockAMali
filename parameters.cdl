@@ -33,7 +33,7 @@ variables:
      signal:A_units = "digit";
 
      signal:nb_tB_long_name="baseline time";
-     signal:nb_tB= 1234;
+     signal:nb_tB= 100;
      signal:nb_tB_units = "pixel";
 
      signal:nb_tA_long_name="increase time of peak"; 

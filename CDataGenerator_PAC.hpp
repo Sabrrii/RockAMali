@@ -231,6 +231,222 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
 
 };//CDataGenerator_Peak
 
+
+
+template<typename Tdata, typename Taccess=unsigned char
+#ifdef DO_NETCDF
+, typename Tnetcdf=int
+#endif //DO_NETCDF
+>
+class CDataGenerator_Peak_exp : public CDataGenerator_Peak<Tdata,Taccess>
+{
+	public :
+		double tauM;
+		
+	#ifdef DO_NETCDF
+	std::string file_name;
+	CImgListNetCDF<Tnetcdf> nc;
+	CImgList<Tnetcdf> nc_img;//temporary image for type conversion
+	bool is_netcdf_init;
+	//dimension names
+	std::vector<std::string> dim_names;
+	std::string dim_time;
+	//variable names (and its unit)
+	std::vector<std::string> var_names;
+	std::vector<std::string> unit_names;
+	std::vector<std::string> long_names;
+	#endif //DO_NETCDF
+	
+//! get parameters from NC file (i.e. compiled CDL)
+  virtual int read_parameters(int &nb_base, double &increase, double &decrease, int &ampl, int &base)
+  {
+    int Tau;
+    int TauM;
+    ///file name
+    std::string fi="parameters.nc";//=cimg_option("-p","parameters.nc","comment");
+  
+    ///parameter class
+    CParameterNetCDF fp;
+    //open file
+    int error=fp.loadFile((char *)fi.c_str());
+    if(error){std::cerr<<"loadFile return "<< error <<std::endl;return error;}
+
+    float process; 
+    std::string process_name="signal";
+    //load process variable
+    error=fp.loadVar(process,&process_name);
+    if(error){std::cerr<<"loadVar return "<< error <<std::endl;return error;}
+    std::cout<<process_name<<"="<<process<<std::endl;
+    ///nb_tB
+    std::string attribute_name="nb_tB";	// 10us
+    if ((error = fp.loadAttribute(attribute_name,nb_base))!=0)
+    {
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<nb_base<<std::endl;
+    ///tauM
+    attribute_name="tauM";		//100 ns
+    if ((error = fp.loadAttribute(attribute_name,TauM))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<TauM<<std::endl;
+    ///tau
+    attribute_name="tau";			//5 us
+    if ((error = fp.loadAttribute(attribute_name,Tau))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<Tau<<std::endl;
+    ///A
+    attribute_name="A";
+    if ((error = fp.loadAttribute(attribute_name,ampl))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<ampl<<std::endl;		 
+    ///B
+    attribute_name="B";
+    if ((error = fp.loadAttribute(attribute_name,base))!=0){
+      std::cerr<< "Error while loading "<<process_name<<":"<<attribute_name<<" attribute"<<std::endl;
+      return error;
+    }
+    std::cout<<"  "<<attribute_name<<"="<<base<<std::endl; 
+    decrease=Tau; // convert into int
+    increase=TauM;
+    return 0;
+  }//read_parameters
+
+
+  void Exp (CImgList<Tdata> &images, int n)//, int index) //fill image with double exp 
+  {
+    //Baseline
+    cimg_for_inX(images[n],0,this->nb_tB,i) images[n](i)=this->B;
+    //Exponential curve
+    double t = 0;
+	for( int i=this->nb_tB; i<images[n].width(); i++){
+		images[n](i)=this->A*(exp(-t/this->tauM)-exp(-t/this->tau))+this->B;
+		t++;
+	}
+	//cimg_for_inX(images[n],this->nb_tB,images[n].width(),i) images[n](i)=this->A*(exp(-t/this->tauM)-exp(-t/this->tau))+this->B;
+	/*//Exponential decrease
+    int t=0;
+    cimg_for_inX(images[n],nb_tA,images[n].width(),i) images[n](i)=A * exp(-t++/tau)+B;  	
+	 * */
+  }//Exp
+
+#ifdef DO_NETCDF
+  //! NetCDF initialisation
+  virtual void ncInit()
+  {
+    file_name="pac_signal_parameters.nc";
+    nc_img.assign(5, 1,1,1,1);// A,B, tau, tauM,tB 
+    std::cout << "CImgListNetCDF::saveNetCDFFile(" << file_name << ",...) return " << nc.saveNetCDFFile((char*)file_name.c_str()) << std::endl;
+    is_netcdf_init=false;
+    nc.pNCFile->add_att("architecture",BOOST_PP_STRINGIZE(ARCH));
+    dim_time="dimF";
+    dim_names.push_back("dim1");
+    std::cout << "CImgListNetCDF::addNetCDFDims(" << file_name << ",...) return " << nc.addNetCDFDims(nc_img,dim_names,dim_time) << std::endl<<std::flush;
+   ///set names
+    //variable names (and its unit)
+    var_names.push_back("A");
+    var_names.push_back("B");
+    var_names.push_back("tB");
+    var_names.push_back("TauM");
+    var_names.push_back("Tau");
+    unit_names.push_back("digit");
+    unit_names.push_back("digit");
+    unit_names.push_back("tic (10ns)");
+    unit_names.push_back("tic (10ns)");
+    unit_names.push_back("tic (10ns)");
+    //variable long names
+    long_names.push_back("amplitude");
+    long_names.push_back("baseline");
+    long_names.push_back("baseline duration");
+    long_names.push_back("exponential increase");
+    long_names.push_back("exponential decrease");
+
+   ///creation
+    //variables
+std::cout << "CImgListNetCDF::addNetCDFVar(" << file_name << ",...) return " << nc.addNetCDFVar(nc_img,var_names,unit_names) << std::endl<<std::flush;
+    //variable long names
+    std::cout << "testinit" <<std::endl;
+    cimglist_for(nc_img,x)
+    {
+      this->nc.pNCvars[x]->add_att("long_name",long_names[x].c_str());
+      if (!(this->nc.pNCvars[x]->add_att("generator_",this->class_name.c_str()))) std::cerr<<"error: for PAC signal parameter in NetCDF, while adding generator name attribute"<<this->class_name<<" (NC_ERROR)."<<std::endl;
+    }
+    std::cout << "testinit2" <<std::endl;
+  }//ncInit
+
+  //! NetCDF storage
+  virtual void ncStore()
+  {
+    int n=0;
+    nc_img[n++]=this->A;
+    nc_img[n++]=this->B;
+    nc_img[n++]=this->nb_tB;
+    nc_img[n++]=this->tauM;
+    nc_img[n++]=this->tau;
+    nc_img[n++]=this->A;
+std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " << nc.addNetCDFData(nc_img) << std::endl;
+    }//ncStore
+#endif //DO_NETCDF
+
+//! constructor
+  CDataGenerator_Peak_exp(std::vector<omp_lock_t*> &lock
+  , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
+  , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+  )
+  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
+  {
+//    this->debug=true;
+    this->class_name="CDataGenerator_Peak_exp";
+    read_parameters(this->nb_tB, this->tauM, this->tau, this->A, this->B);//Signal Parameters	
+    this->check_locks(lock);
+#ifdef DO_NETCDF
+    this->ncInit();
+#endif //DO_NETCDF
+  }//constructor
+  
+//! one iteration for any loop
+  /**
+   * entirely filled with the frame count value
+  **/
+  virtual void iteration(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+  {
+    if(this->debug)
+    {
+      this->lprint.print("",false);
+      printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+      access.print("access",false);fflush(stderr);
+      this->lprint.unset_lock();
+    }
+    //wait lock
+    unsigned int c=0;
+    this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
+
+     Exp (images, n);
+    //set frame count value as first array value
+//    images[n](0)=i;
+//    images[n](images[n].width()-1)=i;
+
+    //set filled
+    this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
+#ifdef DO_NETCDF
+    ncStore();
+#endif //DO_NETCDF
+  }//iteration
+
+
+
+};//CDataGenerator_Peak_exp
+
+
+
+
+
 //! peak with random parameters vs frame, i.e. diffferent ideal curve at each iteration
 /**
  * ideal PAC peak each time with new parameters in range set by [value-noise/2,value+noise/2]
