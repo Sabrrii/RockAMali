@@ -46,7 +46,7 @@ public:
     factory_types.push_back      ("signal_exp_rnd")        ;if(name == factory_types.back())
       return new CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status);
 	factory_types.push_back      ("signal_exp_full_rnd")        ;if(name == factory_types.back())
-      return new CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator_Exp_Full_Random<Tdata, Taccess>(lock,wait_status,set_status);
       
 #endif //NetCDF
 //    if(name == "error")

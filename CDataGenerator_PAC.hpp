@@ -1111,7 +1111,7 @@ public:
   )
   : CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status)
   {
-	//    this->debug=true;
+	//this->debug=true;
     this->class_name="CDataGenerator_Exp_Full_Random";
     //get CDL prms (CData_Noise)
     this->CData_Noise::read_parameters(this->rand_min,this->rand_max);
