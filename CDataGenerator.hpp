@@ -24,14 +24,19 @@ class CDataGenerator: public CDataBuffer<Tdata, Taccess>
 {
 
 public:
+	int blockSize;
 
   CDataGenerator(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK  
   )
   : CDataBuffer<Tdata, Taccess>(lock,wait_status,set_status)
   {
 //    this->debug=true;
+	blockSize=block_size;
     this->class_name="CDataGenerator";
     this->check_locks(lock);
   }//constructor
@@ -59,6 +64,38 @@ public:
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],i,n,c);//filling,filled
   }//iteration
+  
+  
+  
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int i)
+	{
+	    if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,i);fflush(stdout);
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		//wait lock
+		unsigned int c=0;
+		
+		for(int i=0;i<blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+			//fill image
+			images[j].fill(i);
+
+			//set filled
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],i,j,c);//filling,filled
+		}
+		
+
+
+	}//iterationBlock
+	
+#endif //DO_BLOCK
+  
 
 };//CDataGenerator
 

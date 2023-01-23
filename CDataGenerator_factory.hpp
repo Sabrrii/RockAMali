@@ -15,6 +15,9 @@ public:
   static CDataGenerator<Tdata, Taccess> *NewCDataGenerator(const std::string &name//="list types"
   , std::vector<std::string> &factory_types
   , std::vector<omp_lock_t*> &lock
+#ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
   )
@@ -24,7 +27,7 @@ public:
     //if
     ///base:  CDataGenerator.hpp
     factory_types.push_back      ("count")         ;if(name == factory_types.back())
-      return new CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status,block_size);
 #ifdef DO_NETCDF
     //! NetCDF enabling more classes, e.g. classes that load parameters from .CDL (i.e. .nc)
     //noise:  CDataGenerator.hpp
@@ -33,18 +36,25 @@ public:
     ///PAC peak:  CDataGenerator_PAC.hpp
     factory_types.push_back      ("full_random")       ;if(name == factory_types.back())
       return new CDataGenerator_Full_Random<Tdata, Taccess>(lock,wait_status,set_status);
+      
     factory_types.push_back      ("signal_pac")        ;if(name == factory_types.back())
-      return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status,block_size);
+      
     factory_types.push_back      ("signal_pac_rnd")     ;if(name == factory_types.back())
       return new CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status);
+      
     factory_types.push_back      ("peak_noise")        ;if(name == factory_types.back())
       return new CDataGenerator_Peak_Noise<Tdata, Taccess>(lock,wait_status,set_status);
+      
     factory_types.push_back      ("signal_exp")        ;if(name == factory_types.back())
-      return new CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status);  
+      return new CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status,block_size); 
+       
     factory_types.push_back      ("signal_exp_noise")        ;if(name == factory_types.back())
       return new CDataGenerator_Exp_Noise<Tdata, Taccess>(lock,wait_status,set_status);   
+      
     factory_types.push_back      ("signal_exp_rnd")        ;if(name == factory_types.back())
       return new CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status);
+      
 	factory_types.push_back      ("signal_exp_full_rnd")        ;if(name == factory_types.back())
       return new CDataGenerator_Exp_Full_Random<Tdata, Taccess>(lock,wait_status,set_status);
       
@@ -67,7 +77,7 @@ public:
     ///dummy OpenMP locks
     omp_lock_t print_lock;omp_init_lock(&print_lock);
     locks.push_back(&print_lock);
-    CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator("list types",factory_types /*dummies then default*/,locks);
+    CDataGenerator_factory<Tdata, Taccess>::NewCDataGenerator("list types",factory_types /*dummies then default*/,locks,0);
   }//get_factory_types
   //! show type list in factory
   static void show_factory_types(std::vector<std::string> &factory_types)

@@ -38,7 +38,10 @@ class CDataGenerator_Peak: public CDataGenerator<Tdata, Taccess>
 
 public:
   int nb_tB,nb_tA,A,B;
-  double tau; 
+  double tau;
+#ifdef DO_BLOCK
+  int blockSize;
+#endif //DO_BLOCK
 #ifdef DO_NETCDF
   std::string file_name;
   CImgListNetCDF<Tnetcdf> nc;
@@ -187,11 +190,17 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
   CDataGenerator_Peak(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK
   )
   : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status)
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak";
+#ifdef DO_BLOCK
+	blockSize= block_size;
+#endif  //DO_BLOCK 
     read_parameters(nb_tB, nb_tA, tau, A, B);//Signal Parameters	
     nb_tA+=nb_tB; //nb_tA is position
     this->check_locks(lock);
@@ -210,6 +219,7 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
     {
       this->lprint.print("",false);
       printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
       access.print("access",false);fflush(stderr);
       this->lprint.unset_lock();
     }
@@ -228,8 +238,57 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
     ncStore();
 #endif //DO_NETCDF
   }//iteration
+  
+  
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		//wait lock
+//! \todo [medium] move single wait here for multiple wait ()
+
+		unsigned int c=0;
+		int d=0;
+		 for(int i=0;i<blockSize;i++){
+			 const int j=i+n;
+			 std::cout<<"IttBlock index:"<<index<<std::endl;
+			 std::cout<<"IttBlock i:"<<i<<std::endl;
+			 std::cout<<"IttBlock n:"<<n<<std::endl;
+			 std::cout<<"IttBlock j:"<<j<<std::endl;
+			 std::cout<<"IttBlock"<<std::endl;
+//! \todo [medium] move single wait out of for loop
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+			std::cout<<"IttBlock2"<<std::endl;
+			Peak (images,j);
+			std::cout<<"IttBlock3"<<std::endl;
+			//set filled
+			std::cout<<"IttBlock4"<<std::endl;
+//! \todo [medium] move single wait out of for loop
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+			std::cout<<"Tour de block : "<<d<<std::endl;
+			#ifdef DO_NETCDF
+				ncStore();
+			#endif //DO_NETCDF
+		 }
+		//set frame count value as first array value
+	//    images[n](0)=i;
+	//    images[n](images[n].width()-1)=i;
+
+
+	}//iterationBlock
+#endif //DO_BLOCK
 
 };//CDataGenerator_Peak
+
+
+
 
 
 //! generate a AC signal
@@ -398,9 +457,15 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) retur
   CDataGenerator_Peak_exp(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK
   )
   : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
   {
+	  #ifdef DO_BLOCK
+	this->blockSize= block_size;
+#endif  //DO_BLOCK 
 	  this->nc=CImgListNetCDF<Tnetcdf>();
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_exp";
@@ -441,6 +506,40 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) retur
   }//iteration
 
 
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		//wait lock
+		unsigned int c=0;
+		
+		int d=0;
+		 for(int i=0;i<this->blockSize;i++,d++){
+			this->laccess.wait_for_status(access[i],this->wait_status,this->STATE_FILLING, c);//free,filling
+			Exp (images, i);
+			std::cout<<"Tour de block : "<<d<<std::endl;
+			//set filled
+			this->laccess.set_status(access[i],this->STATE_FILLING,this->set_status, this->class_name[5],index,i,c);//filling,filled
+		 }
+		//set frame count value as first array value
+	//    images[n](0)=i;
+	//    images[n](images[n].width()-1)=i;
+
+
+	#ifdef DO_NETCDF
+		ncStore();
+	#endif //DO_NETCDF
+	}//iterationBlock
+	
+	
+#endif //DO_BLOCK
 
 };//CDataGenerator_Peak_exp
 
@@ -559,6 +658,7 @@ public:
   )
   : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
   {
+
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_rnd";
     read_parameters(min_Amp,max_Amp, min_BL,max_BL, min_tau,max_tau, min_tB,max_tB, min_tA, max_tA);
@@ -614,7 +714,7 @@ public:
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
-
+ 
 };//CDataGenerator_Peak_rnd
 
 
@@ -775,10 +875,8 @@ public:
 #endif //DO_NETCDF
     unsigned int c=0;
     this->laccess.wait_for_status(access[n],this->wait_status,this->STATE_FILLING, c);//free,filling
-
     //create peak exp signal (with the random paramaters)
     this->Exp(images, n); 
-
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
@@ -917,6 +1015,7 @@ public:
 
   }//iteration
 
+
 };//CDataGenerator_Peak_Noise
 
 
@@ -1003,6 +1102,7 @@ class CDataGenerator_Exp_Noise: public CDataGenerator_Peak_exp<Tdata, Taccess>, 
 #endif //DO_NETCDF
 
   }//iteration
+
   
 };//CDataGenerator_Exp_Noise
 
