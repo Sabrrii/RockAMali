@@ -253,30 +253,26 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
 		}
 		//wait lock
 //! \todo [medium] move single wait here for multiple wait ()
-
 		unsigned int c=0;
-		int d=0;
+		for(int i=0;i<blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+		
 		 for(int i=0;i<blockSize;i++){
 			 const int j=i+n;
-			 std::cout<<"IttBlock index:"<<index<<std::endl;
-			 std::cout<<"IttBlock i:"<<i<<std::endl;
-			 std::cout<<"IttBlock n:"<<n<<std::endl;
-			 std::cout<<"IttBlock j:"<<j<<std::endl;
-			 std::cout<<"IttBlock"<<std::endl;
-//! \todo [medium] move single wait out of for loop
-			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
-			std::cout<<"IttBlock2"<<std::endl;
-			Peak (images,j);
-			std::cout<<"IttBlock3"<<std::endl;
-			//set filled
-			std::cout<<"IttBlock4"<<std::endl;
-//! \todo [medium] move single wait out of for loop
-			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
-			std::cout<<"Tour de block : "<<d<<std::endl;
+			 Peak (images,j);
 			#ifdef DO_NETCDF
 				ncStore();
 			#endif //DO_NETCDF
 		 }
+		 
+		//set filled 
+		for(int i=0;i<blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
+		 
 		//set frame count value as first array value
 	//    images[n](0)=i;
 	//    images[n](images[n].width()-1)=i;

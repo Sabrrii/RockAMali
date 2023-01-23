@@ -79,17 +79,22 @@ public:
 		}
 		//wait lock
 		unsigned int c=0;
-		
 		for(int i=0;i<blockSize;i++){
 			const int j=i+n;
 			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+		
+		for(int i=0;i<blockSize;i++){
+			const int j=i+n;
 			//fill image
 			images[j].fill(i);
-
-			//set filled
-			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],i,j,c);//filling,filled
 		}
 		
+		//set filled 
+		for(int i=0;i<blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],i,j,c);//filling,filled
+		}//for set filled
 
 
 	}//iterationBlock
