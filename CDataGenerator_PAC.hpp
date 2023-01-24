@@ -1148,7 +1148,7 @@ public:
 		
 		//image random
 		if(index == 0) this->Random.assign(images[n].width());
-		this->Random.rand(rand_min,rand_max);
+
 		
 		//wait lock
 		unsigned int c=0;
@@ -1159,11 +1159,12 @@ public:
 
 		 //gen loop
 		 for(int i=0;i<this->blockSize;i++){
+			this->Random.rand(rand_min,rand_max);
 			const int j=i+n;
 			this->Peak (images, j);
 			//add noise on peak
 			//a lot of combo for the noise with n,j,i and index
-			cimg_forX(images[j],i) images[j](i)+=Random(i);
+			cimg_forX(images[j],k) images[j](k)+=Random(k);
 			#ifdef DO_NETCDF
 				this->ncStore();
 			#endif //DO_NETCDF
@@ -1291,7 +1292,6 @@ class CDataGenerator_Exp_Noise: public CDataGenerator_Peak_exp<Tdata, Taccess>, 
 		
 		//image random
 		if(index == 0) this->Random.assign(images[n].width());
-		this->Random.rand(rand_min,rand_max);
 		
 		//wait lock
 		unsigned int c=0;
@@ -1302,11 +1302,11 @@ class CDataGenerator_Exp_Noise: public CDataGenerator_Peak_exp<Tdata, Taccess>, 
 
 		 //gen loop
 		 for(int i=0;i<this->blockSize;i++){
+			this->Random.rand(rand_min,rand_max);
 			const int j=i+n;
 			this->Exp (images, j);
 			//add noise on peak
-			//a lot of combo for the noise with n,j,i and index
-			cimg_forX(images[n],index) images[n](index)+=Random(index);
+			cimg_forX(images[j],k) images[j](k)+=Random(k);
 			#ifdef DO_NETCDF
 				this->ncStore();
 			#endif //DO_NETCDF
@@ -1428,7 +1428,7 @@ public:
 		
 		//noise
 		if(index==0) this->Random.assign(images[n].width());
-		this->Random.rand(this->rand_min,this->rand_max);
+
 		
 		//wait lock
 		unsigned int c=0;
@@ -1439,6 +1439,7 @@ public:
 
 		 //gen loop
 		 for(int i=0;i<this->blockSize;i++){
+			this->Random.rand(this->rand_min,this->rand_max);
 			//random values for curve parameters
 			this->random_parameter();
 		#ifdef DO_NETCDF
@@ -1565,7 +1566,7 @@ public:
 		
 		//noise
 		if(index==0) this->Random.assign(images[n].width());
-		this->Random.rand(this->rand_min,this->rand_max);
+
 		
 		//wait lock
 		unsigned int c=0;
@@ -1576,6 +1577,7 @@ public:
 
 		 //gen loop
 		 for(int i=0;i<this->blockSize;i++){
+			this->Random.rand(this->rand_min,this->rand_max);
 			//random values for curve parameters
 			this->random_parameter();
 		#ifdef DO_NETCDF
