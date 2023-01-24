@@ -316,7 +316,6 @@ class CDataGenerator_Peak_exp : public CDataGenerator_Peak<Tdata,Taccess>
 {
 	public :
 		double tauM;
-
 //! get parameters from NC file (i.e. compiled CDL)
   virtual int read_parameters(int &nb_base, double &increase, double &decrease, int &ampl, int &base)
   {
@@ -458,11 +457,8 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) retur
   ,int block_size=1
 #endif //DO_BLOCK
   )
-  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
-  {
-	  #ifdef DO_BLOCK
-	this->blockSize= block_size;
-#endif  //DO_BLOCK 
+  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status,block_size)
+  { 
 	  this->nc=CImgListNetCDF<Tnetcdf>();
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_exp";
@@ -516,25 +512,27 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) retur
 		}
 		//wait lock
 		unsigned int c=0;
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
 		
-		int d=0;
-		 for(int i=0;i<this->blockSize;i++,d++){
-			this->laccess.wait_for_status(access[i],this->wait_status,this->STATE_FILLING, c);//free,filling
-			Exp (images, i);
-			std::cout<<"Tour de block : "<<d<<std::endl;
-			//set filled
-			this->laccess.set_status(access[i],this->STATE_FILLING,this->set_status, this->class_name[5],index,i,c);//filling,filled
-		 }
-		//set frame count value as first array value
-	//    images[n](0)=i;
-	//    images[n](images[n].width()-1)=i;
+		 //gen loop
+		 for(int i=0;i<this->blockSize;i++){
+			 const int j=i+n;
+			 Exp (images,j);
+			#ifdef DO_NETCDF
+				ncStore();
+			#endif //DO_NETCDF
+		 }//for gen loop
+		 
+		 //set filled 
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
 
-
-	#ifdef DO_NETCDF
-		ncStore();
-	#endif //DO_NETCDF
-	}//iterationBlock
-	
+	}//iterationBlock	
 	
 #endif //DO_BLOCK
 
@@ -652,8 +650,11 @@ public:
   CDataGenerator_Peak_rnd(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+  #ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK
   )
-  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status,block_size)
   {
 
 //    this->debug=true;
@@ -711,6 +712,49 @@ public:
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
+  
+  
+  
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		
+		//wait lock
+
+
+		unsigned int c=0;
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+
+		 //gen loop
+		 for(int i=0;i<this->blockSize;i++){
+			//random values for curve parameters
+			this->random_parameter();
+		#ifdef DO_NETCDF
+			this->ncStore();
+		#endif //DO_NETCDF
+			 const int j=i+n;
+			 this->Peak (images,j);
+		 }//for gen loop
+		 
+		//set filled 
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
+	}//iterationBlock
+#endif //DO_BLOCK
+
  
 };//CDataGenerator_Peak_rnd
 
@@ -823,8 +867,11 @@ public:
   CDataGenerator_Exp_rnd(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+   ,int block_size =1
+#endif //DO_BLOCK
   )
-  : CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status,block_size)
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Exp_rnd";
@@ -877,6 +924,47 @@ public:
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
+
+
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		
+		//wait lock
+
+
+		unsigned int c=0;
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+
+		 //gen loop
+		 for(int i=0;i<this->blockSize;i++){
+			//random values for curve parameters
+			this->random_parameter();
+		#ifdef DO_NETCDF
+			this->ncStore();
+		#endif //DO_NETCDF
+			 const int j=i+n;
+			 this->Exp(images,j);
+		 }//for gen loop
+		 
+		//set filled 
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
+	}//iterationBlock
+#endif //DO_BLOCK
 
 
 };//CDataGenerator_Exp_rnd
@@ -965,8 +1053,11 @@ public:
   CDataGenerator_Peak_Noise(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK
   )
-  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status,block_size)
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak_Noise";
@@ -1012,6 +1103,51 @@ public:
 
   }//iteration
 
+  
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		
+		//image random
+		if(index == 0) this->Random.assign(images[n].width());
+		this->Random.rand(rand_min,rand_max);
+		
+		//wait lock
+		unsigned int c=0;
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+
+		 //gen loop
+		 for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->Peak (images, j);
+			//add noise on peak
+			//a lot of combo for the noise with n,j,i and index
+			cimg_forX(images[j],i) images[j](i)+=Random(i);
+			#ifdef DO_NETCDF
+				this->ncStore();
+			#endif //DO_NETCDF
+		 }//for gen loop
+		 
+		//set filled 
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
+		
+	}//iterationBlock
+#endif //DO_BLOCK
+
 
 };//CDataGenerator_Peak_Noise
 
@@ -1053,8 +1189,11 @@ class CDataGenerator_Exp_Noise: public CDataGenerator_Peak_exp<Tdata, Taccess>, 
 	CDataGenerator_Exp_Noise(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK
   )
-  : CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status,block_size)
   {
 	//    this->debug=true;
     this->class_name="CDataGenerator_Exp_Noise";
@@ -1100,6 +1239,51 @@ class CDataGenerator_Exp_Noise: public CDataGenerator_Peak_exp<Tdata, Taccess>, 
 
   }//iteration
 
+
+  
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		
+		//image random
+		if(index == 0) this->Random.assign(images[n].width());
+		this->Random.rand(rand_min,rand_max);
+		
+		//wait lock
+		unsigned int c=0;
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+
+		 //gen loop
+		 for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->Exp (images, j);
+			//add noise on peak
+			//a lot of combo for the noise with n,j,i and index
+			cimg_forX(images[n],index) images[n](index)+=Random(index);
+			#ifdef DO_NETCDF
+				this->ncStore();
+			#endif //DO_NETCDF
+		 }//for gen loop
+		 
+		//set filled 
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
+		
+	}//iterationBlock
+#endif //DO_BLOCK
   
 };//CDataGenerator_Exp_Noise
 
@@ -1123,8 +1307,11 @@ public:
   CDataGenerator_Full_Random(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+  ,int block_size=1
+#endif //DO_BLOCK
   )
-  : CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status,block_size)
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Full_Random";
@@ -1182,6 +1369,53 @@ public:
     //set filled
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
+  
+  
+   
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		
+		//noise
+		if(index==0) this->Random.assign(images[n].width());
+		this->Random.rand(this->rand_min,this->rand_max);
+		
+		//wait lock
+		unsigned int c=0;
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+
+		 //gen loop
+		 for(int i=0;i<this->blockSize;i++){
+			//random values for curve parameters
+			this->random_parameter();
+		#ifdef DO_NETCDF
+			this->ncStore();
+		#endif //DO_NETCDF
+			 const int j=i+n;
+			 this->Peak (images,j);
+			//add noise on peak
+			images[j]+=this->Random;
+		 }//for gen loop
+		 
+		//set filled 
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
+	}//iterationBlock
+#endif //DO_BLOCK
+
 
 };//CDataGenerator_Full_Random
 
@@ -1205,8 +1439,11 @@ public:
   CDataGenerator_Exp_Full_Random(std::vector<omp_lock_t*> &lock
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
+#ifdef DO_BLOCK
+  ,int block_size =1
+#endif //DO_BLOCK
   )
-  : CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status,block_size)
   {
 	//this->debug=true;
     this->class_name="CDataGenerator_Exp_Full_Random";
@@ -1265,6 +1502,50 @@ public:
     this->laccess.set_status(access[n],this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
   }//iteration
 
+
+#ifdef DO_BLOCK
+	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
+	{
+		if(this->debug)
+		{
+		  this->lprint.print("",false);
+		  printf("4 B%02d #%04d: ",n,index);fflush(stdout);
+
+		  access.print("access",false);fflush(stderr);
+		  this->lprint.unset_lock();
+		}
+		
+		//noise
+		if(index==0) this->Random.assign(images[n].width());
+		this->Random.rand(this->rand_min,this->rand_max);
+		
+		//wait lock
+		unsigned int c=0;
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
+		}//for wait lock
+
+		 //gen loop
+		 for(int i=0;i<this->blockSize;i++){
+			//random values for curve parameters
+			this->random_parameter();
+		#ifdef DO_NETCDF
+			this->ncStore();
+		#endif //DO_NETCDF
+			 const int j=i+n;
+			 this->Exp (images,j);
+			//add noise on peak
+			images[j]+=this->Random;
+		 }//for gen loop
+		 
+		//set filled 
+		for(int i=0;i<this->blockSize;i++){
+			const int j=i+n;
+			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
+		}//for wait lock
+	}//iterationBlock
+#endif //DO_BLOCK
 
 };//CDataGenerator_Exp_Full_Random
 

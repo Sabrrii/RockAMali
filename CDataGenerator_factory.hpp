@@ -35,28 +35,28 @@ public:
       return new CDataGenerator_Random<Tdata, Taccess>(lock,wait_status,set_status);
     ///PAC peak:  CDataGenerator_PAC.hpp
     factory_types.push_back      ("full_random")       ;if(name == factory_types.back())
-      return new CDataGenerator_Full_Random<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator_Full_Random<Tdata, Taccess>(lock,wait_status,set_status,block_size);//
       
     factory_types.push_back      ("signal_pac")        ;if(name == factory_types.back())
-      return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status,block_size);
+      return new CDataGenerator_Peak<Tdata, Taccess>(lock,wait_status,set_status,block_size);//
       
     factory_types.push_back      ("signal_pac_rnd")     ;if(name == factory_types.back())
-      return new CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator_Peak_rnd<Tdata, Taccess>(lock,wait_status,set_status,block_size);//
       
     factory_types.push_back      ("peak_noise")        ;if(name == factory_types.back())
-      return new CDataGenerator_Peak_Noise<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator_Peak_Noise<Tdata, Taccess>(lock,wait_status,set_status,block_size);//
       
     factory_types.push_back      ("signal_exp")        ;if(name == factory_types.back())
-      return new CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status,block_size); 
+      return new CDataGenerator_Peak_exp<Tdata, Taccess>(lock,wait_status,set_status,block_size); //
        
     factory_types.push_back      ("signal_exp_noise")        ;if(name == factory_types.back())
-      return new CDataGenerator_Exp_Noise<Tdata, Taccess>(lock,wait_status,set_status);   
+      return new CDataGenerator_Exp_Noise<Tdata, Taccess>(lock,wait_status,set_status,block_size);   //
       
     factory_types.push_back      ("signal_exp_rnd")        ;if(name == factory_types.back())
-      return new CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator_Exp_rnd<Tdata, Taccess>(lock,wait_status,set_status,block_size);//
       
 	factory_types.push_back      ("signal_exp_full_rnd")        ;if(name == factory_types.back())
-      return new CDataGenerator_Exp_Full_Random<Tdata, Taccess>(lock,wait_status,set_status);
+      return new CDataGenerator_Exp_Full_Random<Tdata, Taccess>(lock,wait_status,set_status,block_size);
       
 #endif //NetCDF
 //    if(name == "error")
