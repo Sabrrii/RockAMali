@@ -194,7 +194,7 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
   ,int block_size=1
 #endif //DO_BLOCK
   )
-  : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status)
+  : CDataGenerator<Tdata, Taccess>(lock,wait_status,set_status,block_size)
   {
 //    this->debug=true;
     this->class_name="CDataGenerator_Peak";
@@ -251,14 +251,17 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
 		  access.print("access",false);fflush(stderr);
 		  this->lprint.unset_lock();
 		}
+		
+		std::cout<<""<<std::endl;
+		std::cout<<"Locking"<<std::endl;
 		//wait lock
-//! \todo [medium] move single wait here for multiple wait ()
 		unsigned int c=0;
 		for(int i=0;i<blockSize;i++){
 			const int j=i+n;
 			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
 		}//for wait lock
-		
+		std::cout<<""<<std::endl;
+		std::cout<<"Gen"<<std::endl;
 		 for(int i=0;i<blockSize;i++){
 			 const int j=i+n;
 			 Peak (images,j);
@@ -266,7 +269,8 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
 				ncStore();
 			#endif //DO_NETCDF
 		 }
-		 
+		 std::cout<<""<<std::endl;
+		 std::cout<<"Filling"<<std::endl;
 		//set filled 
 		for(int i=0;i<blockSize;i++){
 			const int j=i+n;

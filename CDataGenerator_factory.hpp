@@ -16,7 +16,7 @@ public:
   , std::vector<std::string> &factory_types
   , std::vector<omp_lock_t*> &lock
 #ifdef DO_BLOCK
-  ,int block_size=1
+  ,int block_size
 #endif //DO_BLOCK
   , CDataAccess::ACCESS_STATUS_OR_STATE wait_status=CDataAccess::STATUS_FREE
   , CDataAccess::ACCESS_STATUS_OR_STATE  set_status=CDataAccess::STATUS_FILLED
