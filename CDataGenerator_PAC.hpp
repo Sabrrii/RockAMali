@@ -241,6 +241,12 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << file_name << ",...) return " <<
   
   
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
@@ -500,6 +506,12 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) retur
 
 
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
@@ -716,6 +728,12 @@ public:
   
   
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
@@ -927,6 +945,12 @@ public:
 
 
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
@@ -1105,6 +1129,12 @@ public:
 
   
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
@@ -1242,6 +1272,12 @@ class CDataGenerator_Exp_Noise: public CDataGenerator_Peak_exp<Tdata, Taccess>, 
 
   
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
@@ -1373,6 +1409,12 @@ public:
   
    
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
@@ -1504,6 +1546,12 @@ public:
 
 
 #ifdef DO_BLOCK
+	  //! iteration on block size for any loop
+	  /**
+	   * lock all the buffer needed,
+	   * generate all the signal for the block size,
+	   * fill all the locked buffer
+	  **/
 	virtual void iterationBlock(CImg<Taccess> &access,CImgList<Tdata> &images, int n, int index)
 	{
 		if(this->debug)
