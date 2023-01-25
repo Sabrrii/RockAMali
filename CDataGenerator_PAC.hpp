@@ -524,11 +524,14 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) retur
 		}
 		//wait lock
 		unsigned int c=0;
-		for(int i=0;i<this->blockSize;i++){
+		/*for(int i=0;i<this->blockSize;i++){
 			const int j=i+n;
 			this->laccess.wait_for_status(access[j],this->wait_status,this->STATE_FILLING, c);//free,filling
 		}//for wait lock
-		
+		/**/
+		access.print("Before lock wait");
+		this->laccess.wait_for_status_block(access.data()+n,this->blockSize,this->wait_status,this->STATE_FILLING, c);//free,filling
+/**/access.print("After lock wait");
 		 //gen loop
 		 for(int i=0;i<this->blockSize;i++){
 			 const int j=i+n;
@@ -537,15 +540,19 @@ std::cout << "CImgListNetCDF::addNetCDFData(" << this->file_name << ",...) retur
 				ncStore();
 			#endif //DO_NETCDF
 		 }//for gen loop
-		 
+/**/	 
 		 //set filled 
 		for(int i=0;i<this->blockSize;i++){
 			const int j=i+n;
 			this->laccess.set_status(access[j],this->STATE_FILLING,this->set_status, this->class_name[5],index,j,c);//filling,filled
 		}//for wait lock
-
+/** /
+	access.print("Before lock set");
+		this->laccess.set_status_block(access.data()+n,this->blockSize,this->STATE_FILLING,this->set_status, this->class_name[5],index,n,c);//filling,filled
+	access.print("After lock set");
+	/**/
 	}//iterationBlock	
-	
+
 #endif //DO_BLOCK
 
 };//CDataGenerator_Peak_exp
